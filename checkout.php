@@ -15,10 +15,12 @@ include 'includes/header.php';
     <h1 class="mb-4">Finalizar Pedido</h1>
     <div class="row g-5">
         <div class="col-md-7">
-            <h3>Resumen de tu Carrito</h3>
-            <div id="resumen-carrito" class="card">
-                </div>
-        </div>
+    <h3>Resumen de tu Carrito</h3>
+    <div id="resumen-carrito" class="card">
+        <div class="card-body">
+            </div>
+    </div>
+</div>
         <div class="col-md-5">
             <h3>Tus Datos para la Entrega</h3>
             <div class="card">

@@ -20,7 +20,10 @@ $resultado_repartidores = $conn->query($sql_repartidores);
 
 <?php include '../includes/header.php'; ?>
 
-<h1 class="mb-4">Panel de Administración</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Panel de Administración</h1>
+    <a href="../procesos/logout_admin.php" class="btn btn-danger">Cerrar Sesión</a>
+</div>
 
 <h3 class="mb-3">Gestionar Restaurantes</h3>
 <div class="table-responsive mb-5">

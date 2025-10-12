@@ -19,9 +19,10 @@
                         <label for="password" class="form-label">Contraseña</label>
                         <input type="password" class="form-control" id="password" name="password" required>
                     </div>
-                     <div class="mb-3">
-                        <label for="telefono" class="form-label">Teléfono (Opcional)</label>
-                        <input type="tel" class="form-control" id="telefono" name="telefono">
+                    <div class="mb-3">
+                        <label for="telefono" class="form-label">Número de Teléfono (WhatsApp)</label>
+                        <input type="tel" class="form-control" id="telefono" name="telefono" required placeholder="Ej: 987654321">
+                        <div class="form-text">Usaremos este número para coordinar la entrega.</div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Registrarme</button>
                 </form>

@@ -7,10 +7,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre = trim($_POST['nombre']);
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-    $telefono = trim($_POST['telefono']) ?? null; // Asignar null si está vacío
+    $telefono = trim($_POST['telefono']); // Ahora siempre tendrá un valor
 
-    if (empty($nombre) || empty($email) || empty($password)) {
-        die("Error: Nombre, email y contraseña son obligatorios.");
+    // Validar que los campos no estén vacíos
+    if (empty($nombre) || empty($email) || empty($password) || empty($telefono)) {
+        die("Error: Todos los campos, incluido el teléfono, son obligatorios.");
     }
     
     // Encriptar la contraseña (¡siempre!)
