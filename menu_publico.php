@@ -1,4 +1,5 @@
 <?php
+session_start(); // <-- ESTA LÍNEA ES LA NUEVA Y MÁS IMPORTANTE
 include 'includes/conexion.php';
 
 // 1. Validar que recibimos un ID por la URL
@@ -35,6 +36,10 @@ include 'includes/header.php';
             <h1 class="display-5 fw-bold"><?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h1>
             <p class="col-md-8 fs-4"><?php echo htmlspecialchars($restaurante['direccion'] ?? ''); ?></p>
             <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($restaurante['telefono'] ?? 'No especificado'); ?></p>
+
+            <?php if (isset($_SESSION['cliente_id'])): ?>
+                <a href="/cerrodelivery/checkout.php" class="btn btn-success mt-3">Ver Carrito y Finalizar Pedido</a>
+            <?php endif; ?>
         </div>
     </div>
 
@@ -49,11 +54,14 @@ include 'includes/header.php';
                             <h5 class="card-title"><?php echo htmlspecialchars($plato['nombre_plato']); ?></h5>
                             <p class="card-text text-muted flex-grow-1"><?php echo htmlspecialchars($plato['descripcion']); ?></p>
                             <p class="h4 text-end text-success">S/ <?php echo htmlspecialchars($plato['precio']); ?></p>
+
                             <?php if (isset($_SESSION['cliente_id'])): ?>
                                 <a href="#" class="btn btn-warning mt-auto add-to-cart-btn"
                                     data-id="<?php echo $plato['id']; ?>"
                                     data-nombre="<?php echo htmlspecialchars($plato['nombre_plato']); ?>"
-                                    data-precio="<?php echo $plato['precio']; ?>">
+                                    data-precio="<?php echo $plato['precio']; ?>"
+                                    data-restaurante-id="<?php echo $id_restaurante; // <-- LÍNEA NUEVA 
+                                                            ?>">
                                     Añadir al Carrito
                                 </a>
                             <?php else: ?>
