@@ -10,9 +10,25 @@ if (!isset($_SESSION['restaurante_id'])) {
     exit();
 }
 
+
 // 2. CONEXIÓN A LA BASE DE DATOS Y CONSULTAS
 // ==========================================
 require_once '../includes/conexion.php';
+
+// ... justo después de require_once '../includes/conexion.php';
+
+$id_restaurante_actual = $_SESSION['restaurante_id'];
+
+// --- NUEVA CONSULTA para obtener los datos del restaurante (incluido el horario) ---
+$sql_restaurante = "SELECT hora_apertura, hora_cierre, telefono FROM restaurantes WHERE id = ?";
+$stmt_restaurante = $conn->prepare($sql_restaurante);
+$stmt_restaurante->bind_param("i", $id_restaurante_actual);
+$stmt_restaurante->execute();
+$restaurante_data = $stmt_restaurante->get_result()->fetch_assoc();
+$stmt_restaurante->close();
+
+// --- Consulta para obtener los platos (ya existente) ---
+// ...
 
 $id_restaurante_actual = $_SESSION['restaurante_id'];
 
@@ -70,6 +86,55 @@ include '../includes/header.php';
             </div>
         </div>
     </div>
+    <div class="card mb-5">
+        <div class="card-header">
+            <h3>Gestionar Horario Comercial</h3>
+        </div>
+        <div class="card-body">
+            <form action="../procesos/actualizar_horario.php" method="POST">
+                <div class="row align-items-end">
+                    <div class="col-md-5">
+                        <label for="hora_apertura" class="form-label">Hora de Apertura</label>
+                        <input type="time" class="form-control" id="hora_apertura" name="hora_apertura" value="<?php echo htmlspecialchars($restaurante_data['hora_apertura'] ?? ''); ?>">
+                    </div>
+                    <div class="col-md-5">
+                        <label for="hora_cierre" class="form-label">Hora de Cierre</label>
+                        <input type="time" class="form-control" id="hora_cierre" name="hora_cierre" value="<?php echo htmlspecialchars($restaurante_data['hora_cierre'] ?? ''); ?>">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                    </div>
+                </div>
+                <div class="form-text mt-2">
+                    Si dejas los campos vacíos, aparecerás como "Cerrado". Si tu horario cruza la medianoche (ej. 18:00 a 02:00), el sistema lo calculará correctamente.
+                </div>
+            </form>
+        </div>
+        <div class="card mb-5">
+            <div class="card-header">
+                <h3>Notificaciones de Pedidos por WhatsApp</h3>
+            </div>
+            <div class="card-body">
+                <form action="../procesos/actualizar_telefono.php" method="POST">
+                    <div class="row align-items-end">
+                        <div class="col-md-10">
+                            <label for="telefono" class="form-label">Tu Número de WhatsApp</label>
+                            <div class="input-group">
+                                <span class="input-group-text">+51</span>
+                                <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="987654321" value="<?php echo htmlspecialchars($restaurante_data['telefono'] ?? ''); ?>" required>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Guardar</button>
+                        </div>
+                    </div>
+                    <div class="form-text mt-2">
+                        Recibirás un mensaje en este número cada vez que un cliente realice un nuevo pedido.
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -121,7 +186,7 @@ include '../includes/header.php';
                 </thead>
                 <tbody>
                     <?php if ($resultado_platos->num_rows > 0): ?>
-                        <?php while($plato = $resultado_platos->fetch_assoc()): ?>
+                        <?php while ($plato = $resultado_platos->fetch_assoc()): ?>
                             <tr>
                                 <td>
                                     <img src="../assets/img/platos/<?php echo htmlspecialchars($plato['foto_url']); ?>" alt="<?php echo htmlspecialchars($plato['nombre_plato']); ?>" width="100" class="img-thumbnail">
