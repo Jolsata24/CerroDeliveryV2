@@ -1,6 +1,6 @@
 // --- LÓGICA DEL PRELOADER Y HEADER DINÁMICO ---
 
-// Usamos el evento 'load' que espera a que TODO (imágenes incluidas) esté cargado.
+// Usamos el evento 'load', que espera a que TODO (imágenes, CSS, etc.) esté cargado.
 window.addEventListener('load', function () {
     
     // 1. Ocultar el preloader
@@ -12,8 +12,7 @@ window.addEventListener('load', function () {
     // 2. Manejar la visibilidad del header
     const navbar = document.querySelector('.navbar.fixed-top');
     if (navbar) {
-        let lastScrollTop = 0;
-
+        
         // Función que se ejecutará cada vez que el usuario haga scroll
         const handleScroll = () => {
             let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
@@ -25,10 +24,9 @@ window.addEventListener('load', function () {
                 // Si está en la cima de la página, lo oculta
                 navbar.style.top = `-${navbar.offsetHeight}px`;
             }
-            lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
         };
 
-        // Ocultar el header inmediatamente después de que todo cargue
+        // Ocultar el header inmediatamente después de que todo cargue.
         // Ahora sí 'offsetHeight' tendrá el valor correcto.
         if (window.pageYOffset <= 10) {
              navbar.style.top = `-${navbar.offsetHeight}px`;
