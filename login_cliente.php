@@ -1,8 +1,30 @@
-<?php include 'includes/header.php'; ?>
+<?php
+session_start();
+// Si el cliente ya inició sesión, redirigirlo al index
+if (isset($_SESSION['cliente_id'])) {
+    header('Location: index.php');
+    exit;
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - CerroDelivery</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/cerrodelivery/assets/css/style.css">
+</head>
+<body>
 
 <div class="auth-page">
     <div class="card auth-card">
         <div class="card-body">
+            <div class="text-center mb-4">
+                <a href="index.php">
+                    <img src="/cerrodelivery/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 50px;">
+                </a>
+            </div>
             <h2 class="card-title text-center mb-4">Bienvenido de Vuelta</h2>
             
             <?php if(isset($_GET['status']) && $_GET['status'] == 'registrado'): ?>
@@ -29,4 +51,5 @@
     </div>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+</body>
+</html>

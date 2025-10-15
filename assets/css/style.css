@@ -209,15 +209,19 @@ body {
 .auth-card {
     width: 100%;
     max-width: 450px;
-    border: none;
-    border-radius: var(--card-border-radius);
-    padding: 2.5rem;
+    /* Nos aseguramos de que no haya un borde visible */
+    border: none; 
+    
+    /* Esta es la propiedad clave para las esquinas redondeadas. 
+       Un valor más grande como 1.5rem las hará más curvas. */
+    border-radius: 1rem; 
 
-    /* NUEVOS ESTILOS PARA EL EFECTO "GLASS" */
-    background-color: rgba(255, 255, 255, 0.9); /* Blanco con 10% de transparencia */
+    padding: 2.5rem;
+    background-color: rgba(116, 116, 116, 0.466);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
 }
 
 .auth-card .card-title {
@@ -500,6 +504,52 @@ body {
 .menu-hero-banner .text-muted {
     color: #e9ecef !important; /* Un blanco un poco más apagado */
 }
+/* ===================================== */
+/* ESTILOS PARA LA PANTALLA DE CARGA     */
+/* ===================================== */
+
+#preloader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.75s ease, visibility 0.75s ease;
+}
+
+/* NUEVO: Estilo para el logo en el preloader */
+.preloader-logo {
+    max-width: 150px; /* Ajusta el tamaño de tu logo */
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* NUEVO: Animación de pulso para el logo */
+@keyframes pulse {
+    0% {
+        opacity: 0.8;
+        transform: scale(0.95);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.8;
+        transform: scale(0.95);
+    }
+}
+
+/* Clase que se añadirá con JS para ocultar el preloader */
+body.loaded #preloader {
+    opacity: 0;
+    visibility: hidden;
+}
+
 
 
 

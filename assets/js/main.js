@@ -24,3 +24,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Escuchar el evento de scroll
     window.addEventListener('scroll', handleNavbarVisibility);
 });
+
+// --- LÓGICA DEL PRELOADER ---
+window.addEventListener('load', function () {
+    const preloader = document.getElementById('preloader');
+    if (preloader) {
+        // Añade la clase 'loaded' al body para activar la transición de ocultado
+        document.body.classList.add('loaded');
+    }
+});
