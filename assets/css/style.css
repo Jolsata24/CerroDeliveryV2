@@ -1,0 +1,586 @@
+/* assets/css/style.css */
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa; /* Un gris muy claro para el fondo general */
+}
+
+
+/* Estilo para las tarjetas de los restaurantes */
+.card-restaurant {
+    border: none; /* Quitamos el borde por defecto */
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out; /* Animación suave */
+}
+
+.card-restaurant:hover {
+    transform: translateY(-5px); /* Eleva la tarjeta al pasar el mouse */
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.10) !important; /* Sombra más pronunciada */
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+/* Estilo para el nuevo "Hero Section" que crearemos en index.php */
+/* --- HERO SECTION (index.php) --- */
+.hero-section {
+    background-color: #f8f9fa; /* Un gris muy claro, como en la imagen */
+    
+    /* Clave para la altura completa: */
+    min-height: 100vh; /* Ocupa al menos el 100% de la altura de la pantalla */
+    
+    /* Clave para centrar el contenido verticalmente: */
+    display: flex;
+    align-items: center;
+
+    /* Quitamos el margen inferior que ya no es necesario */
+    margin: 0; 
+}
+
+.hero-section .form-control-lg {
+    box-shadow: var(--soft-shadow);
+    border: none;
+}
+
+/* ===================================== */
+/* ESTILOS PARA LA SECCIÓN "ÚNETE" (CTA) */
+/* ===================================== */
+
+.section-cta {
+    padding: 3rem 0;
+    background-color: #ffffff; /* Fondo blanco para esta sección */
+}
+
+.cta-card {
+    border: 1px solid #e9ecef; /* Borde muy sutil */
+    border-radius: 0.75rem; /* Bordes más redondeados */
+    overflow: hidden; /* Asegura que la imagen no se salga de los bordes redondeados */
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+    background-color: #fff;
+}
+
+.cta-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+
+.cta-card img {
+    height: 200px;
+    object-fit: cover; /* Hace que la imagen cubra el espacio sin deformarse */
+}
+
+.cta-card .card-body {
+    padding: 1.5rem;
+}
+
+.cta-card .card-title {
+    font-weight: 600;
+}
+
+/* Botón con estilo personalizado */
+.btn-cta {
+    background-color: #e6f7f2; /* Un verde muy claro, casi menta */
+    color: #008a5c; /* Un verde oscuro para el texto */
+    font-weight: 600;
+    border: none;
+    transition: background-color .2s;
+}
+
+.btn-cta:hover {
+    background-color: #d1f2e8; /* Un poco más oscuro al pasar el mouse */
+    color: #007a52;
+}
+
+/* ===================================== */
+/* ESTILOS PARA LA PÁGINA DE MENÚ PÚBLICO */
+/* ===================================== */
+
+/* Cabecera del restaurante */
+.restaurant-header {
+    background-color: #fff;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.04);
+}
+/* ===================================== */
+/* ESTILOS MEJORADOS SOLO PARA EL HEADER */
+/* ===================================== */
+
+/* Ajustes a la barra de navegación */
+.navbar {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+/* Estilo para el botón hamburguesa */
+.navbar-toggler {
+    border: none; /* Quita el borde por defecto */
+    padding: 0;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none; /* Quita el resplandor azul al hacer clic */
+}
+
+/* Estilo para los enlaces dentro del menú desplegado */
+.navbar-nav .nav-link {
+    font-weight: 500;
+    color: #343a40;
+    transition: color .2s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #0d6efd; /* Color primario de Bootstrap */
+}
+
+/* En móvil, añade más espacio y centra los botones */
+@media (max-width: 991px) {
+    .navbar-nav {
+        padding-top: 1rem;
+    }
+    .navbar-nav .nav-item {
+        text-align: center;
+    }
+    .navbar-nav .btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+}
+/* Estilo para las tarjetas de los platos (horizontal) */
+.card-plato {
+    display: flex; /* La clave para el layout horizontal */
+    align-items: center;
+    border: 1px solid #e9ecef;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    transition: box-shadow .2s ease-in-out;
+    background-color: #fff;
+}
+
+.card-plato:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-plato .img-container {
+    width: 150px; /* Ancho fijo para la imagen */
+    height: 150px;
+    flex-shrink: 0; /* Evita que la imagen se encoja */
+}
+
+.card-plato .img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* La imagen cubre el espacio sin deformarse */
+}
+
+.card-plato .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 150px; /* Misma altura que la imagen para alinear todo */
+    padding: 1rem 1.5rem;
+}
+
+.card-plato .price {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #28a745; /* Verde éxito de Bootstrap */
+}
+
+/* ===================================== */
+/* ESTILOS PARA PÁGINAS DE LOGIN Y REGISTRO   */
+/* ===================================== */
+
+/* --- PÁGINAS DE LOGIN Y REGISTRO --- */
+.auth-page { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; /* Cambiado para que ocupe toda la altura */
+    padding: 2rem 1rem;
+    
+    /* NUEVOS ESTILOS PARA EL FONDO */
+    background-size: cover;
+    background-position: center center;
+    background-image: url('../img/plaza.jpg');
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+    border: none;
+    border-radius: var(--card-border-radius);
+    padding: 2.5rem;
+
+    /* NUEVOS ESTILOS PARA EL EFECTO "GLASS" */
+    background-color: rgba(255, 255, 255, 0.9); /* Blanco con 10% de transparencia */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.auth-card .card-title {
+    font-weight: 700;
+    font-size: 1.75rem;
+}
+
+.auth-card .form-control {
+    padding: 0.75rem 1rem; /* Inputs un poco más grandes */
+    border-radius: 0.5rem;
+}
+
+.auth-card .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+}
+
+/* ===================================== */
+/* ESTILOS PARA PANELES DE CONTROL (DASHBOARDS) */
+/* ===================================== */
+
+.dashboard-header {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 2rem;
+}
+
+.dashboard-card {
+    background-color: #fff;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-card .card-header {
+    background-color: transparent;
+    border-bottom: 1px solid #e9ecef;
+    padding: 1.25rem 1.5rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.dashboard-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Estilo para las tarjetas de acceso rápido */
+.summary-card {
+    text-align: center;
+    padding: 2rem;
+    border-radius: 0.75rem;
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+    background-color: #fff;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.04);
+    border: none;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+}
+
+.summary-card h5 {
+    font-weight: 600;
+}
+
+/* ===================================== */
+/* ESTILOS PARA EL PANEL DEL REPARTIDOR  */
+/* ===================================== */
+
+.delivery-card {
+    border: 1px solid #dee2e6;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    background-color: #fff;
+}
+
+.delivery-card .card-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.delivery-card .card-body {
+    padding: 1.5rem;
+}
+
+/* Estilo para los puntos de ruta (recogida/entrega) */
+.route-point {
+    position: relative;
+    padding-left: 25px; /* Espacio para el ícono */
+    margin-bottom: 1rem;
+}
+
+.route-point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #6c757d; /* Color por defecto */
+}
+
+/* Conexión visual entre los puntos */
+.route-point:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 7px;
+    top: 25px;
+    bottom: -15px;
+    width: 2px;
+    background-color: #e9ecef; /* Línea punteada o sólida */
+}
+
+.route-point.pickup::before {
+    background-color: #ffc107; /* Amarillo para recoger */
+}
+
+.route-point.dropoff::before {
+    background-color: #28a745; /* Verde para entregar */
+}
+
+.route-point strong {
+    display: block;
+    font-size: 1rem;
+}
+
+.route-point small {
+    color: #6c757d;
+}
+
+
+/* En móvil, la imagen pasa debajo del texto */
+@media (max-width: 768px) {
+    .hero-llama-style {
+        text-align: center;
+    }
+    .hero-llama-style .hero-text-content {
+        align-items: center;
+    }
+    .hero-llama-style .hero-image-content {
+        margin-top: 2rem;
+    }
+    .hero-llama-style h1 {
+        font-size: 2.5rem;
+    }
+}
+
+/* --- ESTILOS PARA HEADER DINÁMICO --- */
+.navbar.fixed-top {
+    transition: top 0.3s ease-in-out;
+    
+    /* NUEVOS ESTILOS */
+    background-color: rgba(0, 8, 44, 0.8); /* Un color oscuro con 20% de transparencia */
+    backdrop-filter: blur(10px); /* Efecto de desenfoque en el fondo */
+    -webkit-backdrop-filter: blur(10px); /* Para compatibilidad con Safari */
+}
+
+/* Empuja el contenido hacia abajo para que no quede oculto por el header fijo */
+/*body {*/
+    /*padding-top: 70px; /* Ajusta este valor si la altura de tu header cambia */
+/*}*/
+
+/* --- ESTILOS PARA EL CARRUSEL DE FONDO EN HERO --- */
+
+#heroCarousel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0; /* Se queda detrás del contenido */
+}
+
+.carousel-inner, .carousel-item {
+    height: 100%;
+}
+
+.carousel-item img {
+    object-fit: cover; /* La imagen cubre todo el espacio sin deformarse */
+    height: 100%;
+    width: 100%;
+}
+
+/* Capa oscura sobre las imágenes para que el texto sea legible */
+.carousel-item::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+}
+
+/* Aseguramos que el contenido del hero esté por delante */
+.hero-section .container {
+    position: relative;
+    z-index: 1;
+    color: white; /* Cambiamos el color del texto a blanco */
+}
+
+.hero-section .text-muted {
+    color: #f8f9fa !important; /* Hacemos el texto secundario más claro */
+}
+
+/* ===================================== */
+/* ESTILO PARA LA BARRA DE DESPLAZAMIENTO */
+/* ===================================== */
+
+/* Para navegadores WebKit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 12px; /* Ancho de la barra */
+}
+
+/* El fondo de la barra (la pista por donde se desliza) */
+::-webkit-scrollbar-track {
+    background: #1a1a1a; /* Un color oscuro que combine con tu header */
+}
+
+/* La parte móvil de la barra (el "pulgar") */
+::-webkit-scrollbar-thumb {
+    background-color: #555; /* Un gris oscuro para la barra móvil */
+    border-radius: 20px; /* Bordes redondeados */
+    border: 3px solid #1a1a1a; /* Un borde del mismo color que la pista para crear un efecto de "flotación" */
+}
+
+/* Estilo al pasar el mouse por encima de la barra móvil */
+::-webkit-scrollbar-thumb:hover {
+    background-color: #777;
+}
+/* ===================================== */
+/* ESTILOS PARA EL BANNER DEL MENÚ PÚBLICO */
+/* ===================================== */
+
+.menu-hero-banner {
+    height: 50vh; /* 50% de la altura de la pantalla */
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    
+    /* Imagen de fondo */
+    background-size: cover;
+    background-position: center center;
+}
+
+/* Capa oscura sobre la imagen para que el texto sea legible */
+.menu-hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.55);
+}
+
+/* Asegura que el contenido esté por encima de la capa oscura */
+.menu-hero-banner .restaurant-header {
+    position: relative;
+    z-index: 1;
+    background-color: transparent; /* Quitamos el fondo blanco que tenía antes */
+    box-shadow: none; /* Quitamos la sombra */
+    padding: 0;
+}
+
+/* Ajustamos los colores del texto para que sean blancos y legibles */
+.menu-hero-banner .display-5,
+.menu-hero-banner .fs-5 {
+    color: white;
+}
+
+.menu-hero-banner .text-muted {
+    color: #e9ecef !important; /* Un blanco un poco más apagado */
+}
+
+
+
+
+
+/* ===================================== */
+/* ESTILOS RESPONSIVE PARA MÓVILES       */
+/* (Para pantallas de hasta 768px)       */
+/* ===================================== */
+
+@media (max-width: 768px) {
+
+    /* --- AJUSTES GENERALES --- */
+    .display-4 {
+        /* Reduce el tamaño de los títulos grandes en el móvil */
+        font-size: 2.5rem; 
+    }
+
+    /* --- PÁGINA DE MENÚ PÚBLICO (`menu_publico.php`) --- */
+    
+    .restaurant-header {
+        /* Hacemos el encabezado del restaurante más compacto */
+        padding: 1.5rem;
+        text-align: center; /* Centramos todo en móvil */
+    }
+
+    .restaurant-header .text-md-end {
+        text-align: center !important; /* Forzamos el centrado del botón de carrito */
+        margin-top: 1rem;
+    }
+
+    .card-plato {
+        /* La tarjeta del plato pasa de horizontal a VERTICAL */
+        flex-direction: column; 
+        height: auto; /* La altura ya no es fija */
+    }
+
+    .card-plato .img-container {
+        /* La imagen ahora ocupa todo el ancho y tiene una altura fija */
+        width: 100%;
+        height: 180px; 
+    }
+
+    .card-plato .card-body {
+        height: auto; /* La altura del cuerpo se adapta al contenido */
+        width: 100%;
+        padding: 1rem;
+    }
+
+    /* --- PÁGINAS DE LOGIN/REGISTRO (`auth-page`) --- */
+
+    .auth-page {
+        min-height: auto; /* Quitamos la altura mínima en móvil */
+        padding: 1rem;
+    }
+
+    .auth-card {
+        /* Hacemos la tarjeta de login más compacta */
+        padding: 1.5rem;
+        box-shadow: none; /* Quitamos la sombra, más limpio en móvil */
+    }
+
+
+    /* --- PANELES DE CONTROL (DASHBOARDS) --- */
+    
+    .dashboard-header {
+        /* El encabezado del panel pasa a ser vertical */
+        flex-direction: column;
+        align-items: flex-start; /* Alineamos todo a la izquierda */
+        text-align: left;
+    }
+
+    .dashboard-header a.btn, .dashboard-header div a.btn {
+        margin-top: 1rem; /* Añadimos espacio entre el texto y el botón */
+    }
+    
+    /* Hacemos las tablas más legibles en móvil */
+    .table {
+        font-size: 0.9rem; /* Reducimos un poco el texto de las tablas */
+    }
+    .table td, .table th {
+        padding: 0.5rem; /* Reducimos el espaciado interno */
+    }
+}

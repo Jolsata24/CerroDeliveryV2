@@ -1,14 +1,14 @@
 <?php
-session_start(); // <-- ESTA LÍNEA ES LA NUEVA Y MÁS IMPORTANTE
+session_start();
 include 'includes/conexion.php';
 
-// 1. Validar que recibimos un ID por la URL
+// 1. Validaciones y consultas PHP (sin cambios)
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     die("Petición inválida.");
 }
 $id_restaurante = $_GET['id'];
 
-// 2. Obtener la información del restaurante
+// Obtener la información del restaurante
 $sql_restaurante = "SELECT id, nombre_restaurante, direccion, telefono, puntuacion_promedio, total_puntuaciones 
                     FROM restaurantes 
                     WHERE id = ? AND estado = 'activo' LIMIT 1";
@@ -22,144 +22,89 @@ if ($resultado_restaurante->num_rows == 0) {
 }
 $restaurante = $resultado_restaurante->fetch_assoc();
 
-// 3. Obtener los platos de ESE restaurante
-$sql_platos = "SELECT * FROM menu_platos WHERE id_restaurante = ?";
+// Obtener los platos del restaurante
+$sql_platos = "SELECT * FROM menu_platos WHERE id_restaurante = ? ORDER BY nombre_plato ASC";
 $stmt_platos = $conn->prepare($sql_platos);
 $stmt_platos->bind_param("i", $id_restaurante);
 $stmt_platos->execute();
 $resultado_platos = $stmt_platos->get_result();
 
-include 'includes/header.php';
+include 'includes/header.php'; // Se incluye el header normalmente
 ?>
 
-<div class="container">
-    <div class="p-5 mb-4 bg-light rounded-3">
-        <div class="container-fluid py-5">
-            <h1 class="display-5 fw-bold"><?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h1>
-            <p class="col-md-8 fs-4"><?php echo htmlspecialchars($restaurante['direccion'] ?? ''); ?></p>
-            <p><strong>Teléfono:</strong> <?php echo htmlspecialchars($restaurante['telefono'] ?? 'No especificado'); ?></p>
-
-            <div class="mt-3">
-                <?php
-                $promedio = round($restaurante['puntuacion_promedio'] ?? 0);
-                $total_votos = $restaurante['total_puntuaciones'] ?? 0;
-                for ($i = 1; $i <= 5; $i++) {
-                    echo ($i <= $promedio) ? '⭐' : '☆';
-                }
-                ?>
-                <span class="text-muted ms-1">(<?php echo $total_votos; ?> reseñas)</span>
-            </div>
-
-            <?php if (isset($_SESSION['cliente_id'])): ?>
-                <button type="button" class="btn btn-warning mt-3" data-bs-toggle="modal" data-bs-target="#ratingModal">
-                    ⭐ Califícanos
-                </button>
-            <?php else: ?>
-                <p class="mt-2"><a href="login_cliente.php">Inicia sesión</a> para poder calificar este restaurante.</p>
-            <?php endif; ?>
-
-            <?php if (isset($_SESSION['cliente_id'])): ?>
-                <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="ratingModalLabel">Califica a <?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body text-center rating-modal" data-restaurante-id="<?php echo $restaurante['id']; ?>">
-                                <p>Tu opinión es importante para nosotros.</p>
-
-                                <div class="rating-stars">
-                                    <input type="radio" id="star5-modal" name="rating-modal" value="5" /><label for="star5-modal"></label>
-                                    <input type="radio" id="star4-modal" name="rating-modal" value="4" /><label for="star4-modal"></label>
-                                    <input type="radio" id="star3-modal" name="rating-modal" value="3" /><label for="star3-modal"></label>
-                                    <input type="radio" id="star2-modal" name="rating-modal" value="2" /><label for="star2-modal"></label>
-                                    <input type="radio" id="star1-modal" name="rating-modal" value="1" /><label for="star1-modal"></label>
-                                </div>
-
-                                <div class="mt-3 rating-feedback"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" id="confirmRatingBtn" disabled>Confirmar Voto</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <?php endif; ?>
-
-            
-
-            <?php if (isset($_SESSION['cliente_id'])): ?>
-                <a href="/cerrodelivery/checkout.php" class="btn btn-success mt-3">Ver Carrito y Finalizar Pedido</a>
-            <?php endif; ?>
+<div class="menu-hero-banner" style="background-image: url('assets/img/fondo3.jpg');">
+    <div class="restaurant-header">
+        <h1 class="display-5 fw-bold mb-3"><?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h1>
+        <div class="d-flex align-items-center justify-content-center mb-3">
+            <?php
+            $promedio = round($restaurante['puntuacion_promedio'] ?? 0);
+            $total_votos = $restaurante['total_puntuaciones'] ?? 0;
+            for ($i = 1; $i <= 5; $i++) { echo ($i <= $promedio) ? '⭐' : '☆'; }
+            ?>
+            <span class="ms-2 text-muted">(<?php echo $total_votos; ?> reseñas)</span>
         </div>
+        <p class="fs-5 text-muted"><?php echo htmlspecialchars($restaurante['direccion'] ?? ''); ?></p>
+    </div>
+</div>
+
+<div class="container py-5">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">Nuestro Menú</h2>
+        <?php if (isset($_SESSION['cliente_id'])): ?>
+            <a href="/cerrodelivery/checkout.php" class="btn btn-success">
+                🛒 Ver Carrito
+            </a>
+        <?php endif; ?>
     </div>
 
-    <?php if (isset($_SESSION['cliente_id'])): ?>
-        <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="ratingModalLabel">Califica a <?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <p>Selecciona tu puntuación:</p>
-                        <div class="rating-container" data-restaurante-id="<?php echo $restaurante['id']; ?>">
-                            <div class="rating">
-                                <input type="radio" id="star5-modal" name="rating-modal" value="5" /><label for="star5-modal"></label>
-                                <input type="radio" id="star4-modal" name="rating-modal" value="4" /><label for="star4-modal"></label>
-                                <input type="radio" id="star3-modal" name="rating-modal" value="3" /><label for="star3-modal"></label>
-                                <input type="radio" id="star2-modal" name="rating-modal" value="2" /><label for="star2-modal"></label>
-                                <input type="radio" id="star1-modal" name="rating-modal" value="1" /><label for="star1-modal"></label>
-                            </div>
-                            <div class="mt-3 rating-feedback"></div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php endif; ?>
-
-    <h2 class="mb-4">Nuestro Menú</h2>
     <div class="row">
         <?php if ($resultado_platos->num_rows > 0): ?>
             <?php while ($plato = $resultado_platos->fetch_assoc()): ?>
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100">
-                        <img src="assets/img/platos/<?php echo htmlspecialchars($plato['foto_url']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($plato['nombre_plato']); ?>" style="height: 200px; object-fit: cover;">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title"><?php echo htmlspecialchars($plato['nombre_plato']); ?></h5>
-                            <p class="card-text text-muted flex-grow-1"><?php echo htmlspecialchars($plato['descripcion']); ?></p>
-                            <p class="h4 text-end text-success">S/ <?php echo htmlspecialchars($plato['precio']); ?></p>
-
-                            <?php if (isset($_SESSION['cliente_id'])): ?>
-                                <a href="#" class="btn btn-warning mt-auto add-to-cart-btn"
-                                    data-id="<?php echo $plato['id']; ?>"
-                                    data-nombre="<?php echo htmlspecialchars($plato['nombre_plato']); ?>"
-                                    data-precio="<?php echo $plato['precio']; ?>"
-                                    data-restaurante-id="<?php echo $id_restaurante; // <-- LÍNEA NUEVA 
-                                                            ?>">
-                                    Añadir al Carrito
-                                </a>
-                            <?php else: ?>
-                                <a href="/cerrodelivery/login_cliente.php" class="btn btn-secondary mt-auto">
-                                    Inicia Sesión para Añadir
-                                </a>
-                            <?php endif; ?>
+                <div class="col-lg-6 mb-4">
+                    <div class="card-plato">
+                        <div class="img-container">
+                             <img src="assets/img/platos/<?php echo htmlspecialchars($plato['foto_url']); ?>" alt="<?php echo htmlspecialchars($plato['nombre_plato']); ?>">
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <h5 class="card-title mb-1"><?php echo htmlspecialchars($plato['nombre_plato']); ?></h5>
+                                <p class="card-text text-muted small"><?php echo htmlspecialchars($plato['descripcion']); ?></p>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="price mb-0">S/ <?php echo number_format($plato['precio'], 2); ?></p>
+                                
+                                <?php if (isset($_SESSION['cliente_id'])): ?>
+                                    <button class="btn btn-warning add-to-cart-btn"
+                                        data-id="<?php echo $plato['id']; ?>"
+                                        data-nombre="<?php echo htmlspecialchars($plato['nombre_plato']); ?>"
+                                        data-precio="<?php echo $plato['precio']; ?>"
+                                        data-restaurante-id="<?php echo $id_restaurante; ?>">
+                                        Añadir
+                                    </button>
+                                <?php else: ?>
+                                    <a href="/cerrodelivery/login_cliente.php" class="btn btn-secondary">
+                                        Inicia Sesión
+                                    </a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
-            <p>Este restaurante aún no ha publicado su menú.</p>
+            <div class="col-12">
+                <p class="alert alert-info">Este restaurante aún no ha publicado su menú.</p>
+            </div>
         <?php endif; ?>
     </div>
 </div>
+
+
+<?php if (isset($_SESSION['cliente_id'])): ?>
+<div class="modal fade" id="ratingModal" tabindex="-1">
+    </div>
+<?php endif; ?>
 
 <?php
 $stmt_restaurante->close();
