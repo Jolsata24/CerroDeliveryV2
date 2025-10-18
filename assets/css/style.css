@@ -550,6 +550,155 @@ body.loaded #preloader {
     visibility: hidden;
 }
 
+/* ===================================== */
+/* ESTILOS PARA LA PÁGINA DE RASTREO     */
+/* ===================================== */
+
+/* Contenedor principal del mapa */
+#mapa {
+    height: 600px; /* Hacemos el mapa un poco más alto */
+    width: 100%;
+    border-radius: 0.75rem; /* Bordes redondeados */
+    z-index: 1; /* Asegura que el mapa se vea */
+}
+
+/* Tarjeta de información de rastreo */
+.tracking-info-card {
+    background-color: #fff;
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.04);
+}
+
+/* Estilos para la línea de tiempo de estados */
+.tracking-steps {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    padding-left: 40px; /* Espacio para la línea e iconos */
+}
+
+/* La línea vertical que conecta los pasos */
+.tracking-steps::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    bottom: 5px;
+    width: 3px;
+    background-color: #e9ecef; /* Color de la línea de fondo */
+}
+
+.step-item {
+    position: relative;
+    margin-bottom: 25px;
+    color: #6c757d; /* Color gris para pasos incompletos */
+}
+
+.step-item:last-child {
+    margin-bottom: 0;
+}
+
+/* El círculo/icono de cada paso */
+.step-item .step-icon {
+    position: absolute;
+    left: -40px;
+    top: -3px;
+    width: 26px;
+    height: 26px;
+    background-color: #fff;
+    border: 3px solid #e9ecef; /* Borde gris por defecto */
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    line-height: 22px;
+}
+
+.step-item .step-label {
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+/* Estilo para pasos YA COMPLETADOS */
+.step-item.completed {
+    color: #28a745; /* Color verde de éxito */
+}
+.step-item.completed .step-icon {
+    border-color: #28a745;
+    background-color: #28a745;
+    color: #fff;
+    content: '✓'; /* Símbolo de check */
+    font-size: 14px;
+    line-height: 21px;
+}
+/* Línea de progreso para pasos completados */
+.step-item.completed::before {
+    content: '';
+    position: absolute;
+    left: -29px;
+    top: -25px; /* Ajusta para conectar con el paso anterior */
+    height: 30px;
+    width: 3px;
+    background-color: #28a745; /* Verde */
+}
+.step-item:first-child::before {
+    display: none; /* El primer paso no necesita línea hacia arriba */
+}
+
+
+/* Estilo para el paso ACTIVO (En curso) */
+.step-item.active {
+    color: #0d6efd; /* Color azul primario */
+}
+.step-item.active .step-icon {
+    border-color: #0d6efd;
+    background-color: #0d6efd;
+    color: #fff;
+}
+.step-item.active .step-label {
+    font-weight: 700;
+}
+
+/* Los estilos de 'route-point' que ya tenías */
+.route-point {
+    position: relative;
+    padding-left: 25px; 
+    margin-bottom: 1rem;
+}
+.route-point::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background-color: #6c757d;
+}
+.route-point.pickup::before {
+    background-color: #ffc107; /* Amarillo para recoger */
+}
+.route-point.dropoff::before {
+    background-color: #28a745; /* Verde para entregar */
+}
+.route-point strong {
+    display: block;
+    font-size: 1rem;
+}
+.route-point small {
+    color: #6c757d;
+}
+
+/* Media query para móviles */
+@media (max-width: 991px) {
+    #mapa {
+        height: 400px; /* Mapa más pequeño en móviles */
+    }
+}
+
+
+
 
 
 

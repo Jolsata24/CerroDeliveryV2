@@ -9,11 +9,22 @@ require_once 'includes/conexion.php';
 $id_pedido = $_GET['id_pedido'];
 $id_cliente_sesion = $_SESSION['cliente_id'];
 
-// Consulta para obtener los datos del pedido, incluyendo la ubicación del cliente (si existe)
-// y el ID del repartidor asignado.
-$sql = "SELECT p.latitud as latitud_cliente, p.longitud as longitud_cliente, p.id_repartidor
+// --- CONSULTA MEJORADA ---
+// Ahora obtenemos los datos del restaurante, repartidor y la dirección del pedido.
+$sql = "SELECT 
+            p.latitud as latitud_cliente, 
+            p.longitud as longitud_cliente, 
+            p.id_repartidor,
+            p.direccion_pedido,
+            p.estado_pedido,
+            r.nombre_restaurante,
+            r.direccion as direccion_restaurante,
+            rep.nombre as nombre_repartidor
         FROM pedidos p
+        JOIN restaurantes r ON p.id_restaurante = r.id
+        LEFT JOIN repartidores rep ON p.id_repartidor = rep.id
         WHERE p.id = ? AND p.id_cliente = ?";
+        
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ii", $id_pedido, $id_cliente_sesion);
 $stmt->execute();
@@ -28,8 +39,16 @@ $id_repartidor = $pedido['id_repartidor'];
 
 // Si no hay repartidor asignado, no podemos rastrear.
 if (is_null($id_repartidor)) {
-    die("Aún no se ha asignado un repartidor a tu pedido.");
+    // Redirigir de vuelta a mis pedidos con un mensaje
+    header('Location: mis_pedidos.php?error=no_repartidor');
+    exit();
 }
+
+// Variables para el nuevo diseño
+$nombre_repartidor = $pedido['nombre_repartidor'] ?? 'Repartidor Asignado';
+$estado_pedido = $pedido['estado_pedido'];
+$direccion_restaurante = $pedido['direccion_restaurante'];
+$direccion_cliente = $pedido['direccion_pedido'];
 
 include 'includes/header.php';
 ?>
@@ -37,8 +56,62 @@ include 'includes/header.php';
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<h1 class="mb-4">Rastreando tu Pedido #<?php echo $id_pedido; ?></h1>
-<div id="mapa" style="height: 500px; width: 100%;" class="card"></div>
+<div class="container tracking-container py-4">
+    <div class="row g-4">
+        
+        <div class="col-lg-5">
+            <div class="card tracking-info-card h-100">
+                <div class="card-body">
+                    <h1 class="h3 mb-4">Rastreando tu Pedido #<?php echo $id_pedido; ?></h1>
+
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="https://via.placeholder.com/60/007bff/ffffff?text=<?php echo substr($nombre_repartidor, 0, 1); ?>" alt="repartidor" class="rounded-circle me-3">
+                        <div>
+                            <h5 class="mb-0"><?php echo htmlspecialchars($nombre_repartidor); ?></h5>
+                            <p class="text-muted mb-0">Está en camino con tu pedido.</p>
+                        </div>
+                    </div>
+                    
+                    <ul class="tracking-steps">
+                        <li class="step-item <?php echo ($estado_pedido == 'En preparación') ? 'active' : 'completed'; ?>">
+                            <div class="step-icon">📦</div>
+                            <div class="step-label">En preparación</div>
+                        </li>
+                        <li class="step-item <?php echo ($estado_pedido == 'Listo para recoger') ? 'active' : 'completed'; ?>">
+                            <div class="step-icon">🛍️</div>
+                            <div class="step-label">Listo para recoger</div>
+                        </li>
+                        <li class="step-item <?php echo ($estado_pedido == 'En camino') ? 'active' : 'completed'; ?>">
+                            <div class="step-icon">🛵</div>
+                            <div class="step-label">En camino</div>
+                        </li>
+                        <li class="step-item">
+                            <div class="step-icon">🏠</div>
+                            <div class="step-label">Entregado</div>
+                        </li>
+                    </ul>
+                    
+                    <hr class="my-4">
+
+                    <div class="route-point pickup mb-3">
+                        <strong>Recoger en: <?php echo htmlspecialchars($pedido['nombre_restaurante']); ?></strong>
+                        <small><?php echo htmlspecialchars($direccion_restaurante); ?></small>
+                    </div>
+                    <div class="route-point dropoff">
+                        <strong>Entregar en: Tu ubicación</strong>
+                        <small><?php echo htmlspecialchars($direccion_cliente); ?></small>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-7">
+            <div id="mapa" class="shadow-sm" style="height: 600px; border-radius: 0.75rem;"></div>
+        </div>
+        
+    </div>
+</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -58,19 +131,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Marcador para el cliente (tu casa)
     if (latCliente && lonCliente) {
-        L.marker([latCliente, lonCliente]).addTo(mapa).bindPopup('<b>Tu ubicación de entrega</b>');
+        // Icono personalizado para el cliente (Casa)
+        const iconoCasa = L.icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png', // Marcador azul
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34]
+        });
+        L.marker([latCliente, lonCliente], { icon: iconoCasa }).addTo(mapa).bindPopup('<b>Tu ubicación de entrega</b>');
     }
 
     // Marcador para el repartidor (este se moverá)
+    const iconoRepartidor = L.icon({ // Icono personalizado para el repartidor
+        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', // Marcador verde
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34]
+    });
+    
     let marcadorRepartidor = L.marker(centroMapa, { 
-        icon: L.icon({ // Icono personalizado para el repartidor
-            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-            iconSize: [25, 41],
-            iconAnchor: [12, 41]
-        })
+        icon: iconoRepartidor
     }).addTo(mapa).bindPopup('<b>Repartidor</b>');
 
-    // Función para obtener y actualizar la ubicación del repartidor
+    // Función para obtener y actualizar la ubicación del repartidor (sin cambios)
     async function actualizarUbicacion() {
         try {
             const response = await fetch(`procesos/obtener_ubicacion_repartidor.php?id_repartidor=${idRepartidor}`);
@@ -79,8 +162,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 const nuevaPosicion = [data.latitud, data.longitud];
                 marcadorRepartidor.setLatLng(nuevaPosicion);
-                // Opcional: Centrar el mapa en la nueva posición del repartidor
-                // mapa.setView(nuevaPosicion); 
+                
+                // Opcional: Centrar el mapa entre el repartidor y el cliente
+                if (latCliente && lonCliente) {
+                    mapa.fitBounds([
+                        [latCliente, lonCliente],
+                        nuevaPosicion
+                    ], { padding: [50, 50] }); // Añade un poco de espacio
+                } else {
+                    mapa.setView(nuevaPosicion, 16); // Si no hay ubicación de cliente, solo sigue al repartidor
+                }
             } else {
                 console.warn(data.message);
             }

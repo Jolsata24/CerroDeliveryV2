@@ -33,6 +33,15 @@ $stmt_count->execute();
 $row_count = $stmt_count->get_result()->fetch_assoc();
 $total_pendientes = $row_count['total_pendientes'];
 
+// --- NUEVA CONSULTA: SOLICITUDES DE AFILIACIÓN PENDIENTES ---
+$sql_solicitudes = "SELECT af.id as id_afiliacion, rep.nombre as nombre_repartidor, rep.telefono
+                    FROM repartidor_afiliaciones af
+                    JOIN repartidores rep ON af.id_repartidor = rep.id
+                    WHERE af.id_restaurante = ? AND af.estado_afiliacion = 'pendiente'";
+$stmt_solicitudes = $conn->prepare($sql_solicitudes);
+$stmt_solicitudes->bind_param("i", $id_restaurante_actual);
+$stmt_solicitudes->execute();
+$resultado_solicitudes = $stmt_solicitudes->get_result();
 // 3. INCLUIR LA CABECERA HTML (Sin cambios)
 include '../includes/header.php';
 ?>
@@ -142,6 +151,46 @@ include '../includes/header.php';
     </div>
 </div>
 
+<div class="card dashboard-card mt-4">
+    <div class="card-header">
+        Solicitudes de Afiliación de Repartidores
+        <?php if ($resultado_solicitudes->num_rows > 0): ?>
+            <span class="badge bg-warning text-dark ms-2"><?php echo $resultado_solicitudes->num_rows; ?> pendiente(s)</span>
+        <?php endif; ?>
+    </div>
+    <div class="card-body">
+         <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Nombre del Repartidor</th>
+                        <th>Teléfono</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($resultado_solicitudes->num_rows > 0): ?>
+                        <?php while($solicitud = $resultado_solicitudes->fetch_assoc()): ?>
+                            <tr>
+                                <td class="fw-bold"><?php echo htmlspecialchars($solicitud['nombre_repartidor']); ?></td>
+                                <td><?php echo htmlspecialchars($solicitud['telefono']); ?></td>
+                                <td class="text-end">
+                                    <form action="../procesos/gestionar_afiliacion.php" method="POST" class="d-inline">
+                                        <input type="hidden" name="id_afiliacion" value="<?php echo $solicitud['id_afiliacion']; ?>">
+                                        <button type="submit" name="accion" value="aprobar" class="btn btn-success btn-sm">Aprobar</button>
+                                        <button type="submit" name="accion" value="rechazar" class="btn btn-danger btn-sm">Rechazar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <tr><td colspan="3" class="text-center p-4 text-muted">No tienes solicitudes de afiliación pendientes.</td></tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <?php
 // 7. CERRAR CONEXIONES Y FOOTER (Sin cambios)
 $stmt_platos->close();
