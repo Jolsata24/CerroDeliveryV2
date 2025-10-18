@@ -2,13 +2,11 @@
 session_start();
 require_once '../includes/conexion.php';
 
-// Seguridad: solo restaurantes logueados pueden acceder
 if (!isset($_SESSION['restaurante_id'])) {
-    die(); // Termina la ejecución si no hay sesión
+    die();
 }
 $id_restaurante = $_SESSION['restaurante_id'];
 
-// La misma consulta que tenías antes en pedidos.php
 $sql_pedidos = "SELECT p.id, p.fecha_pedido, p.monto_total, p.estado_pedido, p.direccion_pedido, c.nombre as nombre_cliente, c.telefono as telefono_cliente
                 FROM pedidos p
                 JOIN usuarios_clientes c ON p.id_cliente = c.id
@@ -19,68 +17,87 @@ $stmt_pedidos->bind_param("i", $id_restaurante);
 $stmt_pedidos->execute();
 $resultado_pedidos = $stmt_pedidos->get_result();
 
-// --- Aquí generamos el HTML que se enviará de vuelta al JavaScript ---
 if ($resultado_pedidos->num_rows > 0):
-    while ($pedido = $resultado_pedidos->fetch_assoc()): ?>
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between">
-            <strong>Pedido #<?php echo $pedido['id']; ?></strong>
-            <span class="badge bg-info"><?php echo htmlspecialchars($pedido['estado_pedido']); ?></span>
-        </div>
+    while ($pedido = $resultado_pedidos->fetch_assoc()):
+        // Lógica para los colores y textos de estado
+        $estado_clase_borde = 'border-info';
+        $estado_clase_texto = 'text-info';
+        $icono_estado = 'bi-stopwatch';
+
+        switch ($pedido['estado_pedido']) {
+            case 'En preparación':
+                $estado_clase_borde = 'border-warning';
+                $estado_clase_texto = 'text-warning';
+                $icono_estado = 'bi-egg-fried';
+                break;
+            case 'Listo para recoger':
+                $estado_clase_borde = 'border-primary';
+                $estado_clase_texto = 'text-primary';
+                $icono_estado = 'bi-bag-check-fill';
+                break;
+            case 'En camino':
+                $estado_clase_borde = 'border-success';
+                $estado_clase_texto = 'text-success';
+                $icono_estado = 'bi-truck';
+                break;
+            case 'Entregado':
+                 $estado_clase_borde = 'border-secondary';
+                 $estado_clase_texto = 'text-secondary';
+                 $icono_estado = 'bi-check2-circle';
+                 break;
+        }
+    ?>
+    <div class="card pedido-card shadow-sm mb-4 <?php echo $estado_clase_borde; ?>">
         <div class="card-body">
-            <p><strong>Fecha:</strong> <?php echo date('d/m/Y h:i A', strtotime($pedido['fecha_pedido'])); ?></p>
-            <p><strong>Cliente:</strong> <?php echo htmlspecialchars($pedido['nombre_cliente']); ?></p>
-            <h4 class="text-end">Total: S/ <?php echo number_format($pedido['monto_total'], 2); ?></h4>
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-1">Pedido #<?php echo $pedido['id']; ?></h5>
+                    <p class="mb-1"><strong>Cliente:</strong> <?php echo htmlspecialchars($pedido['nombre_cliente']); ?></p>
+                    <p class="text-muted mb-0"><small><?php echo date('d/m/Y h:i A', strtotime($pedido['fecha_pedido'])); ?></small></p>
+                </div>
+
+                <div class="col-md-4 text-center my-3 my-md-0">
+                    <h6 class="text-uppercase small">Estado</h6>
+                    <div class="d-flex align-items-center justify-content-center <?php echo $estado_clase_texto; ?>">
+                        <i class="bi <?php echo $icono_estado; ?> fs-4 me-2"></i>
+                        <span class="fw-bold fs-5"><?php echo htmlspecialchars($pedido['estado_pedido']); ?></span>
+                    </div>
+                </div>
+
+                <div class="col-md-4 text-md-end">
+                    <h6 class="text-uppercase small">Total</h6>
+                    <p class="fw-bold fs-4 mb-0">S/ <?php echo number_format($pedido['monto_total'], 2); ?></p>
+                </div>
+            </div>
         </div>
 
-        <div class="card-footer">
+        <div class="card-footer bg-light">
             <?php if ($pedido['estado_pedido'] == 'Listo para recoger'): ?>
-                <h6 class="mb-3">Repartidores que quieren este pedido:</h6>
-                
-                <?php
-                // Sub-consulta para obtener los repartidores que solicitaron ESTE pedido
-                $sql_solicitudes = "SELECT pse.id_repartidor, r.nombre 
-                                    FROM pedido_solicitudes_entrega pse
-                                    JOIN repartidores r ON pse.id_repartidor = r.id
-                                    WHERE pse.id_pedido = ? AND pse.estado_solicitud = 'pendiente'";
-                $stmt_solicitudes = $conn->prepare($sql_solicitudes);
-                $stmt_solicitudes->bind_param("i", $pedido['id']);
-                $stmt_solicitudes->execute();
-                $resultado_solicitudes = $stmt_solicitudes->get_result();
-                ?>
-                <?php if ($resultado_solicitudes->num_rows > 0): ?>
-                    <ul class="list-group">
-                        <?php while($solicitud = $resultado_solicitudes->fetch_assoc()): ?>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <?php echo htmlspecialchars($solicitud['nombre']); ?>
-                            <form action="../procesos/asignar_repartidor.php" method="POST">
-                                <input type="hidden" name="id_pedido" value="<?php echo $pedido['id']; ?>">
-                                <input type="hidden" name="id_repartidor" value="<?php echo $solicitud['id_repartidor']; ?>">
-                                <button type="submit" class="btn btn-success btn-sm">Asignar a este repartidor</button>
-                            </form>
-                        </li>
-                        <?php endwhile; ?>
-                    </ul>
-                <?php else: ?>
-                    <p class="text-muted">Esperando solicitudes de repartidores...</p>
-                <?php endif; ?>
-                <?php $stmt_solicitudes->close(); ?>
-
-            <?php else: ?>
+                <h6 class="small fw-bold mb-2 text-center">REPARTIDORES POSTULANDO:</h6>
+                <div class="solicitudes-container" data-id-pedido="<?php echo $pedido['id']; ?>">
+                   </div>
+            <?php elseif ($pedido['estado_pedido'] != 'Entregado'): ?>
                 <form action="../procesos/actualizar_estado_pedido.php" method="POST" class="d-flex justify-content-end align-items-center">
                     <input type="hidden" name="id_pedido" value="<?php echo $pedido['id']; ?>">
+                    <label class="form-label me-2 mb-0 small">Cambiar a:</label>
                     <select name="nuevo_estado" class="form-select form-select-sm w-auto me-2">
-                         <option value="En preparación">En preparación</option>
-                         <option value="Listo para recoger">Listo para recoger</option>
+                        <option value="En preparación" <?php echo ($pedido['estado_pedido'] == 'En preparación') ? 'selected' : ''; ?>>En preparación</option>
+                        <option value="Listo para recoger" <?php echo ($pedido['estado_pedido'] == 'Listo para recoger') ? 'selected' : ''; ?>>Listo para recoger</option>
                     </select>
                     <button type="submit" class="btn btn-primary btn-sm">Actualizar</button>
                 </form>
+            <?php else: ?>
+                <p class="text-muted text-center mb-0 small">Este pedido ya fue completado.</p>
             <?php endif; ?>
         </div>
     </div>
     <?php endwhile;
 else: ?>
-    <div class="alert alert-info">No tienes pedidos activos.</div>
+    <div class="text-center p-5">
+        <img src="../assets/img/empty-orders.svg" alt="Sin pedidos" style="width: 150px;" class="mb-3">
+        <h4 class="fw-bold">No tienes pedidos activos</h4>
+        <p class="text-muted">Cuando un cliente realice una compra, aparecerá aquí.</p>
+    </div>
 <?php endif;
 
 $stmt_pedidos->close();

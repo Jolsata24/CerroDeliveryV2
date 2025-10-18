@@ -8,12 +8,16 @@ require_once '../includes/conexion.php';
 include '../includes/header.php';
 ?>
 
-<h1 class="mb-4">Gestión de Pedidos</h1>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold mb-0">Gestión de Pedidos</h1>
+    </div>
 
-<div id="pedidos-container">
-    <div class="text-center p-5">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Cargando pedidos...</span>
+    <div id="pedidos-container">
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Cargando pedidos...</span>
+            </div>
         </div>
     </div>
 </div>
@@ -27,11 +31,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('pedidos-container');
 
     const cargarPedidos = () => {
-        // Llama a un archivo que genera la lista completa de pedidos
         fetch('ajax_cargar_pedidos.php')
             .then(response => response.text())
             .then(html => {
-                // Reemplaza el contenido del contenedor con la nueva lista
                 container.innerHTML = html;
             })
             .catch(error => {
@@ -40,10 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     };
 
-    // Carga los pedidos la primera vez que entras a la página
     cargarPedidos();
-
-    // Repite la carga cada 6 segundos para mantenerla siempre actualizada
     setInterval(cargarPedidos, 6000);
 });
 </script>

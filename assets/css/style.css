@@ -697,7 +697,319 @@ body.loaded #preloader {
     }
 }
 
+/* ===================================== */
+/* ESTILOS MEJORADOS PARA LA PÁGINA DE CHECKOUT */
+/* ===================================== */
 
+/* Tarjetas con más estilo */
+.checkout-card {
+    border: none;
+    border-radius: 1rem; /* Bordes más redondeados */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    background-color: #ffffff;
+    overflow: hidden; /* Para que el header redondeado funcione */
+}
+
+.checkout-card .card-header {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid #dee2e6;
+    padding: 1.25rem 1.5rem;
+}
+
+/* Tabla del resumen del carrito */
+.summary-table tbody tr:not(:last-child) {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.summary-table th {
+    color: #6c757d;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+/* Fila del total destacada */
+.summary-table .total-row {
+    background-color: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+}
+
+.summary-table .total-row td {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+/* Botones personalizados */
+.btn-gps {
+    background-color: #6c757d;
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+.btn-gps:hover {
+    background-color: #5a6268;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-confirm-order {
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm-order:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+/* Para añadir íconos de Bootstrap (opcional pero recomendado) */
+/* Si no lo tienes, añade esta línea en el <head> de tu header.php */
+/* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"> */
+
+/* ===================================== */
+/* ESTILOS MEJORADOS PARA 'MIS PEDIDOS'  */
+/* ===================================== */
+
+.order-card {
+    border: none;
+    border-radius: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.order-card .card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.order-card .progress {
+    border-radius: 20px;
+}
+
+.btn-track-order {
+    font-weight: 600;
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-track-order:hover {
+    transform: scale(1.05);
+}
+
+
+/* ===================================== */
+/* ESTILOS MEJORADOS PARA DASHBOARD RESTAURANTE */
+/* ===================================== */
+
+/* Contenedor principal del dashboard */
+body {
+    background-color: #f4f7f6; /* Un gris muy claro, casi blanco */
+}
+
+.dashboard-card {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(174, 71, 71, 0.06);
+    transition: all 0.3s ease;
+}
+
+.dashboard-card .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid #e9ecef;
+    border-radius: 1rem 1rem 0 0 !important;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+}
+
+.dashboard-card .table {
+    margin-bottom: 0; /* Para que la tabla no tenga margen inferior dentro de la card */
+}
+
+
+/* Tarjetas de Resumen con Gradientes */
+.summary-card-gradient {
+    border: none;
+    border-radius: 1rem;
+    color: white;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.summary-card-gradient:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.15);
+}
+
+.summary-card-1 {
+    background: linear-gradient(135deg, #0d6efd, #0dcaf0); /* Azul a Cian */
+}
+.summary-card-2 {
+    background: linear-gradient(135deg, #6f42c1, #d63384); /* Púrpura a Rosa */
+}
+.summary-card-3 {
+    background: linear-gradient(135deg, #fd7e14, #ffc107); /* Naranja a Amarillo */
+}
+
+/* Círculo para el ícono en las tarjetas de resumen */
+.summary-card-gradient .icon-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+
+
+/* ===================================== */
+/* ESTILOS MEJORADOS PARA 'GESTIÓN DE PEDIDOS' */
+/* ===================================== */
+
+.pedido-card {
+    border: none;
+    border-left: 5px solid #dee2e6; /* Borde por defecto */
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.pedido-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* Colores dinámicos del borde según el estado */
+.pedido-card.border-info { border-left-color: #0dcaf0; }
+.pedido-card.border-warning { border-left-color: #ffc107; }
+.pedido-card.border-primary { border-left-color: #0d6efd; }
+.pedido-card.border-success { border-left-color: #198754; }
+.pedido-card.border-secondary { border-left-color: #6c757d; }
+
+.pedido-card .card-footer {
+    border-radius: 0 0 0.75rem 0.75rem;
+}
+
+/* Estilos para la lista de repartidores que postulan */
+.solicitudes-container .list-group-item {
+    background-color: #fff;
+    border: 1px solid #f0f0f0;
+}
+
+/* Para los íconos de Bootstrap (requiere la librería) */
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css");
+
+
+/* ===================================== */
+/* ESTILOS MEJORADOS PARA DASHBOARD REPARTIDOR */
+/* ===================================== */
+
+.delivery-job-card {
+    border: none;
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.delivery-job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1) !important;
+}
+
+.delivery-job-card .card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.route-info {
+    position: relative;
+    padding-left: 45px; /* Espacio para la línea y los íconos */
+}
+
+.route-point {
+    display: flex;
+    align-items: center;
+}
+
+.route-point .icon {
+    font-size: 1.5rem;
+    width: 30px;
+    position: absolute;
+    left: 0;
+    text-align: center;
+}
+
+.route-point.pickup .icon { color: #fd7e14; } /* Naranja */
+.route-point.dropoff .icon { color: #198754; } /* Verde */
+
+/* Línea vertical que conecta los puntos */
+.route-line {
+    position: absolute;
+    left: 14px;
+    top: 30px;
+    bottom: 30px;
+    width: 2px;
+    background-color: #e9ecef;
+}
+
+.route-point strong {
+    display: block;
+    line-height: 1.2;
+}
+
+/* ===================================== */
+/* ESTILOS MEJORADOS PARA 'MIS ENTREGAS' */
+/* ===================================== */
+
+.active-delivery-card {
+    border: 1px solid #198754; /* Borde verde */
+    border-radius: 1rem;
+    transition: all 0.3s ease;
+}
+
+.active-delivery-card .card-header {
+    border-radius: 1rem 1rem 0 0 !important;
+}
+
+/* Reutilizamos los estilos de la ruta del dashboard del repartidor */
+.active-delivery-card .route-info {
+    position: relative;
+    padding-left: 45px;
+}
+.active-delivery-card .route-point {
+    display: flex;
+    align-items: center;
+}
+.active-delivery-card .route-point .icon {
+    font-size: 1.5rem;
+    width: 30px;
+    position: absolute;
+    left: 0;
+    text-align: center;
+}
+.active-delivery-card .route-point.pickup .icon { color: #fd7e14; }
+.active-delivery-card .route-point.dropoff .icon { color: #198754; }
+
+.active-delivery-card .route-line {
+    position: absolute;
+    left: 14px;
+    top: 30px;
+    bottom: 50px; /* Ajustado para el nuevo layout */
+    width: 2px;
+    background-color: #e9ecef;
+}
 
 
 
