@@ -409,13 +409,20 @@ body {
 }
 
 /* --- ESTILOS PARA HEADER DINÁMICO --- */
+/* --- ESTILOS PARA HEADER DINÁMICO (CORREGIDO) --- */
+/* --- ESTILOS PARA HEADER DINÁMICO (CORREGIDO) --- */
 .navbar.fixed-top {
-    transition: top 0.3s ease-in-out;
+    background-color: rgba(0, 8, 44, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     
-    /* NUEVOS ESTILOS */
-    background-color: rgba(0, 8, 44, 0.8); /* Un color oscuro con 20% de transparencia */
-    backdrop-filter: blur(10px); /* Efecto de desenfoque en el fondo */
-    -webkit-backdrop-filter: blur(10px); /* Para compatibilidad con Safari */
+    /* La animación ahora se aplica a 'transform', que es más eficiente y confiable */
+    transition: transform 0.4s ease-in-out;
+}
+
+/* Nueva clase para ocultar el header deslizándolo hacia arriba */
+.navbar-hidden {
+    transform: translateY(-100%);
 }
 
 /* Empuja el contenido hacia abajo para que no quede oculto por el header fijo */
@@ -1181,7 +1188,7 @@ body {
 
 .scroller {
     max-width: 100%;
-    /* Efecto de desvanecimiento en los bordes para dar la sensación de continuidad */
+    overflow: hidden; /* <-- ESTA LÍNEA ES LA SOLUCIÓN CLAVE */
     -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
     mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
 }
