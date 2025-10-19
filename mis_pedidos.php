@@ -13,6 +13,11 @@ include 'includes/header.php';
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold">Seguimiento de tus Pedidos</h1>
         <p class="text-muted">Aquí puedes ver el historial y el estado actual de tus compras.</p>
+        <div class="mb-4">
+        <a href="index.php" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+        </a>
+    </div>
     </div>
 
     <div id="historial-pedidos-container">
