@@ -70,13 +70,20 @@ $imagenes_locales = [
         </div>
     </div>
     <div class="container">
-        <h1 class="display-4 fw-bold">Disfruta de tus platos favoritos</h1>
+        <img src="assets/img/logo.png" alt="CerroDelivery Logo" class="hero-logo mb-3">
+
+        <h1 class="display-4 fw-bold">
+            Disfruta de tus platos
+            <span id="typed-text-container" class="typed-text-container"></span>
+        </h1>
+        
         <p class="lead text-muted">Encuentra los mejores restaurantes y recíbelo en minutos.</p>
+        
         <div class="row justify-content-center mt-4">
             <div class="col-md-8 col-lg-7">
-                <form action="index.php" method="GET" class="d-flex">
-                    <input class="form-control form-control-lg me-2" type="search" placeholder="Busca tu restaurante preferido..." name="q" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
-                    <button class="btn btn-success btn-lg" type="submit">Buscar</button>
+                <form action="index.php" method="GET" class="d-block d-md-flex gap-2">
+                    <input class="form-control form-control-lg mb-2 mb-md-0" type="search" placeholder="Busca tu restaurante preferido..." name="q" value="<?php echo htmlspecialchars($termino_busqueda); ?>">
+                    <button class="btn btn-success btn-lg w-100 w-md-auto" type="submit">Buscar</button>
                 </form>
             </div>
         </div>

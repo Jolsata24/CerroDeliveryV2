@@ -37,7 +37,41 @@ body {
     /* Quitamos el margen inferior que ya no es necesario */
     margin: 0; 
 }
+/* ===================================== */
+/* ESTILOS PARA EL HERO MEJORADO         */
+/* ===================================== */
 
+/* Estilo para el logo en el Hero */
+.hero-logo {
+    max-height: 80px;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4)); /* Sombra para que resalte */
+}
+
+/* Contenedor del texto que se autoescribe */
+.typed-text-container {
+    display: inline-block; /* O block, dependiendo de tu layout */
+    position: relative;
+}
+
+/* Estilos para el texto y el cursor parpadeante */
+.typed-text-container::after {
+    content: '|';
+    display: inline-block;
+    animation: blink 0.7s infinite;
+    font-weight: normal;
+    color: #ffc107; /* Color del cursor */
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Colores para las palabras */
+.typed-text-color-1 { color: #ffc107; } /* Amarillo */
+.typed-text-color-2 { color: #20c997; } /* Verde menta */
+.typed-text-color-3 { color: #fd7e14; } /* Naranja */
+.typed-text-color-4 { color: #0dcaf0; } /* Cian */
 .hero-section .form-control-lg {
     box-shadow: var(--soft-shadow);
     border: none;

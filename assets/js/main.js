@@ -61,3 +61,55 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+// --- LÓGICA PARA EL TEXTO ANIMADO DEL HERO ---
+document.addEventListener("DOMContentLoaded", function() {
+    const typedTextContainer = document.getElementById("typed-text-container");
+
+    const words = [
+        { text: "favoritos", colorClass: "typed-text-color-1" },
+        { text: "de casa", colorClass: "typed-text-color-2" },
+        { text: "del día", colorClass: "typed-text-color-3" },
+        { text: "locales", colorClass: "typed-text-color-4" }
+    ];
+
+    let wordIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+
+    function type() {
+        const currentWord = words[wordIndex];
+        const fullText = currentWord.text;
+        
+        // Aplica la clase de color actual
+        typedTextContainer.className = 'typed-text-container ' + currentWord.colorClass;
+
+        if (isDeleting) {
+            // Borrando
+            typedTextContainer.textContent = fullText.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            // Escribiendo
+            typedTextContainer.textContent = fullText.substring(0, charIndex + 1);
+            charIndex++;
+        }
+
+        let typeSpeed = isDeleting ? 100 : 200;
+
+        if (!isDeleting && charIndex === fullText.length) {
+            // Pausa al final de la palabra
+            typeSpeed = 2000;
+            isDeleting = true;
+        } else if (isDeleting && charIndex === 0) {
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+            typeSpeed = 500;
+        }
+
+        setTimeout(type, typeSpeed);
+    }
+
+    if (typedTextContainer) {
+        type();
+    }
+});
