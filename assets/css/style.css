@@ -3,6 +3,7 @@
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     background-color: #f8f9fa; /* Un gris muy claro para el fondo general */
+    overflow-x: hidden; /* ¡Esta es la línea mágica! */
 }
 
 
@@ -818,6 +819,7 @@ body.loaded #preloader {
 /* Contenedor principal del dashboard */
 body {
     background-color: #f4f7f6; /* Un gris muy claro, casi blanco */
+    overflow-x: hidden; /* ¡Esta es la línea mágica! */
 }
 
 .dashboard-card {
@@ -970,6 +972,133 @@ body {
 }
 
 /* ===================================== */
+/* ESTILOS PARA TARJETAS DE RESTAURANTE CON FONDO */
+/* ===================================== */
+
+.card-restaurant-bg {
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    color: white; /* Hacemos todo el texto blanco por defecto */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-restaurant-bg:hover {
+    transform: scale(1.03);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* Capa oscura para asegurar la legibilidad del texto */
+.card-restaurant-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.5) 100%);
+    border-radius: 1rem;
+}
+
+/* Hacemos que el contenido de la tarjeta esté por encima de la capa oscura */
+.card-restaurant-bg .card-body {
+    position: relative;
+    z-index: 2;
+}
+
+/* Ajustes de color para que el texto resalte sobre el fondo oscuro */
+.card-restaurant-bg .card-title {
+    color: white;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+.card-restaurant-bg .text-muted {
+    color: #e0e0e0 !important; /* Hacemos el texto "muted" más claro */
+}
+
+/* El estado "Abierto/Cerrado" con colores más vivos */
+.card-restaurant-bg .fw-bold.text-success {
+    color: #20c997 !important; /* Un verde menta más brillante */
+}
+
+.card-restaurant-bg .fw-bold.text-danger {
+    color: #ff8fa3 !important; /* Un rojo claro */
+}
+
+/* ===================================== */
+/* ESTILOS PARA LA SECCIÓN "CONÓCENOS"   */
+/* ===================================== */
+
+.about-section {
+    padding: 6rem 0;
+    position: relative;
+    background-image: url('../img/cdp.png');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed; /* Efecto Parallax */
+    border-radius: 1.5rem; /* Bordes más redondeados */
+    overflow: hidden;
+    margin-left: 1rem;  /* Pequeños márgenes laterales */
+    margin-right: 1rem;
+}
+
+/* Capa oscura para que el texto sea legible */
+.about-section::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.65); /* Un poco más oscuro */
+}
+
+/* Tarjetas para Misión y Visión */
+.about-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 1rem;
+    padding: 2rem;
+    height: 100%;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.about-card h3 {
+    font-weight: 700;
+    color: #ffc107;
+}
+
+/* Asegura que el contenido esté por encima de la capa oscura */
+.about-section .container {
+    position: relative;
+    z-index: 2;
+}
+
+
+/* ===================================== */
+/* LA CORRECCIÓN RESPONSIVA      */
+/* ===================================== */
+@media (max-width: 767px) {
+    .about-section {
+        padding: 4rem 0; /* Menos espaciado vertical en móviles */
+        background-attachment: scroll; /* Desactiva el efecto Parallax en móviles por rendimiento */
+        margin-left: 0.5rem;
+        margin-right: 0.5rem;
+    }
+
+    .about-section .lead {
+        font-size: 1rem; /* Texto de introducción más pequeño */
+        margin-bottom: 2rem !important;
+    }
+
+    .about-card {
+        padding: 1.5rem; /* Menos espaciado interno en las tarjetas */
+    }
+}
+
+
+/* ===================================== */
 /* ESTILOS MEJORADOS PARA 'MIS ENTREGAS' */
 /* ===================================== */
 
@@ -1012,6 +1141,99 @@ body {
 }
 
 
+/* ===================================== */
+/* ESTILOS PARA CARRUSEL INFINITO DE CATEGORÍAS */
+/* ===================================== */
+
+.scroller {
+    max-width: 100%;
+    /* Efecto de desvanecimiento en los bordes para dar la sensación de continuidad */
+    -webkit-mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+    mask: linear-gradient(90deg, transparent, white 20%, white 80%, transparent);
+}
+
+.scroller__inner {
+    padding-block: 1rem;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding-left: 0;
+}
+
+/* Pausa la animación al pasar el mouse por encima del carrusel */
+.scroller:hover .scroller__inner {
+    animation-play-state: paused;
+}
+
+/* Activa la animación con JavaScript */
+.scroller[data-animated="true"] .scroller__inner {
+    width: max-content;
+    animation: scroll 40s linear infinite;
+}
+
+/* Animación de desplazamiento */
+@keyframes scroll {
+    to {
+        /* Mueve el contenedor la mitad de su ancho */
+        transform: translate(calc(-50% - 0.5rem));
+    }
+}
+
+/* --- Estilos de las tarjetas dentro del carrusel --- */
+.category-card-v2 {
+    border: 1px solid #f0f0f0;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: #fff;
+    width: 140px; /* Ancho fijo para cada tarjeta en escritorio */
+}
+
+.category-card-link:hover .category-card-v2 {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-color: #0d6efd;
+}
+
+.category-card-v2 .card-img-top {
+    height: 90px;
+    object-fit: cover;
+}
+
+.category-card-v2 .card-body {
+    padding: 0.75rem 0.5rem;
+}
+
+.category-card-v2 .card-title {
+    color: #343a40;
+    font-size: 0.85rem;
+    transition: color 0.3s ease;
+}
+
+.category-card-link:hover .card-title {
+    color: #0d6efd;
+}
+
+/* ---- RESPONSIVIDAD ---- */
+/* Para pantallas más pequeñas (móviles) */
+@media (max-width: 767px) {
+    .category-card-v2 {
+        width: 110px; /* Tarjetas más pequeñas en móvil */
+    }
+    .category-card-v2 .card-img-top {
+        height: 70px;
+    }
+    .category-card-v2 .card-title {
+        font-size: 0.75rem;
+    }
+    
+    /* Aumentamos la velocidad de la animación en móvil para que no se sienta tan lenta */
+    .scroller[data-animated="true"] .scroller__inner {
+        animation-duration: 30s;
+    }
+}
 
 
 
@@ -1093,5 +1315,73 @@ body {
     }
     .table td, .table th {
         padding: 0.5rem; /* Reducimos el espaciado interno */
+    }
+}
+
+/* ===================================== */
+/* ESTILOS RESPONSIVOS PARA INDEX        */
+/* ===================================== */
+
+/* --- Tarjetas de Categoría --- */
+.category-card-v2 {
+    border: 1px solid #f0f0f0;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: #fff;
+}
+
+.category-card-link:hover .category-card-v2 {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-color: #0d6efd;
+}
+
+.category-card-v2 .card-img-top {
+    height: 80px; /* Altura más pequeña para más tarjetas por fila */
+    object-fit: cover;
+}
+
+.category-card-v2 .card-body {
+    padding: 0.75rem 0.5rem;
+}
+
+.category-card-v2 .card-title {
+    color: #343a40;
+    font-size: 0.8rem; /* Texto más pequeño */
+    transition: color 0.3s ease;
+}
+
+.category-card-link:hover .card-title {
+    color: #0d6efd;
+}
+
+/* --- Tarjetas de Restaurante --- */
+.card-restaurant {
+    border: none;
+    border-radius: 1rem;
+    transition: transform .2s ease-in-out, box-shadow .2s ease-in-out;
+}
+
+.card-restaurant:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-restaurant .card-title {
+    font-weight: 700;
+}
+
+/* Para pantallas más pequeñas (móviles) */
+@media (max-width: 767px) {
+    .hero-section h1 {
+        font-size: 2.5rem; /* Título más pequeño en el hero */
+    }
+
+    .category-card-v2 .card-img-top {
+        height: 60px; /* Imágenes de categoría aún más pequeñas */
+    }
+    .category-card-v2 .card-title {
+        font-size: 0.75rem;
     }
 }

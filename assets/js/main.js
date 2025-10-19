@@ -44,3 +44,20 @@ window.addEventListener('load', function () {
         document.body.classList.add('loaded');
     }
 });
+
+// --- LÓGICA PARA EL CARRUSEL INFINITO DE CATEGORÍAS ---
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollers = document.querySelectorAll(".scroller");
+
+    // Si el usuario no prefiere movimiento, no añadimos la animación
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        addAnimation();
+    }
+
+    function addAnimation() {
+        scrollers.forEach((scroller) => {
+            scroller.setAttribute("data-animated", true);
+        });
+    }
+});
+

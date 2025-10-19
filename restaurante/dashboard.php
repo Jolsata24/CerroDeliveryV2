@@ -67,11 +67,11 @@ include '../includes/header.php';
         </div>
         <div class="col-md-4">
             <div class="card summary-card-gradient summary-card-2 shadow-sm">
-                 <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="card-title text-white">Platos en Menú</h5>
                         <p class="display-4 fw-bold text-white mb-0"><?php echo $resultado_platos->num_rows; ?></p>
-                         <span class="text-white-50">Total registrados</span>
+                        <span class="text-white-50">Total registrados</span>
                     </div>
                     <div class="icon-circle">
                         <i class="bi bi-card-checklist"></i>
@@ -79,15 +79,15 @@ include '../includes/header.php';
                 </div>
             </div>
         </div>
-         <div class="col-md-4">
+        <div class="col-md-4">
             <div class="card summary-card-gradient summary-card-3 shadow-sm">
-                 <div class="card-body d-flex justify-content-between align-items-center">
+                <div class="card-body d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="card-title text-white">Afiliaciones</h5>
                         <p class="display-4 fw-bold text-white mb-0"><?php echo $resultado_solicitudes->num_rows; ?></p>
                         <span class="text-white-50">Solicitudes pendientes</span>
                     </div>
-                     <div class="icon-circle">
+                    <div class="icon-circle">
                         <i class="bi bi-person-plus-fill"></i>
                     </div>
                 </div>
@@ -98,12 +98,14 @@ include '../includes/header.php';
     <div class="row g-4">
         <div class="col-lg-6">
             <div class="card dashboard-card h-100">
-                <div class="card-header"><h5 class="mb-0">Añadir Nuevo Plato al Menú</h5></div>
+                <div class="card-header">
+                    <h5 class="mb-0">Añadir Nuevo Plato al Menú</h5>
+                </div>
                 <div class="card-body">
                     <form action="../procesos/procesar_agregar_plato.php" method="POST" enctype="multipart/form-data">
                         <div class="row">
-                           <div class="col-md-6 mb-3"><label for="nombre_plato" class="form-label">Nombre del Plato</label><input type="text" class="form-control" name="nombre_plato" required></div>
-                           <div class="col-md-6 mb-3"><label for="precio" class="form-label">Precio (S/)</label><input type="number" step="0.10" class="form-control" name="precio" required></div>
+                            <div class="col-md-6 mb-3"><label for="nombre_plato" class="form-label">Nombre del Plato</label><input type="text" class="form-control" name="nombre_plato" required></div>
+                            <div class="col-md-6 mb-3"><label for="precio" class="form-label">Precio (S/)</label><input type="number" step="0.10" class="form-control" name="precio" required></div>
                         </div>
                         <div class="mb-3"><label for="descripcion" class="form-label">Descripción</label><textarea class="form-control" name="descripcion" rows="2"></textarea></div>
                         <div class="mb-3"><label for="foto" class="form-label">Foto del Plato</label><input class="form-control" type="file" name="foto"></div>
@@ -112,29 +114,51 @@ include '../includes/header.php';
                 </div>
             </div>
         </div>
+
+        <div class="card dashboard-card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Imagen de Portada de tu Restaurante</h5>
+            </div>
+            <div class="card-body">
+                <form action="../procesos/actualizar_imagen_restaurante.php" method="POST" enctype="multipart/form-data">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <p class="text-muted">Esta imagen aparecerá como fondo en la página principal. Sube una foto atractiva de tu local.</p>
+                            <div class="mb-3">
+                                <label for="foto_restaurante" class="form-label">Seleccionar nueva imagen:</label>
+                                <input class="form-control" type="file" name="foto_restaurante" id="foto_restaurante" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Subir y Guardar Imagen</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="col-lg-6">
             <div class="card dashboard-card h-100">
-                <div class="card-header"><h5 class="mb-0">Configuración General</h5></div>
+                <div class="card-header">
+                    <h5 class="mb-0">Configuración General</h5>
+                </div>
                 <div class="card-body">
                     <form action="../procesos/actualizar_horario.php" method="POST" class="mb-4">
-                         <h6><i class="bi bi-clock-fill me-2"></i>Horario Comercial</h6>
-                         <div class="row align-items-end g-2">
-                             <div class="col"><label class="form-label">Apertura</label><input type="time" class="form-control" name="hora_apertura" value="<?php echo htmlspecialchars($restaurante_data['hora_apertura'] ?? ''); ?>"></div>
-                             <div class="col"><label class="form-label">Cierre</label><input type="time" class="form-control" name="hora_cierre" value="<?php echo htmlspecialchars($restaurante_data['hora_cierre'] ?? ''); ?>"></div>
-                             <div class="col-auto"><button type="submit" class="btn btn-secondary w-100">Guardar</button></div>
-                         </div>
-                     </form>
-                     <hr>
-                     <form action="../procesos/actualizar_telefono.php" method="POST" class="mt-4">
-                          <h6><i class="bi bi-whatsapp me-2"></i>Notificaciones</h6>
-                         <div class="row align-items-end g-2">
+                        <h6><i class="bi bi-clock-fill me-2"></i>Horario Comercial</h6>
+                        <div class="row align-items-end g-2">
+                            <div class="col"><label class="form-label">Apertura</label><input type="time" class="form-control" name="hora_apertura" value="<?php echo htmlspecialchars($restaurante_data['hora_apertura'] ?? ''); ?>"></div>
+                            <div class="col"><label class="form-label">Cierre</label><input type="time" class="form-control" name="hora_cierre" value="<?php echo htmlspecialchars($restaurante_data['hora_cierre'] ?? ''); ?>"></div>
+                            <div class="col-auto"><button type="submit" class="btn btn-secondary w-100">Guardar</button></div>
+                        </div>
+                    </form>
+                    <hr>
+                    <form action="../procesos/actualizar_telefono.php" method="POST" class="mt-4">
+                        <h6><i class="bi bi-whatsapp me-2"></i>Notificaciones</h6>
+                        <div class="row align-items-end g-2">
                             <div class="col">
-                                 <label class="form-label">Número de WhatsApp</label>
-                                 <div class="input-group"><span class="input-group-text">+51</span><input type="tel" class="form-control" name="telefono" value="<?php echo htmlspecialchars($restaurante_data['telefono'] ?? ''); ?>" required></div>
-                             </div>
-                             <div class="col-auto"><button type="submit" class="btn btn-secondary w-100">Guardar</button></div>
-                         </div>
-                     </form>
+                                <label class="form-label">Número de WhatsApp</label>
+                                <div class="input-group"><span class="input-group-text">+51</span><input type="tel" class="form-control" name="telefono" value="<?php echo htmlspecialchars($restaurante_data['telefono'] ?? ''); ?>" required></div>
+                            </div>
+                            <div class="col-auto"><button type="submit" class="btn btn-secondary w-100">Guardar</button></div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -143,18 +167,26 @@ include '../includes/header.php';
     <div class="row g-4 mt-1">
         <div class="col-lg-12">
             <div class="card dashboard-card">
-                 <div class="card-header"><h5 class="mb-0">Solicitudes de Afiliación de Repartidores</h5></div>
-                 <div class="card-body p-0">
-                    <div class="table-responsive"><table class="table table-hover align-middle mb-0">...</table></div>
-                 </div>
+                <div class="card-header">
+                    <h5 class="mb-0">Solicitudes de Afiliación de Repartidores</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">...</table>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-lg-12">
-             <div class="card dashboard-card">
-                <div class="card-header"><h5 class="mb-0">Tu Menú Actual</h5></div>
-                 <div class="card-body p-0">
-                    <div class="table-responsive"><table class="table table-hover align-middle mb-0">...</table></div>
-                 </div>
+            <div class="card dashboard-card">
+                <div class="card-header">
+                    <h5 class="mb-0">Tu Menú Actual</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">...</table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
