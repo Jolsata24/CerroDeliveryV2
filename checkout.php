@@ -14,6 +14,11 @@ include 'includes/header.php';
 <div class="container my-5">
     <div class="text-center mb-5">
         <h1 class="display-5 fw-bold">Ya casi está listo tu pedido</h1>
+        <div class="mb-4">
+        <a href="index.php" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+        </a>
+    </div>
         <p class="text-muted">Solo necesitamos unos datos más para la entrega.</p>
     </div>
 
@@ -69,7 +74,9 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
-
+<script>
+    const CLIENTE_ID = <?php echo isset($_SESSION['cliente_id']) ? json_encode($_SESSION['cliente_id']) : 'null'; ?>;
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const resumenDiv = document.getElementById('resumen-carrito');
@@ -77,7 +84,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const restauranteIdInput = document.getElementById('id_restaurante');
     const checkoutForm = document.getElementById('checkout-form');
     
-    let carritoData = JSON.parse(sessionStorage.getItem('carritoData')) || { items: [], restauranteId: null };
+    // --- INICIO DE LA MODIFICACIÓN ---
+    const carritoKey = `carritoData_${CLIENTE_ID}`; // Clave única por usuario
+    let carritoData = JSON.parse(sessionStorage.getItem(carritoKey)) || { items: [], restauranteId: null };
+    // --- FIN DE LA MODIFICACIÓN ---
     let carrito = carritoData.items;
 
     function renderCarrito() {
@@ -161,7 +171,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function guardarYRenderizar() {
         carritoData.items = carrito;
-        sessionStorage.setItem('carritoData', JSON.stringify(carritoData));
+        // --- INICIO DE LA MODIFICACIÓN ---
+        sessionStorage.setItem(carritoKey, JSON.stringify(carritoData));
+        // --- FIN DE LA MODIFICACIÓN ---
         renderCarrito();
     }
 

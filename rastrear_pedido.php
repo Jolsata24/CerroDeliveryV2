@@ -57,6 +57,11 @@ include 'includes/header.php';
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <div class="container tracking-container py-4">
+    <div class="mb-4">
+        <a href="index.php" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+        </a>
+    </div>
     <div class="row g-4">
         
         <div class="col-lg-5">

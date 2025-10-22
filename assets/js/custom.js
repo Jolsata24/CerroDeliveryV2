@@ -1,11 +1,18 @@
 // LÓGICA DEL CARRITO DE COMPRAS
 document.addEventListener('DOMContentLoaded', function() {
     const botonesAñadir = document.querySelectorAll('.add-to-cart-btn');
-    let carritoData = JSON.parse(sessionStorage.getItem('carritoData')) || { items: [], restauranteId: null };
 
     botonesAñadir.forEach(boton => {
         boton.addEventListener('click', function(event) {
             event.preventDefault();
+
+            // --- INICIO DE LA CORRECCIÓN ---
+            // La clave del carrito y los datos se obtienen CADA VEZ que se hace clic.
+            // Esto asegura que siempre trabajamos con la información más reciente.
+            const carritoKey = `carritoData_${CLIENTE_ID}`;
+            let carritoData = JSON.parse(sessionStorage.getItem(carritoKey)) || { items: [], restauranteId: null };
+            // --- FIN DE LA CORRECCIÓN ---
+
             const idPlato = this.dataset.id;
             const nombrePlato = this.dataset.nombre;
             const precioPlato = parseFloat(this.dataset.precio);
@@ -15,7 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!confirm('Ya tienes un pedido en curso con otro restaurante. ¿Deseas empezar uno nuevo?')) {
                     return;
                 }
-                carritoData.items = [];
+                // Reseteamos completamente el carrito si el usuario confirma.
+                carritoData = { items: [], restauranteId: restauranteId };
             }
             
             carritoData.restauranteId = restauranteId;
@@ -32,30 +40,33 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
 
-            sessionStorage.setItem('carritoData', JSON.stringify(carritoData));
-            const totalItems = carritoData.items.reduce((sum, item) => sum + item.cantidad, 0);
-            alert(`'${nombrePlato}' añadido. Tienes ${totalItems} item(s) en tu carrito.`);
+            sessionStorage.setItem(carritoKey, JSON.stringify(carritoData));
+            
+            // Lógica para mostrar la notificación "toast" (sin cambios)
+            const toastElement = document.getElementById('cart-toast');
+            const toastBody = toastElement.querySelector('.toast-body');
+            const toast = new bootstrap.Toast(toastElement);
+            toastBody.textContent = `'${nombrePlato}' se ha añadido a tu carrito.`;
+            toast.show();
         });
     });
 
-    // --- NUEVA LÓGICA DE VOTACIÓN CON CONFIRMACIÓN ---
+    // --- LÓGICA DE VOTACIÓN CON CONFIRMACIÓN ---
     const ratingModal = document.getElementById('ratingModal');
-    if (ratingModal) { // Solo ejecutar si el modal existe en la página
+    if (ratingModal) {
         const stars = ratingModal.querySelectorAll('.rating-stars input');
         const confirmButton = ratingModal.querySelector('#confirmRatingBtn');
         const feedbackSpan = ratingModal.querySelector('.rating-feedback');
         let selectedRating = 0;
 
-        // Cuando el usuario selecciona una estrella
         stars.forEach(star => {
             star.addEventListener('change', function() {
                 selectedRating = this.value;
-                confirmButton.disabled = false; // Habilitar el botón de confirmación
+                confirmButton.disabled = false;
                 feedbackSpan.textContent = `Has seleccionado ${selectedRating} estrella(s).`;
             });
         });
 
-        // Cuando el usuario hace clic en "Confirmar Voto"
         confirmButton.addEventListener('click', function() {
             if (selectedRating === 0) return;
 

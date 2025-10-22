@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conviértete en Repartidor - CerroDelivery</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/cerrodelivery/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
 
@@ -14,7 +14,7 @@
         <div class="card-body">
             <div class="text-center mb-4">
                 <a href="index.php">
-                    <img src="/cerrodelivery/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 50px;">
+                    <img src="/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 50px;">
                 </a>
             </div>
             <h2 class="card-title text-center mb-2">Conviértete en Repartidor</h2>
