@@ -1274,6 +1274,110 @@ body {
         animation-duration: 30s;
     }
 }
+/* ===================================== */
+/* ESTILOS PARA EL NUEVO HERO (QUICKBITE) */
+/* ===================================== */
+
+/* El contenedor rojo del hero */
+.hero-quickbite {
+    background: linear-gradient(135deg, #d90429, #ef233c); /* Gradiente rojo vibrante */
+    color: #ffffff;
+    padding: 6rem 0 10rem 0; /* Más padding en la parte inferior para dar espacio a la tarjeta */
+    position: relative;
+    overflow: hidden; /* Evita que la imagen se desborde */
+}
+
+/* El texto del hero */
+.hero-quickbite .hero-text {
+    position: relative;
+    z-index: 3; /* Asegura que el texto esté sobre la imagen en móviles */
+}
+
+.hero-quickbite .hero-text h1 {
+    font-weight: 800; /* Extra bold */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.hero-quickbite .hero-text .lead {
+    color: #edf2f4; /* Un blanco un poco más suave */
+    font-size: 1.25rem;
+}
+
+/* El botón "Order Now" */
+.hero-quickbite .btn-order-now {
+    background-color: #ffffff;
+    color: #d90429;
+    border: 2px solid #ffffff;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.hero-quickbite .btn-order-now:hover {
+    background-color: transparent;
+    color: #ffffff;
+    transform: translateY(-3px);
+}
+
+/* La imagen de comida en el hero */
+.hero-quickbite .hero-image img {
+    max-width: 100%;
+    /* Efecto de "flotación" */
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Animación de flotar */
+@keyframes float {
+	0% {
+		transform: translatey(0px);
+	}
+	50% {
+		transform: translatey(-20px);
+	}
+	100% {
+		transform: translatey(0px);
+	}
+}
+
+
+/* ===================================== */
+/* LA TARJETA BLANCA SUPERPUESTA         */
+/* ===================================== */
+
+/* Este es el contenedor blanco que se superpone al hero */
+.main-content-overlay {
+    background-color: #ffffff;
+    border-radius: 1.5rem 1.5rem 0 0; /* Bordes redondeados solo arriba */
+    padding: 3rem 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+    
+    /* ¡LA MAGIA! */
+    margin-top: -80px; /* Jala el contenedor hacia arriba */
+    position: relative;
+    z-index: 2; /* Se asegura que esté sobre el hero */
+}
+
+/* En pantallas pequeñas, quitamos el hero y el efecto de superposición */
+@media (max-width: 991px) {
+    .hero-quickbite {
+        padding: 4rem 0 6rem 0;
+        text-align: center;
+    }
+
+    .main-content-overlay {
+        margin-top: -50px; /* Reducimos el margen en móviles */
+        padding: 2rem 0;
+    }
+}
+
+/* Elimina el padding-top del body si lo tenías, 
+   ya que el header ahora está sobre el hero rojo */
+body {
+    padding-top: 0;
+}
+
+
 
 
 

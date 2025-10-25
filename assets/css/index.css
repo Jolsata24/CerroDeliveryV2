@@ -1,0 +1,224 @@
+/* ===================================== */
+/* ESTILOS EXCLUSIVOS PARA INDEX.PHP     */
+/* (VERSIÓN CON MARCA "CERRODELIVERY") */
+/* ===================================== */
+
+/* --- 1. PREPARACIÓN: HEADER TRANSPARENTE --- */
+/* --- 1. PREPARACIÓN: HEADER TRANSPARENTE --- */
+.navbar.sticky-top {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    
+    /* ¡¡¡ESTA ES LA CORRECCIÓN!!! */
+    position: fixed; /* Debe ser 'fixed', no 'absolute' */
+    
+    width: 100%;
+    z-index: 100;
+    transition: background-color 0.3s ease;
+}
+
+/* ¡NUEVO! Define el estado "scrolled" (desplazado) */
+.navbar.sticky-top.navbar-scrolled {
+    background: #103652f5 !important; /* Fondo azul sólido al hacer scroll */
+    box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important;
+}
+.navbar.sticky-top .navbar-brand {
+    filter: none;
+}
+.navbar.sticky-top .nav-link,
+.navbar.sticky-top .dropdown-toggle {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+.navbar.sticky-top .dropdown-menu .dropdown-item {
+    color: #212529 !important; 
+    text-shadow: none;
+}
+.navbar.sticky-top .btn-outline-secondary {
+    background-color: rgba(255,255,255,0.2);
+    border-color: #ffffff;
+    color: #ffffff;
+}
+ .navbar.sticky-top .btn-primary {
+    background-color: #ffffff;
+    border-color: #ffffff;
+    color: #0d6efd;
+}
+body > main.container.mt-4 {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/* --- 2. ESTILOS DEL HERO (CENTRADO) --- */
+.hero-quickbite {
+    background: linear-gradient(135deg, #0d324d, #1c5f8e);
+    color: #ffffff;
+    position: relative;
+    overflow: hidden; /* Oculta la imagen en móvil */
+    display: flex;
+    align-items: center;
+    min-height: 100vh;
+    padding-bottom: 80px;    
+    box-sizing: border-box;
+}
+.hero-quickbite .container {
+    padding-top: 0px;
+}
+.hero-quickbite .hero-text {
+    position: relative;
+    z-index: 3; /* Texto delante de la imagen */
+}
+.hero-quickbite .hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.hero-quickbite .hero-text .lead {
+    color: #edf2f4;
+    font-size: 1.25rem;
+}
+.hero-quickbite .btn-order-now {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+.hero-quickbite .btn-order-now:hover {
+    background-color: #ffffff;
+    color: #0d6efd;
+    transform: translateY(-3px);
+}
+.hero-quickbite .hero-image {
+    z-index: 2; /* Imagen detrás del texto */
+}
+.hero-quickbite .hero-image img {
+    padding-left: 50px;
+    max-width: 100%;
+    animation: float 4s ease-in-out infinite;
+    position: relative;
+}
+@keyframes float {
+    0% { transform: translatey(0px); }
+    50% { transform: translatey(-40px); }
+    100% { transform: translatey(0px); }
+}
+
+/* --- 3. TARJETA SUPERPUESTA (CON ONDA VISIBLE) --- */
+.main-content-overlay {
+    background-color: #ffffff; 
+    position: relative;
+    overflow: hidden;
+    background-image: linear-gradient(
+      100deg,
+      rgba(13, 50, 77, 0) 20%,
+      rgba(13, 50, 77, 0.08) 50%,
+      rgba(13, 50, 77, 0) 80%
+    );
+    background-size: 300% 300%; 
+    animation: wave-animation 15s ease-in-out infinite;
+    border-radius: 1.5rem 1.5rem 0 0;
+    padding: 3rem 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: -80px; 
+    z-index: 2;
+}
+
+/* --- 4. AJUSTES AL CONTENIDO INTERNO --- */
+.main-content-overlay .category-section .scroller {
+     -webkit-mask: none;
+     mask: none;
+}
+.main-content-overlay .category-card-v2 {
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    border: 1px solid #f0f0f0;
+}
+.main-content-overlay .card-restaurant {
+     border-radius: 1rem;
+     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+     border: 1px solid #f0f0f0;
+}
+.main-content-overlay .form-control {
+    border-radius: 0.5rem 0 0 0.5rem !important;
+}
+.main-content-overlay .input-group .btn-primary {
+    border-radius: 0 0.5rem 0.5rem 0 !important;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* ===================================== */
+/* --- 5. RESPONSIVIDAD (¡NUEVO!) --- */
+/* ===================================== */
+@media (max-width: 991px) {
+    .hero-quickbite {
+        padding-top: 100px;
+        min-height: auto; 
+        display: block; /* Desactivamos flexbox */
+        padding-bottom: 6rem;
+        text-align: center;
+        /* ¡NUEVO! Oculta el desbordamiento de la imagen */
+        overflow-x: hidden; 
+    }
+    .hero-quickbite .container {
+        padding-top: 20px;
+        position: relative; /* Necesario para la imagen */
+    }
+    .navbar.sticky-top .navbar-collapse.show {
+        background: rgba(0,0,0,0.1);
+        backdrop-filter: blur(5px);
+        border-radius: 10px;
+        padding: 10px;
+    }
+    .main-content-overlay {
+        margin-top: -50px;
+        padding: 2rem 0;
+    }
+    .hero-quickbite .hero-text h1 {
+        font-size: 2.5rem;
+    }
+    
+    /* ===================================== */
+    /* ¡AQUÍ ESTÁ TU SOLICITUD MÓVIL! */
+    /* ===================================== */
+    .hero-quickbite .hero-image {
+        position: absolute;
+        top: 150px;    /* Lo baja desde arriba */
+        right: -180px; /* Lo saca 180px del borde derecho (así se ve la mitad) */
+        width: 90%;    /* Un tamaño grande */
+        opacity: 0.5;  /* Muy sutil para no tapar el texto */
+        z-index: 1;    /* Detrás del texto */
+        animation: none; /* Quitamos el 'float' en móvil */
+        pointer-events: none; /* Evita que se pueda clickear */
+    }
+    .hero-quickbite .hero-image img {
+        padding-left: 0;
+        margin-top: 0;
+        max-width: 100%;
+    }
+    .hero-quickbite .hero-text {
+        position: relative;
+        z-index: 2; /* Asegura que el texto esté delante */
+    }
+}
+
+/* --- 6. ANIMACIÓN DE LA ONDA --- */
+@keyframes wave-animation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}

@@ -11,13 +11,23 @@ if (session_status() == PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CerroDelivery</title>
-    
+
 
     <link rel="icon" type="image/png" href="/cerrodeliveryv2/assets/img/logoheader.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/style.css"> 
-    
+
+    <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/style.css">
+
+    <?php
+    // Obtiene el nombre del archivo actual (ej: "index.php", "mis_pedidos.php")
+    $script_name = basename($_SERVER['SCRIPT_NAME']);
+
+    // Si el archivo es "index.php", carga el CSS especial
+    if ($script_name == 'index.php'):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/index.css?v=2">
+    <?php endif; ?>
     <script>
         // Esta lógica de JS se mantiene
         const CLIENTE_ID = <?php echo isset($_SESSION['cliente_id']) ? json_encode($_SESSION['cliente_id']) : 'null'; ?>;
@@ -48,26 +58,31 @@ if (session_status() == PHP_SESSION_NONE) {
                     <li class="nav-item">
                         <a class="nav-link" href="index.php#restaurantes-section">Restaurantes</a>
                     </li>
-                     <?php if (isset($_SESSION['cliente_id'])): // Lógica de sesión original ?>
-                         <li class="nav-item">
+                    <?php if (isset($_SESSION['cliente_id'])): // Lógica de sesión original 
+                    ?>
+                        <li class="nav-item">
                             <a href="mis_pedidos.php" class="nav-link">Mis Pedidos</a>
                         </li>
-                     <?php endif; ?>
+                    <?php endif; ?>
                 </ul>
 
                 <ul class="navbar-nav align-items-lg-center">
-                    <?php if (isset($_SESSION['cliente_id'])): // Lógica de sesión original ?>
+                    <?php if (isset($_SESSION['cliente_id'])): // Lógica de sesión original 
+                    ?>
                         <li class="nav-item dropdown">
-                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Hola, <?php echo htmlspecialchars($_SESSION['cliente_nombre']); ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="mis_pedidos.php">Mis Pedidos</a></li>
-                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
                                 <li><a class="dropdown-item" href="/procesos/logout_cliente.php">Cerrar Sesión</a></li>
                             </ul>
                         </li>
-                    <?php else: // Lógica de sesión original ?>
+                    <?php else: // Lógica de sesión original 
+                    ?>
                         <li class="nav-item">
                             <a href="/login_cliente.php" class="btn btn-outline-secondary btn-sm me-lg-2 mb-2 mb-lg-0">Iniciar Sesión</a>
                         </li>
