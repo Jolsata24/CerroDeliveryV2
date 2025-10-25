@@ -6,29 +6,31 @@ if (session_status() == PHP_SESSION_NONE) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CerroDelivery</title>
-    <link rel="icon" type="image/png" href="/cerrodelivery/assets/img/logoheader.png">
-    
+    <link rel="icon" type="image/png" href="/assets/img/logoheader.png">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/cerrodelivery/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css">
     <script>
         const CLIENTE_ID = <?php echo isset($_SESSION['cliente_id']) ? json_encode($_SESSION['cliente_id']) : 'null'; ?>;
     </script>
 </head>
+
 <body class="bg-light">
 
     <div id="preloader">
-        <img src="/cerrodelivery/assets/img/loader.gif" alt="Cargando..." class="preloader-logo">
+        <img src="/assets/img/loader.gif" alt="Cargando..." class="preloader-logo">
     </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="/cerrodelivery/index.php">
-                <img src="/cerrodelivery/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 40px;">
+            <a class="navbar-brand" href="/index.php">
+                <img src="/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 40px;">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,9 +39,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-                    <?php if (isset($_SESSION['cliente_id'])): // Si el cliente INICIÓ SESIÓN ?>
+                    <?php if (isset($_SESSION['cliente_id'])): // Si el cliente INICIÓ SESIÓN 
+                    ?>
                         <li class="nav-item">
-                            <a href="/cerrodelivery/mis_pedidos.php" class="nav-link">Mis Pedidos</a>
+                            <a href="mis_pedidos.php" class="nav-link">Mis Pedidos</a>
                         </li>
                         <li class="nav-item">
                             <span class="navbar-text me-3">
@@ -47,14 +50,15 @@ if (session_status() == PHP_SESSION_NONE) {
                             </span>
                         </li>
                         <li class="nav-item">
-                            <a href="/cerrodelivery/procesos/logout_cliente.php" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
+                            <a href="/procesos/logout_cliente.php" class="btn btn-outline-danger btn-sm">Cerrar Sesión</a>
                         </li>
-                    <?php else: // Si el cliente NO ha iniciado sesión ?>
+                    <?php else: // Si el cliente NO ha iniciado sesión 
+                    ?>
                         <li class="nav-item">
-                            <a href="/cerrodelivery/login_cliente.php" class="btn btn-outline-primary btn-sm me-lg-2 mb-2 mb-lg-0">Iniciar Sesión</a>
+                            <a href="/login_cliente.php" class="btn btn-outline-primary btn-sm me-lg-2 mb-2 mb-lg-0">Iniciar Sesión</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/cerrodelivery/registro_cliente.php" class="btn btn-primary btn-sm">Registrarse</a>
+                            <a href="/registro_cliente.php" class="btn btn-primary btn-sm">Registrarse</a>
                         </li>
                     <?php endif; ?>
                 </ul>
