@@ -2,24 +2,26 @@
 session_start();
 require_once '../includes/conexion.php';
 
+// Seguridad: solo repartidores logueados
 if (!isset($_SESSION['repartidor_id'])) {
     die(); 
 }
 $id_repartidor = $_SESSION['repartidor_id'];
 
-// La consulta PHP no cambia
+// --- CONSULTA CORREGIDA Y SIMPLIFICADA ---
+// Ahora se muestran todos los pedidos listos para recoger a los que el repartidor aún no ha postulado.
+// Se elimina el requisito de afiliación previa.
 $sql_pedidos = "SELECT p.id, p.direccion_pedido, r.nombre_restaurante, r.direccion as direccion_restaurante
                 FROM pedidos p
                 JOIN restaurantes r ON p.id_restaurante = r.id
-                JOIN repartidor_afiliaciones af ON p.id_restaurante = af.id_restaurante
                 WHERE p.estado_pedido = 'Listo para recoger' AND p.id_repartidor IS NULL
-                  AND af.id_repartidor = ? AND af.estado_afiliacion = 'aprobado'
                   AND NOT EXISTS (
                       SELECT 1 FROM pedido_solicitudes_entrega pse
                       WHERE pse.id_pedido = p.id AND pse.id_repartidor = ?
                   )";
 $stmt_pedidos = $conn->prepare($sql_pedidos);
-$stmt_pedidos->bind_param("ii", $id_repartidor, $id_repartidor);
+// Solo necesitamos vincular el id_repartidor una vez.
+$stmt_pedidos->bind_param("i", $id_repartidor);
 $stmt_pedidos->execute();
 $resultado_pedidos = $stmt_pedidos->get_result();
 ?>
@@ -63,7 +65,7 @@ else: ?>
         <div class="text-center p-5 bg-light rounded-3">
             <img src="../assets/img/no-orders-repartidor.svg" alt="Sin pedidos" style="width: 180px;" class="mb-3">
             <h4 class="fw-bold">¡Todo en orden por ahora!</h4>
-            <p class="text-muted">No hay nuevos pedidos disponibles en tus restaurantes afiliados. Vuelve a consultar en unos momentos.</p>
+            <p class="text-muted">Cuando un restaurante tenga un pedido listo, aparecerá aquí.</p>
         </div>
     </div>
 <?php endif; ?>

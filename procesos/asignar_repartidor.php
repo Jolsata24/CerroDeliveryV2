@@ -18,12 +18,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['id_pedido']) && isset(
     $conn->begin_transaction();
 
     try {
-        // 1. Asignar el repartidor y cambiar estado del pedido a "En camino"
+        // --- LA LÍNEA CRÍTICA CORREGIDA ---
+        // Se cambió la condición 'AND id_repartidor IS NULL' por 'AND estado_pedido = 'Listo para recoger''.
+        // Esto es más robusto y se asegura de que solo se puedan asignar repartidores a pedidos que están en el estado correcto.
         $sql1 = "UPDATE pedidos SET id_repartidor = ?, estado_pedido = 'En camino' 
-                 WHERE id = ? AND id_restaurante = ? AND id_repartidor IS NULL";
+                 WHERE id = ? AND id_restaurante = ? AND estado_pedido = 'Listo para recoger'";
         $stmt1 = $conn->prepare($sql1);
         $stmt1->bind_param("iii", $id_repartidor_elegido, $id_pedido, $id_restaurante);
         $stmt1->execute();
+
+        // Si la consulta anterior no afectó a ninguna fila (porque otro admin lo asignó, o el estado no era el correcto), detenemos.
+        if ($stmt1->affected_rows === 0) {
+            throw new Exception("El pedido no estaba disponible para asignación. Es posible que ya haya sido asignado.");
+        }
 
         // 2. Marcar la solicitud del repartidor elegido como 'aprobado'
         $sql2 = "UPDATE pedido_solicitudes_entrega SET estado_solicitud = 'aprobado' 

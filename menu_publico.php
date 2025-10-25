@@ -52,7 +52,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">Nuestro Menú</h2>
         <?php if (isset($_SESSION['cliente_id'])): ?>
-            <a href="/cerrodelivery/checkout.php" class="btn btn-success">
+            <a href="checkout.php" class="btn btn-success">
                 🛒 Ver Carrito
             </a>
         <?php endif; ?>
@@ -83,7 +83,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
                                         Añadir
                                     </button>
                                 <?php else: ?>
-                                    <a href="/cerrodelivery/login_cliente.php" class="btn btn-secondary">
+                                    <a href="login_cliente.php" class="btn btn-secondary">
                                         Inicia Sesión
                                     </a>
                                 <?php endif; ?>
