@@ -11,26 +11,28 @@ if (session_status() == PHP_SESSION_NONE) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CerroDelivery</title>
-    <link rel="icon" type="image/png" href="/assets/img/logoheader.png">
-
+    <link rel="icon" type="image/png" href="/cerrodeliveryv2/assets/img/logoheader.png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/style.css">
     <script>
         const CLIENTE_ID = <?php echo isset($_SESSION['cliente_id']) ? json_encode($_SESSION['cliente_id']) : 'null'; ?>;
     </script>
 </head>
 
 <body class="bg-light">
+<div id="preloader">
+    <img src="/cerrodeliveryv2/assets/img/loader.gif" alt="Cargando..." class="preloader-logo">
+</div>
 
     <div id="preloader">
-        <img src="/assets/img/loader.gif" alt="Cargando..." class="preloader-logo">
+        <img src="/cerrodeliveryv2/assets/img/loader.gif" alt="Cargando..." class="preloader-logo">
     </div>
 
     <nav class="navbar navbar-expand-lg navbar-dark shadow-sm fixed-top">
         <div class="container">
             <a class="navbar-brand" href="/index.php">
-                <img src="/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 40px;">
+                <img src="/cerrodeliveryv2/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 40px;">
             </a>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">

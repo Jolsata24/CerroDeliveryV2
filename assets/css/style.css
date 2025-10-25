@@ -24,18 +24,17 @@ body {
 
 /* Estilo para el nuevo "Hero Section" que crearemos en index.php */
 /* --- HERO SECTION (index.php) --- */
+/* --- HERO SECTION (index.php) --- */
 .hero-section {
-    background-color: #f8f9fa; /* Un gris muy claro, como en la imagen */
-    
-    /* Clave para la altura completa: */
-    min-height: 100vh; /* Ocupa al menos el 100% de la altura de la pantalla */
-    
-    /* Clave para centrar el contenido verticalmente: */
+    background-color: #f8f9fa; 
+    min-height: 100vh; 
     display: flex;
     align-items: center;
-
-    /* Quitamos el margen inferior que ya no es necesario */
     margin: 0; 
+
+    /* --- AÑADE ESTA LÍNEA --- */
+    /* Aquí aplicamos la forma SVG que definimos en el header.php */
+    clip-path: url(#hero-curve);
 }
 /* ===================================== */
 /* ESTILOS PARA EL HERO MEJORADO         */
@@ -238,7 +237,7 @@ body {
     /* NUEVOS ESTILOS PARA EL FONDO */
     background-size: cover;
     background-position: center center;
-    background-image: url('../img/plaza.jpg');
+    background-image: url('/cerrodeliveryv2/img/plaza.jpg');
 }
 
 .auth-card {
@@ -1076,7 +1075,7 @@ body {
 .about-section {
     padding: 6rem 0;
     position: relative;
-    background-image: url('../img/cdp.png');
+    background-image: url('/cerrodeliveryv2/img/cdp.png');
     background-size: cover;
     background-position: center center;
     background-attachment: fixed; /* Efecto Parallax */

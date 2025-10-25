@@ -64,13 +64,13 @@ $imagenes_locales = [
 <div class="hero-section text-center">
     <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-inner">
-            <div class="carousel-item active"><img src="assets/img/fondo2.jpg" class="d-block w-100" alt="Fondo de restaurante"></div>
-            <div class="carousel-item"><img src="assets/img/fondo1.jpg" class="d-block w-100" alt="Fondo de comida"></div>
-            <div class="carousel-item"><img src="assets/img/fondo3.jpg" class="d-block w-100" alt="Fondo de personas comiendo"></div>
+            <div class="carousel-item active"><img src="/cerrodeliveryv2/assets/img/fondo2.jpg" class="d-block w-100" alt="Fondo de restaurante"></div>
+            <div class="carousel-item"><img src="/cerrodeliveryv2/assets/img/fondo1.jpg" class="d-block w-100" alt="Fondo de comida"></div>
+            <div class="carousel-item"><img src="/cerrodeliveryv2/assets/img/fondo3.jpg" class="d-block w-100" alt="Fondo de personas comiendo"></div>
         </div>
     </div>
     <div class="container">
-        <img src="assets/img/logo.png" alt="CerroDelivery Logo" class="hero-logo mb-3">
+        <img src="/cerrodeliveryv2/assets/img/logo.png" alt="CerroDelivery Logo" class="hero-logo mb-3">
 
         <h1 class="display-4 fw-bold">
             Disfruta de tus platos
@@ -109,7 +109,7 @@ $imagenes_locales = [
                     <li>
                         <a href="index.php?categoria_id=<?php echo $categoria['id']; ?>" class="category-card-link text-decoration-none">
                             <div class="card category-card-v2 h-100">
-                                <img src="assets/img/categorias/<?php echo $nombre_imagen; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($categoria['nombre_categoria']); ?>">
+                                <img src="/cerrodeliveryv2/assets/img/categorias/<?php echo $nombre_imagen; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($categoria['nombre_categoria']); ?>">
                                 <div class="card-body text-center">
                                     <h6 class="card-title fw-bold mb-0"><?php echo htmlspecialchars($categoria['nombre_categoria']); ?></h6>
                                 </div>
@@ -145,7 +145,7 @@ $imagenes_locales = [
                     }
                     ?>
                     <div class="col">
-                        <div class="card h-100 shadow-sm card-restaurant-bg <?php echo !$esta_abierto ? 'closed' : ''; ?>" style="background-image: url('assets/img/restaurantes/<?php echo htmlspecialchars($restaurante['imagen_fondo']); ?>');">
+                        <div class="card h-100 shadow-sm card-restaurant-bg <?php echo !$esta_abierto ? 'closed' : ''; ?>" style="background-image: url('/cerrodeliveryv2/assets/img/restaurantes/<?php echo htmlspecialchars($restaurante['imagen_fondo']); ?>');">
                              <div class="card-body d-flex flex-column">
                                 <div class="mt-auto">
                                     <h5 class="card-title fw-bold"><?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h5>
@@ -210,7 +210,7 @@ $imagenes_locales = [
                 <div class="row">
                     <div class="col-lg-4 mb-4">
                         <div class="cta-card text-center">
-                            <img src="assets/img/dueño.jpg" class="card-img-top" alt="Dueño de restaurante">
+                            <img src="/cerrodeliveryv2/assets/img/dueño.jpg" class="card-img-top" alt="Dueño de restaurante">
                             <div class="card-body">
                                 <h5 class="card-title">Registra tu Restaurante</h5>
                                 <p class="card-text text-muted">Aumenta tus ventas llegando a más clientes.</p>
@@ -220,7 +220,7 @@ $imagenes_locales = [
                     </div>
                     <div class="col-lg-4 mb-4">
                         <div class="cta-card text-center">
-                            <img src="assets/img/repartidor.jpg" class="card-img-top" alt="Repartidor">
+                            <img src="/cerrodeliveryv2/assets/img/repartidor.jpg" class="card-img-top" alt="Repartidor">
                             <div class="card-body">
                                 <h5 class="card-title">¡Únete como Repartidor!</h5>
                                 <p class="card-text text-muted">Gana dinero extra en tu tiempo libre.</p>
@@ -230,7 +230,7 @@ $imagenes_locales = [
                     </div>
                     <div class="col-lg-4 mb-4">
                         <div class="cta-card text-center">
-                            <img src="assets/img/usuario.jpg" class="card-img-top" alt="Cliente feliz">
+                            <img src="/cerrodeliveryv2/assets/img/usuario.jpg" class="card-img-top" alt="Cliente feliz">
                             <div class="card-body">
                                 <h5 class="card-title">¿Listo para ordenar?</h5>
                                 <p class="card-text text-muted">Crea tu cuenta para una mejor experiencia.</p>
