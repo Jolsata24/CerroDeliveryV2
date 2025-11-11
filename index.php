@@ -176,8 +176,58 @@ $imagenes_locales = [
             <?php endif; ?>
         </div>
     </div>
-    
-</div> <?php
+    </div>
+            </div> <div class="container my-5">
+                <div class="location-banner-pasco">
+                    <div class="location-banner-content">
+                        <i class="bi bi-geo-alt-fill display-4"></i>
+                        <h2 class="display-5 fw-bold mt-3">¡Llegamos a todo Cerro de Pasco!</h2>
+                        <p class="lead">Desde el corazón de Chaupimarca hasta tu puerta. Tu comida favorita, donde estés. Hacemos repartos en toda la ciudad.</p>
+                    </div>
+                </div>
+            </div>
+    <div class="container section-cta py-5 mt-5">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Forma Parte de CerroDelivery</h2>
+            <p class="lead text-muted">Ingresa a tu panel o únete a nuestra plataforma.</p>
+        </div>
+        <div class="row g-4">
+            
+            <div class="col-md-4">
+                <div class="card cta-card h-100">
+                    <img src="/cerrodeliveryv2/assets/img/usuario.jpg" class="card-img-top" alt="Cliente pidiendo comida">
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title">¿Tienes Hambre?</h5>
+                        <p class="card-text text-muted">Ingresa y descubre los mejores sabores de la ciudad. Tus platos favoritos te esperan.</p>
+                        <a href="login_cliente.php" class="btn btn-primary mt-auto">Ingresar como Cliente</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card cta-card h-100">
+                    <img src="/cerrodeliveryv2/assets/img/dueño.jpg" class="card-img-top" alt="Dueño de restaurante">
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class_s="card-title">¿Tienes un Negocio?</h5>
+                        <p class="card-text text-muted">Gestiona tus pedidos, actualiza tu menú y llega a más clientes que nunca.</p>
+                        <a href="login_restaurante.php" class="btn btn-success mt-auto">Acceso Socios</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card cta-card h-100">
+                    <img src="/cerrodeliveryv2/assets/img/repartidor.jpg" class="card-img-top" alt="Repartidor en moto">
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title">¿Quieres Repartir?</h5>
+                        <p class="card-text text-muted">Conéctate, acepta pedidos y genera ganancias en tu propio horario.</p>
+                        <a href="login_repartidor.php" class="btn btn-info text-white mt-auto">Acceso Repartidores</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div> <?php
 // =====================================
 // CIERRE DE PHP (SIN CAMBIOS)
 // =====================================

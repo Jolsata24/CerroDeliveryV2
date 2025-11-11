@@ -67,7 +67,7 @@ $resultado_entregas = $stmt->get_result();
 else: ?>
     <div class="col-12">
         <div class="text-center p-5 bg-light rounded-3">
-            <img src="../assets/img/no-active-deliveries.svg" alt="Sin entregas" style="width: 180px;" class="mb-3">
+            <img src="../assets/img/no-orders-repartidor.png" alt="Sin entregas" style="width: 180px;" class="mb-3">
             <h4 class="fw-bold">No tienes entregas activas</h4>
             <p class="text-muted">Cuando aceptes un pedido, aparecerá aquí.</p>
         </div>

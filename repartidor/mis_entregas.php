@@ -7,24 +7,29 @@ if (!isset($_SESSION['repartidor_id'])) {
 include '../includes/header.php';
 ?>
 
-<div class="container my-5">
-    <div class="dashboard-header d-flex flex-wrap justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="display-5 fw-bold">Mis Entregas Activas</h1>
-            <p class="text-muted mb-0">¡Manos a la obra! Estos son tus pedidos en curso.</p>
-        </div>
-        <a href="dashboard.php" class="btn btn-outline-secondary mt-3 mt-md-0"><i class="bi bi-arrow-left me-2"></i>Volver a Pedidos Disponibles</a>
-    </div>
-
-    <div id="entregas-container">
-        <div class="text-center p-5">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="visually-hidden">Cargando entregas...</span>
+<div class="hero-quickbite">
+    <div class="container hero-text">
+        <div class="dashboard-header d-flex flex-wrap justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="display-5 fw-bold">Mis Entregas Activas</h1>
+                <p class="lead text-white-50 mb-0">¡Manos a la obra! Estos son tus pedidos en curso.</p>
             </div>
+            <a href="dashboard.php" class="btn btn-outline-light mt-3 mt-md-0"><i class="bi bi-arrow-left me-2"></i>Volver a Pedidos Disponibles</a>
         </div>
     </div>
 </div>
 
+<div class="main-content-overlay">
+    <div class="container">
+        <div id="entregas-container">
+            <div class="text-center p-5">
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                    <span class="visually-hidden">Cargando entregas...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <?php include '../includes/footer.php'; ?>
 
 <script>

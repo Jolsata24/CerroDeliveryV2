@@ -11,70 +11,78 @@ if (!isset($_SESSION['cliente_id'])) {
 include 'includes/header.php';
 ?>
 
-<div class="container my-5">
-    <div class="text-center mb-5">
-        <h1 class="display-5 fw-bold">Ya casi está listo tu pedido</h1>
-        <div class="mb-4">
-        <a href="index.php" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
-        </a>
+<div class="hero-quickbite">
+    <div class="container hero-text text-center">
+        <h1 class="display-4 fw-bold">Ya casi está listo tu pedido</h1>
+        <p class="lead text-white-50">Solo necesitamos unos datos más para la entrega.</p>
     </div>
-        <p class="text-muted">Solo necesitamos unos datos más para la entrega.</p>
-    </div>
+</div>
 
-    <div class="row g-4">
-        <div class="col-lg-7">
-            <div class="card checkout-card">
-                <div class="card-header">
-                    <h4 class="mb-0">🛒 Resumen de tu Carrito</h4>
-                </div>
-                <div id="resumen-carrito" class="card-body p-0">
-                    <div class="p-4 text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Cargando...</span>
+<div class="main-content-overlay">
+    <div class="container"> 
+        
+        <div class="mb-4">
+            <a href="index.php" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-2"></i>Seguir Comprando
+            </a>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="card checkout-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">🛒 Resumen de tu Carrito</h4>
+                    </div>
+                    <div id="resumen-carrito" class="card-body p-0">
+                        <div class="p-4 text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-5">
-            <div class="card checkout-card">
-                 <div class="card-header">
-                    <h4 class="mb-0">📝 Tus Datos para la Entrega</h4>
-                </div>
-                <div class="card-body">
-                    <p class="lead fs-6">Hola, <strong><?php echo htmlspecialchars($_SESSION['cliente_nombre']); ?></strong>.</p>
-                    <form action="procesos/procesar_pedido.php" method="POST" id="checkout-form">
-                        <input type="hidden" name="carrito_data" id="carrito_data">
-                        <input type="hidden" name="id_restaurante" id="id_restaurante">
-                        <input type="hidden" name="latitud" id="latitud">
-                        <input type="hidden" name="longitud" id="longitud">
-                        
-                        <div class="mb-3">
-                            <label for="direccion_pedido" class="form-label fw-bold">Dirección de Entrega Completa</label>
-                            <textarea class="form-control" id="direccion_pedido" name="direccion_pedido" rows="3" required placeholder="Ej: Av. Principal 123, Apto 4, Urb. Las Flores..."></textarea>
-                        </div>
-                        
-                        <div class="d-grid mb-4">
-                            <button type="button" class="btn btn-gps" id="usar-gps-btn">
-                                <i class="bi bi-geo-alt-fill me-2"></i> Usar mi ubicación actual (GPS)
-                            </button>
-                            <div id="gps-status" class="form-text mt-2 text-center"></div>
-                        </div>
+            <div class="col-lg-5">
+                <div class="card checkout-card">
+                    <div class="card-header">
+                        <h4 class="mb-0">📝 Tus Datos para la Entrega</h4>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead fs-6">Hola, <strong><?php echo htmlspecialchars($_SESSION['cliente_nombre']); ?></strong>.</p>
+                        <form action="procesos/procesar_pedido.php" method="POST" id="checkout-form">
+                            <input type="hidden" name="carrito_data" id="carrito_data">
+                            <input type="hidden" name="id_restaurante" id="id_restaurante">
+                            <input type="hidden" name="latitud" id="latitud">
+                            <input type="hidden" name="longitud" id="longitud">
+                            
+                            <div class="mb-3">
+                                <label for="direccion_pedido" class="form-label fw-bold">Dirección de Entrega Completa</label>
+                                <textarea class="form-control" id="direccion_pedido" name="direccion_pedido" rows="3" required placeholder="Ej: Av. Principal 123, Apto 4, Urb. Las Flores..."></textarea>
+                            </div>
+                            
+                            <div class="d-grid mb-4">
+                                <button type="button" class="btn btn-gps" id="usar-gps-btn">
+                                    <i class="bi bi-geo-alt-fill me-2"></i> Usar mi ubicación actual (GPS)
+                                </button>
+                                <div id="gps-status" class="form-text mt-2 text-center"></div>
+                            </div>
 
-                        <div class="d-grid">
-                             <button type="submit" class="btn btn-primary btn-lg btn-confirm-order">
-                                 Confirmar y Realizar Pedido
-                            </button>
-                        </div>
-                    </form>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg btn-confirm-order">
+                                    Confirmar y Realizar Pedido
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <script>
+    // Variable CLIENTE_ID (sin cambios)
     const CLIENTE_ID = <?php echo isset($_SESSION['cliente_id']) ? json_encode($_SESSION['cliente_id']) : 'null'; ?>;
 </script>
 <script>
@@ -84,10 +92,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const restauranteIdInput = document.getElementById('id_restaurante');
     const checkoutForm = document.getElementById('checkout-form');
     
-    // --- INICIO DE LA MODIFICACIÓN ---
-    const carritoKey = `carritoData_${CLIENTE_ID}`; // Clave única por usuario
+    const carritoKey = `carritoData_${CLIENTE_ID}`;
     let carritoData = JSON.parse(sessionStorage.getItem(carritoKey)) || { items: [], restauranteId: null };
-    // --- FIN DE LA MODIFICACIÓN ---
     let carrito = carritoData.items;
 
     function renderCarrito() {
@@ -101,6 +107,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         checkoutForm.style.display = 'block';
         let total = 0;
+
+        // === INICIO DE LA CORRECCIÓN RESPONSIVE ===
+        // 1. Creamos un 'div' que envolverá la tabla
+        const responsiveWrapper = document.createElement('div');
+        responsiveWrapper.className = 'table-responsive';
+        // === FIN DE LA CORRECCIÓN RESPONSIVE ===
+
         const tabla = document.createElement('table');
         tabla.className = 'table table-borderless align-middle summary-table';
         tabla.innerHTML = `
@@ -147,11 +160,18 @@ document.addEventListener('DOMContentLoaded', function() {
             </tr>
         `;
 
-        resumenDiv.appendChild(tabla);
+        // === INICIO DE LA CORRECCIÓN RESPONSIVE ===
+        // 2. Añadimos la tabla al 'wrapper' responsivo
+        responsiveWrapper.appendChild(tabla);
+        // 3. Añadimos el 'wrapper' (que contiene la tabla) al div principal
+        resumenDiv.appendChild(responsiveWrapper);
+        // === FIN DE LA CORRECCIÓN RESPONSIVE ===
+        
         carritoDataInput.value = JSON.stringify(carrito);
         restauranteIdInput.value = carritoData.restauranteId;
     }
 
+    // --- LÓGICA DE MODIFICAR Y ELIMINAR (SIN CAMBIOS) ---
     window.modificarCantidad = function(idPlato, cambio) {
         const item = carrito.find(i => i.id === idPlato);
         if (item) {
@@ -171,9 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function guardarYRenderizar() {
         carritoData.items = carrito;
-        // --- INICIO DE LA MODIFICACIÓN ---
         sessionStorage.setItem(carritoKey, JSON.stringify(carritoData));
-        // --- FIN DE LA MODIFICACIÓN ---
         renderCarrito();
     }
 
@@ -181,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 <script>
-// Script del GPS (sin cambios)
+// --- SCRIPT DEL GPS (SIN CAMBIOS) ---
 document.addEventListener('DOMContentLoaded', function() {
     const gpsBoton = document.getElementById('usar-gps-btn');
     const direccionTextarea = document.getElementById('direccion_pedido');

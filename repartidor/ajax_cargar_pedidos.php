@@ -63,7 +63,7 @@ $resultado_pedidos = $stmt_pedidos->get_result();
 else: ?>
     <div class="col-12">
         <div class="text-center p-5 bg-light rounded-3">
-            <img src="../assets/img/no-orders-repartidor.svg" alt="Sin pedidos" style="width: 180px;" class="mb-3">
+            <img src="../assets/img/no-orders-repartidor.png" alt="Sin pedidos" style="width: 180px;" class="mb-3">
             <h4 class="fw-bold">¡Todo en orden por ahora!</h4>
             <p class="text-muted">Cuando un restaurante tenga un pedido listo, aparecerá aquí.</p>
         </div>

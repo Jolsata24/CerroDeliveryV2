@@ -44,7 +44,13 @@ include 'includes/header.php'; // Se incluye el header normalmente
             <span class="ms-2 text-muted">(<?php echo $total_votos; ?> reseñas)</span>
         </div>
         <p class="fs-5 text-muted"><?php echo htmlspecialchars($restaurante['direccion'] ?? ''); ?></p>
-    </div>
+        
+        <?php if (isset($_SESSION['cliente_id'])): ?>
+            <button class="btn btn-outline-light mt-3" data-bs-toggle="modal" data-bs-target="#ratingModal">
+                <i class="bi bi-star-fill me-2"></i> Calificar este restaurante
+            </button>
+        <?php endif; ?>
+        </div>
 </div>
 
 <div class="container py-5">
@@ -83,14 +89,10 @@ include 'includes/header.php'; // Se incluye el header normalmente
                                         Añadir
                                     </button>
                                 <?php else: ?>
-<<<<<<< HEAD
                                     <a href="login_cliente.php" class="btn btn-secondary">
-=======
-                                    <a href="/login_cliente.php" class="btn btn-secondary">
->>>>>>> f8c8ede5fc6015f16e38129b8daf6490113cb247
                                         Inicia Sesión
                                     </a>
-                                <?php endif; ?>
+                                    <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -106,10 +108,32 @@ include 'includes/header.php'; // Se incluye el header normalmente
 
 
 <?php if (isset($_SESSION['cliente_id'])): ?>
-<div class="modal fade" id="ratingModal" tabindex="-1">
+<div class="modal fade rating-modal" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true" data-restaurante-id="<?php echo $id_restaurante; ?>">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ratingModalLabel">Califica a "<?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?>"</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <p>¿Qué te pareció este restaurante? Tu opinión es importante.</p>
+                <div classs="rating-stars mb-3">
+                    <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 estrellas">★</label>
+                    <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 estrellas">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 estrellas">★</label>
+                    <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="2 estrellas">★</label>
+                    <input type="radio" id="star1" name="rating" value="1" /><label for="star1" title="1 estrella">★</label>
+                </div>
+                <span class="rating-feedback text-muted">Selecciona una calificación</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmRatingBtn" disabled>Confirmar Calificación</button>
+            </div>
+        </div>
     </div>
+</div>
 <?php endif; ?>
-
 <?php
 $stmt_restaurante->close();
 $stmt_platos->close();

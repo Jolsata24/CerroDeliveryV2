@@ -22,11 +22,47 @@ if (session_status() == PHP_SESSION_NONE) {
     <?php
     // Obtiene el nombre del archivo actual (ej: "index.php", "mis_pedidos.php")
     $script_name = basename($_SERVER['SCRIPT_NAME']);
+    $script_path = $_SERVER['SCRIPT_NAME'];
 
-    // Si el archivo es "index.php", carga el CSS especial
+    // Carga un CSS específico solo para la página de inicio
     if ($script_name == 'index.php'):
     ?>
         <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/index.css?v=2">
+    <?php
+    // Carga un CSS específico solo para la página de menú público
+    elseif ($script_name == 'menu_publico.php'):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/menu_publico.css?v=1">
+    <?php
+    // Carga un CSS específico solo para la página de checkout
+    elseif ($script_name == 'checkout.php'):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/checkout.css?v=1">
+    
+    <?php
+    // Carga un CSS específico solo para la página de "Mis Pedidos"
+    elseif ($script_name == 'mis_pedidos.php'):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/mis_pedidos.css?v=1">
+    
+    <?php
+    // Carga un CSS específico solo para el dashboard del restaurante
+    elseif ($script_name == 'dashboard.php' && strpos($script_path, '/restaurante/') !== false):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/restaurante-dashboard.css?v=1">
+    
+    <?php
+    // Carga un CSS específico solo para el dashboard del repartidor
+    elseif ($script_name == 'dashboard.php' && strpos($script_path, '/repartidor/') !== false):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/repartidor-dashboard.css?v=1">
+    
+    <?php
+    // === INICIO DE LA MODIFICACIÓN ===
+    // Carga un CSS específico para "Mis Entregas" del repartidor
+    elseif ($script_name == 'mis_entregas.php' && strpos($script_path, '/repartidor/') !== false):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/repartidor-entregas.css?v=1">
     <?php endif; ?>
     <script>
         // Esta lógica de JS se mantiene
@@ -42,7 +78,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="index.php">
+            <a class="navbar-brand" href="/cerrodeliveryv2/index.php">
                 <img src="/cerrodeliveryv2/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 40px;">
             </a>
 
@@ -53,15 +89,15 @@ if (session_status() == PHP_SESSION_NONE) {
             <div class="collapse navbar-collapse" id="mainNavbar">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="index.php">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/cerrodeliveryv2/index.php">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="index.php#restaurantes-section">Restaurantes</a>
+                        <a class="nav-link" href="/cerrodeliveryv2/index.php#restaurantes-section">Restaurantes</a>
                     </li>
                     <?php if (isset($_SESSION['cliente_id'])): // Lógica de sesión original 
                     ?>
                         <li class="nav-item">
-                            <a href="mis_pedidos.php" class="nav-link">Mis Pedidos</a>
+                            <a href="/cerrodeliveryv2/mis_pedidos.php" class="nav-link">Mis Pedidos</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -74,7 +110,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                 Hola, <?php echo htmlspecialchars($_SESSION['cliente_nombre']); ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="mis_pedidos.php">Mis Pedidos</a></li>
+                                <li><a class="dropdown-item" href="/cerrodeliveryv2/mis_pedidos.php">Mis Pedidos</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
