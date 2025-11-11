@@ -42,7 +42,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div class="container">
-            <a class="navbar-brand" href="/index.php">
+            <a class="navbar-brand" href="index.php">
                 <img src="/cerrodeliveryv2/assets/img/logo.png" alt="CerroDelivery Logo" style="height: 40px;">
             </a>
 
@@ -78,16 +78,16 @@ if (session_status() == PHP_SESSION_NONE) {
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="/procesos/logout_cliente.php">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="/cerrodeliveryv2/procesos/logout_cliente.php">Cerrar Sesión</a></li>
                             </ul>
                         </li>
                     <?php else: // Lógica de sesión original 
                     ?>
                         <li class="nav-item">
-                            <a href="/login_cliente.php" class="btn btn-outline-secondary btn-sm me-lg-2 mb-2 mb-lg-0">Iniciar Sesión</a>
+                            <a href="/cerrodeliveryv2/login_cliente.php" class="btn btn-outline-secondary btn-sm me-lg-2 mb-2 mb-lg-0">Iniciar Sesión</a>
                         </li>
                         <li class="nav-item">
-                            <a href="/registro_cliente.php" class="btn btn-primary btn-sm">Registrarse</a>
+                            <a href="/cerrodeliveryv2/registro_cliente.php" class="btn btn-primary btn-sm">Registrarse</a>
                         </li>
                     <?php endif; ?>
                 </ul>

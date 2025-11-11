@@ -107,7 +107,7 @@ $imagenes_locales = [
                     $nombre_imagen = $imagenes_locales[$key_imagen] ?? 'default.png';
                 ?>
                     <li>
-                        <a href="index.php?categoria_id=<?php echo $categoria['id']; ?>" class="category-card-link text-decoration-none">
+                        <a href="cerrodeliveryv2/index.php?categoria_id=<?php echo $categoria['id']; ?>" class="category-card-link text-decoration-none">
                             <div class="card category-card-v2 h-100">
                                 <img src="/cerrodeliveryv2/assets/img/categorias/<?php echo $nombre_imagen; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($categoria['nombre_categoria']); ?>">
                                 <div class="card-body text-center">

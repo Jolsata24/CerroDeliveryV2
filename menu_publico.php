@@ -52,11 +52,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">Nuestro Menú</h2>
         <?php if (isset($_SESSION['cliente_id'])): ?>
-<<<<<<< HEAD
             <a href="checkout.php" class="btn btn-success">
-=======
-            <a href="/checkout.php" class="btn btn-success">
->>>>>>> f8c8ede5fc6015f16e38129b8daf6490113cb247
                 🛒 Ver Carrito
             </a>
         <?php endif; ?>
