@@ -34,6 +34,10 @@ if (session_status() == PHP_SESSION_NONE) {
     ?>
         <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/menu_publico.css?v=1">
     <?php
+    elseif ($script_name == 'rastrear_pedido.php'):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/rastrear-pedido.css?v=1">
+    <?php
     // Carga un CSS específico solo para la página de checkout
     elseif ($script_name == 'checkout.php'):
     ?>
@@ -58,11 +62,17 @@ if (session_status() == PHP_SESSION_NONE) {
         <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/repartidor-dashboard.css?v=1">
     
     <?php
-    // === INICIO DE LA MODIFICACIÓN ===
     // Carga un CSS específico para "Mis Entregas" del repartidor
     elseif ($script_name == 'mis_entregas.php' && strpos($script_path, '/repartidor/') !== false):
     ?>
         <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/repartidor-entregas.css?v=1">
+    
+    <?php
+    // === INICIO DE LA MODIFICACIÓN ===
+    // Carga un CSS específico para "Gestión de Pedidos" del restaurante
+    elseif ($script_name == 'pedidos.php' && strpos($script_path, '/restaurante/') !== false):
+    ?>
+        <link rel="stylesheet" href="/cerrodeliveryv2/assets/css/restaurante-pedidos.css?v=1">
     <?php endif; ?>
     <script>
         // Esta lógica de JS se mantiene
