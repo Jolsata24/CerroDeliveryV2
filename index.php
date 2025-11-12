@@ -90,7 +90,7 @@ $imagenes_locales = [
 
 <div class="main-content-overlay">
 
-    <div class="container category-section mb-5"> <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="container category-section mb-5"> <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
              <h2 class="fw-bold mb-0">¿Qué se te antoja hoy?</h2>
              <?php if($categoria_seleccionada_id > 0): // Lógica sin cambios ?>
                 <a href="index.php" class="btn btn-outline-secondary btn-sm">Ver todas</a>
@@ -227,7 +227,7 @@ $imagenes_locales = [
             </div>
         </div>
     </div>
-    </div> <?php
+</div> <?php
 // =====================================
 // CIERRE DE PHP (SIN CAMBIOS)
 // =====================================

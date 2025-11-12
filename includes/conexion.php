@@ -6,10 +6,16 @@
 // -----------------------------------------------------------------
 // 1. DATOS DE CONFIGURACIÓN (PARA TU SERVIDOR LOCAL XAMPP)
 // -----------------------------------------------------------------
-$servername = "162.241.60.127";        // El servidor donde está la base de datos
-$username = "herework_jolsata24";               // El usuario de la base de datos (por defecto en XAMPP)
-$password = "polloasado500";                   // La contraseña del usuario (vacía por defecto en XAMPP)
-$dbname = "herework_cerrodelivery";     // El nombre de la base de datos que creaste
+//$servername = "162.241.60.127";         El servidor donde está la base de datos
+//$username = "herework_jolsata24";               // El usuario de la base de datos (por defecto en XAMPP)
+//$password = "polloasado500";                   // La contraseña del usuario (vacía por defecto en XAMPP)
+//$dbname = "herework_cerrodelivery";     // El nombre de la base de datos que creaste
+
+
+$servername = "localhost";        // El servidor donde está la base de datos
+$username = "root";               // El usuario de la base de datos (por defecto en XAMPP)
+$password = "123456";                   // La contraseña del usuario (vacía por defecto en XAMPP)
+$dbname = "cerrodelivery_db";     // El nombre de la base de datos que creaste
 
 // -----------------------------------------------------------------
 // 2. CREAR LA CONEXIÓN USANDO MySQLi (Método Orientado a Objetos)

@@ -23,7 +23,8 @@ if ($resultado_restaurante->num_rows == 0) {
 $restaurante = $resultado_restaurante->fetch_assoc();
 
 // Obtener los platos del restaurante
-$sql_platos = "SELECT * FROM menu_platos WHERE id_restaurante = ? ORDER BY nombre_plato ASC";
+// Obtener los platos del restaurante (SOLO LOS VISIBLES)
+$sql_platos = "SELECT * FROM menu_platos WHERE id_restaurante = ? AND esta_visible = 1 ORDER BY nombre_plato ASC";
 $stmt_platos = $conn->prepare($sql_platos);
 $stmt_platos->bind_param("i", $id_restaurante);
 $stmt_platos->execute();
