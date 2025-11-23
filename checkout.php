@@ -49,32 +49,57 @@ include 'includes/header.php';
                         <h4 class="mb-0">📝 Tus Datos para la Entrega</h4>
                     </div>
                     <div class="card-body">
-                        <p class="lead fs-6">Hola, <strong><?php echo htmlspecialchars($_SESSION['cliente_nombre']); ?></strong>.</p>
-                        <form action="procesos/procesar_pedido.php" method="POST" id="checkout-form">
-                            <input type="hidden" name="carrito_data" id="carrito_data">
-                            <input type="hidden" name="id_restaurante" id="id_restaurante">
-                            <input type="hidden" name="latitud" id="latitud">
-                            <input type="hidden" name="longitud" id="longitud">
-                            
-                            <div class="mb-3">
-                                <label for="direccion_pedido" class="form-label fw-bold">Dirección de Entrega Completa</label>
-                                <textarea class="form-control" id="direccion_pedido" name="direccion_pedido" rows="3" required placeholder="Ej: Av. Principal 123, Apto 4, Urb. Las Flores..."></textarea>
-                            </div>
-                            
-                            <div class="d-grid mb-4">
-                                <button type="button" class="btn btn-gps" id="usar-gps-btn">
-                                    <i class="bi bi-geo-alt-fill me-2"></i> Usar mi ubicación actual (GPS)
-                                </button>
-                                <div id="gps-status" class="form-text mt-2 text-center"></div>
-                            </div>
+    <p class="lead fs-6">Hola, <strong><?php echo htmlspecialchars($_SESSION['cliente_nombre']); ?></strong>.</p>
+    <form action="procesos/procesar_pedido.php" method="POST" id="checkout-form">
+        <input type="hidden" name="carrito_data" id="carrito_data">
+        <input type="hidden" name="id_restaurante" id="id_restaurante">
+        
+        <input type="hidden" name="latitud" id="latitud">
+        <input type="hidden" name="longitud" id="longitud">
+        
+        <div class="mb-4">
+            <label class="form-label fw-bold"><i class="bi bi-geo-alt-fill me-2"></i>Ubicación de Entrega</label>
+            
+            <div id="mapa-checkout" style="height: 250px; width: 100%; border-radius: 10px; margin-bottom: 10px;" class="border"></div>
+            <div class="form-text mb-2 text-primary"><i class="bi bi-info-circle"></i> Mueve el pin rojo para ajustar tu ubicación exacta.</div>
 
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg btn-confirm-order">
-                                    Confirmar y Realizar Pedido
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+            <div class="d-grid mb-3">
+                <button type="button" class="btn btn-outline-primary btn-sm" id="usar-gps-btn">
+                    <i class="bi bi-crosshair me-1"></i> Detectar mi ubicación (GPS)
+                </button>
+                <div id="gps-status" class="form-text text-center"></div>
+            </div>
+
+            <label for="direccion_pedido" class="form-label small text-muted">Referencia escrita (Torre, Piso, Color de puerta)</label>
+            <textarea class="form-control" id="direccion_pedido" name="direccion_pedido" rows="2" required placeholder="Ej: Casa verde frente al parque..."></textarea>
+        </div>
+        
+        <div class="mb-4">
+            <label class="form-label fw-bold"><i class="bi bi-wallet2 me-2"></i>Método de Pago</label>
+            <select class="form-select mb-3" id="metodo_pago" name="metodo_pago" required>
+                <option value="" selected disabled>Selecciona cómo pagar</option>
+                <option value="yape">Yape / Plin</option>
+                <option value="tarjeta">Tarjeta (POS)</option>
+                <option value="efectivo">Efectivo</option>
+            </select>
+
+            <div id="div-vuelto" style="display: none;">
+                <label for="monto_pagar" class="form-label small">¿Con cuánto vas a pagar?</label>
+                <div class="input-group">
+                    <span class="input-group-text">S/</span>
+                    <input type="number" class="form-control" id="monto_pagar" name="monto_pagar" placeholder="Ej: 50.00" step="0.10">
+                </div>
+                <div class="form-text">Llevaremos el vuelto exacto.</div>
+            </div>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary btn-lg btn-confirm-order">
+                Confirmar Pedido
+            </button>
+        </div>
+    </form>
+</div>
                 </div>
             </div>
         </div>
@@ -224,6 +249,82 @@ document.addEventListener('DOMContentLoaded', function() {
             );
         } else { /* ... (manejo de errores sin cambios) ... */ }
     });
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- 1. LÓGICA DEL MAPA (LEAFLET) ---
+    // Coordenadas por defecto (Cerro de Pasco aprox o Lima)
+    const defaultLat = -10.683; 
+    const defaultLng = -76.256;
+
+    const mapa = L.map('mapa-checkout').setView([defaultLat, defaultLng], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap'
+    }).addTo(mapa);
+
+    // Marcador arrastrable
+    let marcador = L.marker([defaultLat, defaultLng], {draggable: true}).addTo(mapa);
+
+    // Función para actualizar inputs ocultos
+    function actualizarCoordenadas(lat, lng) {
+        document.getElementById('latitud').value = lat;
+        document.getElementById('longitud').value = lng;
+    }
+    // Inicializar inputs
+    actualizarCoordenadas(defaultLat, defaultLng);
+
+    // Escuchar evento de arrastre del marcador
+    marcador.on('dragend', function(event) {
+        var position = marker.getLatLng();
+        actualizarCoordenadas(position.lat, position.lng);
+    });
+
+    // --- 2. LÓGICA DEL GPS ---
+    const gpsBtn = document.getElementById('usar-gps-btn');
+    const gpsStatus = document.getElementById('gps-status');
+
+    gpsBtn.addEventListener('click', function() {
+        if (navigator.geolocation) {
+            gpsStatus.textContent = 'Buscando satélites...';
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    // Mover mapa y marcador
+                    mapa.setView([lat, lon], 16);
+                    marcador.setLatLng([lat, lon]);
+                    actualizarCoordenadas(lat, lon);
+                    
+                    gpsStatus.innerHTML = '<span class="text-success">¡Ubicación encontrada! Ajusta el pin si es necesario.</span>';
+                },
+                function() {
+                    gpsStatus.innerHTML = '<span class="text-danger">No pudimos detectar tu ubicación. Mueve el pin manualmente.</span>';
+                }
+            );
+        }
+    });
+
+    // --- 3. LÓGICA DE PAGO ---
+    const selectPago = document.getElementById('metodo_pago');
+    const divVuelto = document.getElementById('div-vuelto');
+    const inputVuelto = document.getElementById('monto_pagar');
+
+    selectPago.addEventListener('change', function() {
+        if (this.value === 'efectivo') {
+            divVuelto.style.display = 'block';
+            inputVuelto.setAttribute('required', 'true');
+        } else {
+            divVuelto.style.display = 'none';
+            inputVuelto.removeAttribute('required');
+            inputVuelto.value = '';
+        }
+    });
+    
+    // Solución para renderizado correcto del mapa si estaba oculto o en tabs
+    setTimeout(function(){ mapa.invalidateSize(); }, 400);
 });
 </script>
 
