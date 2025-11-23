@@ -1,0 +1,221 @@
+/* ======================================================= */
+/* CERRODELIVERY - LOGIN.CSS (DISEÑO PREMIUM)             */
+/* ======================================================= */
+
+/* --- 1. FONDO Y CONTENEDOR PRINCIPAL --- */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    
+    /* Imagen de fondo con efecto parallax fijo */
+    background-image: url('../img/plaza.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* Overlay degradado para mejorar contraste y elegancia */
+.auth-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Degradado azul oscuro corporativo con transparencia */
+    background: linear-gradient(135deg, rgba(13, 50, 77, 0.85), rgba(28, 95, 142, 0.75));
+    backdrop-filter: blur(4px); /* Desenfoque sutil al fondo */
+    z-index: 1;
+}
+
+/* --- 2. TARJETA DE LOGIN (AUTH CARD) --- */
+.auth-card {
+    width: 100%;
+    max-width: 420px; /* Ancho óptimo para lectura */
+    position: relative;
+    z-index: 2; /* Por encima del overlay */
+    
+    background: rgba(255, 255, 255, 0.95); /* Blanco casi puro */
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 24px; /* Bordes muy redondeados */
+    
+    /* Sombra profunda para efecto flotante 3D */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    
+    animation: fadeInUp 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Animación de entrada suave */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card .card-body {
+    padding: 3rem 2.5rem; /* Espaciado interno generoso */
+}
+
+/* --- 3. LOGOTIPO Y TÍTULOS --- */
+.auth-card img {
+    height: 60px !important; /* Ajuste de tamaño del logo */
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.auth-card img:hover {
+    transform: scale(1.05) rotate(-2deg);
+}
+
+.auth-card .card-title {
+    font-weight: 800;
+    color: #0d324d; /* Azul oscuro */
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.5px;
+}
+
+.auth-card p.text-muted {
+    font-size: 0.95rem;
+    margin-bottom: 2rem !important;
+}
+
+/* --- 4. FORMULARIO (INPUTS) --- */
+.form-label {
+    font-weight: 600;
+    color: #4b5563;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    margin-left: 0.2rem;
+}
+
+.form-control {
+    background-color: #f3f4f6; /* Gris muy claro */
+    border: 2px solid transparent;
+    border-radius: 12px; /* Bordes redondeados modernos */
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    color: #1f2937;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    background-color: #ffffff;
+    border-color: #0d6efd; /* Azul marca */
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+}
+
+/* Iconos o Placeholders */
+.form-control::placeholder {
+    color: #9ca3af;
+    font-size: 0.95rem;
+}
+
+/* Espaciado entre campos */
+.mb-3 {
+    margin-bottom: 1.5rem !important;
+}
+
+/* --- 5. BOTONES --- */
+.btn-primary, .btn-success, .btn-info {
+    width: 100%;
+    padding: 0.9rem;
+    border-radius: 50px; /* Botón píldora */
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: 0.5px;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    margin-top: 1rem;
+}
+
+/* Estilo específico para botón primario (Azul) */
+.btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #0043a8);
+    box-shadow: 0 10px 20px rgba(13, 110, 253, 0.3);
+}
+
+/* Estilo para botón success (Verde - Restaurantes) */
+.btn-success {
+    background: linear-gradient(135deg, #198754, #146c43);
+    box-shadow: 0 10px 20px rgba(25, 135, 84, 0.3);
+}
+
+/* Estilo para botón info (Celeste - Repartidores) */
+.btn-info {
+    background: linear-gradient(135deg, #0dcaf0, #0aa2c0);
+    box-shadow: 0 10px 20px rgba(13, 202, 240, 0.3);
+    color: white !important;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+}
+
+/* --- 6. ENLACES Y PIE DE TARJETA --- */
+.auth-card p.text-center {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-top: 1.5rem;
+}
+
+.auth-card a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+
+.auth-card a:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
+
+/* --- 7. ALERTAS (ERRORES/ÉXITO) --- */
+.alert {
+    border-radius: 12px;
+    border: none;
+    font-size: 0.9rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.alert-danger {
+    background-color: #fef2f2;
+    color: #991b1b;
+    border-left: 4px solid #ef4444;
+}
+
+.alert-success {
+    background-color: #f0fdf4;
+    color: #166534;
+    border-left: 4px solid #22c55e;
+}
+
+/* --- 8. RESPONSIVIDAD --- */
+@media (max-width: 576px) {
+    .auth-page {
+        padding: 1rem;
+        align-items: flex-start; /* En móviles pequeños, alinear arriba */
+        padding-top: 3rem;
+    }
+    
+    .auth-card {
+        max-width: 100%;
+        border-radius: 20px;
+    }
+    
+    .auth-card .card-body {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-card .card-title {
+        font-size: 1.5rem;
+    }
+}

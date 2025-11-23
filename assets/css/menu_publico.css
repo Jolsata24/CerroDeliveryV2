@@ -1,48 +1,9 @@
-/* ===================================== */
-/* ESTILOS EXCLUSIVOS PARA MENU_PUBLICO.PHP */
-/* (BASADO EN EL ESTILO DE "CERRODELIVERY") */
-/* ===================================== */
+/* ======================================================= */
+/* CERRODELIVERY - MENU_PUBLICO.CSS (DISEÑO PREMIUM)      */
+/* ======================================================= */
 
-/* --- 1. PREPARACIÓN: HEADER TRANSPARENTE --- */
-.navbar.sticky-top {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    
-    /* ¡¡¡ESTA ES LA CORRECCIÓN!!! */
-    position: fixed; /* Debe ser 'fixed', no 'absolute' */
-    
-    width: 100%;
-    z-index: 100;
-    transition: background-color 0.3s ease;
-}
-
-/* ¡NUEVO! Define el estado "scrolled" (desplazado) */
-.navbar.sticky-top.navbar-scrolled {
-    background: #103652f5 !important; /* Fondo azul sólido al hacer scroll */
-    box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important;
-}
-.navbar.sticky-top .navbar-brand {
-    filter: none;
-}
-.navbar.sticky-top .nav-link,
-.navbar.sticky-top .dropdown-toggle {
-    color: #ffffff !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-.navbar.sticky-top .dropdown-menu .dropdown-item {
-    color: #212529 !important; 
-    text-shadow: none;
-}
-.navbar.sticky-top .btn-outline-secondary {
-    background-color: rgba(255,255,255,0.2);
-    border-color: #ffffff;
-    color: #ffffff;
-}
- .navbar.sticky-top .btn-primary {
-    background-color: #ffffff;
-    border-color: #ffffff;
-    color: #0d6efd;
-}
+/* --- 1. AJUSTES GLOBALES Y NAVBAR --- */
+/* Forzamos que el contenido no se pegue arriba porque el navbar es fixed */
 body > main.container.mt-4 {
     margin-top: 0 !important;
     padding-top: 0 !important;
@@ -51,219 +12,257 @@ body > main.container.mt-4 {
     padding-right: 0;
 }
 
-/* --- 2. ESTILOS DEL HERO (CENTRADO) --- */
-.hero-quickbite {
-    background: linear-gradient(135deg, #0d324d, #1c5f8e);
-    color: #ffffff;
+/* Navbar transparente sobre el banner */
+.navbar.sticky-top {
+    background: transparent !important;
+    box-shadow: none !important;
+    transition: all 0.3s ease;
+}
+
+.navbar.sticky-top.navbar-scrolled {
+    background: rgba(16, 54, 82, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1) !important;
+}
+
+/* --- 2. HERO BANNER DEL RESTAURANTE --- */
+.menu-hero-banner {
     position: relative;
-    overflow: hidden; /* Oculta la imagen en móvil */
+    height: 60vh; /* Altura imponente */
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Efecto Parallax suave */
     display: flex;
     align-items: center;
-    min-height: 100vh;
-    padding-bottom: 80px;    
-    box-sizing: border-box;
+    justify-content: center;
+    color: #ffffff;
+    text-align: center;
 }
-.hero-quickbite .container {
-    padding-top: 0px;
+
+/* Capa oscura (Overlay) para legibilidad */
+.menu-hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(13, 50, 77, 0.3), rgba(13, 50, 77, 0.9));
+    z-index: 1;
 }
-.hero-quickbite .hero-text {
+
+.restaurant-header {
     position: relative;
-    z-index: 3; /* Texto delante de la imagen */
+    z-index: 2;
+    max-width: 800px;
+    padding: 0 1rem;
+    animation: fadeInUp 0.8s ease-out;
 }
-.hero-quickbite .hero-text h1 {
+
+.restaurant-header h1 {
     font-size: 3.5rem;
     font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    margin-bottom: 0.5rem;
 }
-.hero-quickbite .hero-text .lead {
-    color: #edf2f4;
+
+/* Estrellas de calificación */
+.restaurant-header .text-warning {
+    color: #ffc107 !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     font-size: 1.25rem;
 }
-.hero-quickbite .btn-order-now {
-    background-color: transparent;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    font-weight: 700;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-    text-decoration: none;
+
+.restaurant-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Animación de entrada */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- 3. CONTENEDOR PRINCIPAL (MENÚ) --- */
+/* Este contenedor se superpone al banner para el efecto moderno */
+.container.py-5 {
+    position: relative;
+    background-color: #f8f9fa; /* Gris muy suave */
+    border-radius: 40px 40px 0 0;
+    margin-top: -60px; /* EL TRUCO VISUAL */
+    z-index: 10;
+    padding-top: 3rem !important;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.05);
+    min-height: 50vh;
+}
+
+/* Título de sección */
+h2.fw-bold {
+    color: #1f2937;
+    position: relative;
     display: inline-block;
 }
-.hero-quickbite .btn-order-now:hover {
-    background-color: #ffffff;
-    color: #0d6efd;
-    transform: translateY(-3px);
+
+/* Botón flotante "Ver Carrito" */
+.btn-success {
+    background: linear-gradient(135deg, #198754, #146c43);
+    border: none;
+    border-radius: 50px;
+    padding: 0.6rem 1.5rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+    transition: transform 0.2s ease;
 }
-.hero-quickbite .hero-image {
-    z-index: 2; /* Imagen detrás del texto */
-}
-.hero-quickbite .hero-image img {
-    padding-left: 50px;
-    max-width: 100%;
-    animation: float 4s ease-in-out infinite;
-    position: relative;
-}
-@keyframes float {
-    0% { transform: translatey(0px); }
-    50% { transform: translatey(-40px); }
-    100% { transform: translatey(0px); }
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(25, 135, 84, 0.4);
 }
 
-/* --- 3. TARJETA SUPERPUESTA (CON ONDA VISIBLE) --- */
-.main-content-overlay {
-    background-color: #ffffff; 
-    position: relative;
-    overflow: hidden;
-    background-image: linear-gradient(
-      100deg,
-      rgba(13, 50, 77, 0) 20%,
-      rgba(13, 50, 77, 0.08) 50%,
-      rgba(13, 50, 77, 0) 80%
-    );
-    background-size: 300% 300%; 
-    animation: wave-animation 15s ease-in-out infinite;
-    border-radius: 1.5rem 1.5rem 0 0;
-    padding: 3rem 0;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
-    margin-top: -80px; 
-    z-index: 2;
-}
-
-/* --- 4. AJUSTES AL CONTENIDO INTERNO --- */
-.main-content-overlay .category-section .scroller {
-     -webkit-mask: none;
-     mask: none;
-}
-.main-content-overlay .category-card-v2 {
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #f0f0f0;
-}
-.main-content-overlay .card-restaurant {
-     border-radius: 1rem;
-     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-     border: 1px solid #f0f0f0;
-}
-.main-content-overlay .form-control {
-    border-radius: 0.5rem 0 0 0.5rem !important;
-}
-.main-content-overlay .input-group .btn-primary {
-    border-radius: 0 0.5rem 0.5rem 0 !important;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-/* --- MEJORA: Tarjetas de Platos (Horizontal) --- */
+/* --- 4. TARJETAS DE PLATOS (CARD PLATO) --- */
 .card-plato {
     display: flex;
-    flex-direction: row;
-    border: 1px solid #f0f0f0;
-    border-radius: 16px;
+    flex-direction: row; /* Diseño horizontal */
+    background: #ffffff;
+    border: none;
+    border-radius: 20px;
     overflow: hidden;
-    background: #fff;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    height: 100%; /* Para igualar alturas en la fila */
 }
 
 .card-plato:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
 }
 
-/* Contenedor de imagen cuadrada */
+/* Contenedor de la imagen del plato */
 .card-plato .img-container {
-    width: 150px;
-    height: 150px;
+    width: 180px; /* Ancho fijo */
     flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
 }
 
 .card-plato .img-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Evita deformaciones */
+    object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
+/* Zoom suave en la imagen al pasar el mouse */
+.card-plato:hover .img-container img {
+    transform: scale(1.08);
+}
+
+/* Cuerpo de la tarjeta */
 .card-plato .card-body {
-    padding: 1.25rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    width: 100%;
+    flex-grow: 1;
 }
 
-/* Móvil: Imagen arriba */
+.card-plato .card-title {
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 0.5rem;
+    font-size: 1.15rem;
+}
+
+.card-plato .card-text {
+    color: #6b7280;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    /* Limitar texto a 2 líneas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Precio y Botón */
+.card-plato .price {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #0d6efd; /* Azul de marca */
+}
+
+.card-plato .add-to-cart-btn {
+    border-radius: 50px;
+    padding: 0.4rem 1.2rem;
+    font-weight: 600;
+    background-color: #ffc107;
+    border: none;
+    color: #000;
+    transition: all 0.2s;
+}
+
+.card-plato .add-to-cart-btn:hover {
+    background-color: #ffca2c;
+    transform: scale(1.05);
+}
+
+/* --- 5. MODAL DE CALIFICACIÓN --- */
+.rating-modal .modal-content {
+    border-radius: 20px;
+    border: none;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.rating-modal .modal-header {
+    border-bottom: 1px solid #f0f0f0;
+    background: #f8f9fa;
+    border-radius: 20px 20px 0 0;
+}
+
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: row-reverse; /* Truco para hover de estrellas CSS puro */
+}
+
+.rating-stars input { display: none; }
+
+.rating-stars label {
+    font-size: 2.5rem;
+    color: #ddd;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-stars input:checked ~ label,
+.rating-stars label:hover,
+.rating-stars label:hover ~ label {
+    color: #ffc107;
+}
+
+/* --- 6. RESPONSIVIDAD (MÓVIL) --- */
 @media (max-width: 768px) {
-    .card-plato { flex-direction: column; }
-    .card-plato .img-container { width: 100%; height: 180px; }
-}
-
-
-
-/* ===================================== */
-/* --- 5. RESPONSIVIDAD (¡NUEVO!) --- */
-/* ===================================== */
-@media (max-width: 991px) {
-    .hero-quickbite {
-        padding-top: 100px;
-        min-height: auto; 
-        display: block; /* Desactivamos flexbox */
-        padding-bottom: 6rem;
-        text-align: center;
-        /* ¡NUEVO! Oculta el desbordamiento de la imagen */
-        overflow-x: hidden; 
-    }
-    .hero-quickbite .container {
-        padding-top: 20px;
-        position: relative; /* Necesario para la imagen */
-    }
-    .navbar.sticky-top .navbar-collapse.show {
-        background: rgba(0,0,0,0.1);
-        backdrop-filter: blur(5px);
-        border-radius: 10px;
-        padding: 10px;
-    }
-    .main-content-overlay {
-        margin-top: -50px;
-        padding: 2rem 0;
-    }
-    .hero-quickbite .hero-text h1 {
-        font-size: 2.5rem;
+    .menu-hero-banner {
+        height: 50vh;
     }
     
-    /* ===================================== */
-    /* ¡AQUÍ ESTÁ TU SOLICITUD MÓVIL! */
-    /* ===================================== */
-    .hero-quickbite .hero-image {
-        position: absolute;
-        top: 150px;    /* Lo baja desde arriba */
-        right: -180px; /* Lo saca 180px del borde derecho (así se ve la mitad) */
-        width: 90%;    /* Un tamaño grande */
-        opacity: 0.5;  /* Muy sutil para no tapar el texto */
-        z-index: 1;    /* Detrás del texto */
-        animation: none; /* Quitamos el 'float' en móvil */
-        pointer-events: none; /* Evita que se pueda clickear */
+    .restaurant-header h1 {
+        font-size: 2.2rem;
     }
-    .hero-quickbite .hero-image img {
-        padding-left: 0;
-        margin-top: 0;
-        max-width: 100%;
+
+    /* En móviles, las tarjetas pasan a vertical */
+    .card-plato {
+        flex-direction: column; 
     }
-    .hero-quickbite .hero-text {
-        position: relative;
-        z-index: 2; /* Asegura que el texto esté delante */
+    
+    .card-plato .img-container {
+        width: 100%;
+        height: 180px; /* Altura fija para la imagen en móvil */
+    }
+    
+    .container.py-5 {
+        border-radius: 30px 30px 0 0;
+        margin-top: -40px;
     }
 }
-
-/* --- 6. ANIMACIÓN DE LA ONDA --- */
-@keyframes wave-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-

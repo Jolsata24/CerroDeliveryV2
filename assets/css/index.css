@@ -1,363 +1,53 @@
-/* ===================================== */
-/* ESTILOS EXCLUSIVOS PARA INDEX.PHP     */
-/* (VERSIÓN CON MARCA "CERRODELIVERY") */
-/* ===================================== */
+/* ======================================================= */
+/* CERRODELIVERY - INDEX.CSS (DISEÑO PREMIUM)             */
+/* ======================================================= */
 
-/* --- 1. PREPARACIÓN: HEADER TRANSPARENTE --- */
-/* --- 1. PREPARACIÓN: HEADER TRANSPARENTE --- */
+/* --- 1. CONFIGURACIÓN DEL NAVBAR (EFECTO CRISTAL) --- */
 .navbar.sticky-top {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    
-    /* ¡¡¡ESTA ES LA CORRECCIÓN!!! */
-    position: fixed; /* Debe ser 'fixed', no 'absolute' */
-    
+    position: fixed;
     width: 100%;
-    z-index: 100;
-    transition: background-color 0.3s ease;
+    top: 0;
+    z-index: 1050;
+    background: transparent;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Transición suave */
+    padding: 1rem 0;
 }
 
-/* ¡NUEVO! Define el estado "scrolled" (desplazado) */
+/* Estado cuando se hace scroll */
 .navbar.sticky-top.navbar-scrolled {
-    background: #103652f5 !important; /* Fondo azul sólido al hacer scroll */
-    box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important;
+    background: rgba(16, 55, 82, 0.401) !important; /* Azul oscuro semi-transparente */
+    backdrop-filter: blur(12px); /* Efecto de desenfoque estilo iOS */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15) !important;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
-.navbar.sticky-top .navbar-brand {
-    filter: none;
-}
+
 .navbar.sticky-top .nav-link,
-.navbar.sticky-top .dropdown-toggle {
-    color: #ffffff !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+.navbar.sticky-top .navbar-brand {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
-.navbar.sticky-top .dropdown-menu .dropdown-item {
-    color: #212529 !important; 
-    text-shadow: none;
-}
-.navbar.sticky-top .btn-outline-secondary {
-    background-color: rgba(255,255,255,0.2);
-    border-color: #ffffff;
-    color: #ffffff;
-}
- .navbar.sticky-top .btn-primary {
-    background-color: #ffffff;
-    border-color: #ffffff;
-    color: #0d6efd;
-}
+
+/* Ajuste para que el contenido no se pegue arriba por el header fijo */
 body > main.container.mt-4 {
     margin-top: 0 !important;
     padding-top: 0 !important;
-    max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
 }
 
-/* --- 2. ESTILOS DEL HERO (CENTRADO) --- */
+/* --- 2. HERO SECTION (BANNER PRINCIPAL) --- */
 .hero-quickbite {
-    background: linear-gradient(135deg, #0d324d, #1c5f8e);
+    /* Degradado más moderno y profundo */
+    background: radial-gradient(circle at top right, #1c5f8e65, #0d324d 70%);
     color: #ffffff;
     position: relative;
-    overflow: hidden; /* Oculta la imagen en móvil */
+    overflow: hidden;
     display: flex;
     align-items: center;
-    min-height: 100vh;
+    min-height: 90vh; /* Ocupa casi toda la pantalla */
     padding-bottom: 80px;    
     box-sizing: border-box;
 }
+
 .hero-quickbite .container {
-    padding-top: 0px;
-}
-.hero-quickbite .hero-text {
-    position: relative;
-    z-index: 3; /* Texto delante de la imagen */
-}
-.hero-quickbite .hero-text h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.hero-quickbite .hero-text .lead {
-    color: #edf2f4;
-    font-size: 1.25rem;
-}
-.hero-quickbite .btn-order-now {
-    background-color: transparent;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    font-weight: 700;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-}
-.hero-quickbite .btn-order-now:hover {
-    background-color: #ffffff;
-    color: #0d6efd;
-    transform: translateY(-3px);
-}
-.hero-quickbite .hero-image {
-    z-index: 2; /* Imagen detrás del texto */
-}
-.hero-quickbite .hero-image img {
-    padding-left: 50px;
-    max-width: 100%;
-    animation: float 4s ease-in-out infinite;
-    position: relative;
-}
-@keyframes float {
-    0% { transform: translatey(0px); }
-    50% { transform: translatey(-40px); }
-    100% { transform: translatey(0px); }
-}
-
-/* --- 3. TARJETA SUPERPUESTA (CON ONDA VISIBLE) --- */
-.main-content-overlay {
-    background-color: #ffffff; 
-    position: relative;
-    overflow: hidden;
-    background-image: linear-gradient(
-      100deg,
-      rgba(13, 50, 77, 0) 20%,
-      rgba(13, 50, 77, 0.08) 50%,
-      rgba(13, 50, 77, 0) 80%
-    );
-    background-size: 300% 300%; 
-    animation: wave-animation 15s ease-in-out infinite;
-    border-radius: 1.5rem 1.5rem 0 0;
-    padding: 3rem 0;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
-    margin-top: -80px; 
-    z-index: 2;
-}
-
-/* --- 4. AJUSTES AL CONTENIDO INTERNO --- */
-.main-content-overlay .category-section .scroller {
-     -webkit-mask: none;
-     mask: none;
-}
-.main-content-overlay .category-card-v2 {
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #f0f0f0;
-}
-.main-content-overlay .card-restaurant {
-     border-radius: 1rem;
-     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-     border: 1px solid #f0f0f0;
-}
-.main-content-overlay .form-control {
-    border-radius: 0.5rem 0 0 0.5rem !important;
-}
-.main-content-overlay .input-group .btn-primary {
-    border-radius: 0 0.5rem 0.5rem 0 !important;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-
-/* ===================================== */
-/* --- 5. RESPONSIVIDAD (¡NUEVO!) --- */
-/* ===================================== */
-/* ===================================== */
-/* ESTILOS EXCLUSIVOS PARA INDEX.PHP     */
-/* (VERSIÓN CON MARCA "CERRODELIVERY") */
-/* ===================================== */
-
-/* --- 1. PREPARACIÓN: HEADER TRANSPARENTE --- */
-.navbar.sticky-top {
-    background-color: transparent !important;
-    box-shadow: none !important;
-    position: fixed; /* Debe ser 'fixed', no 'absolute' */
-    width: 100%;
-    z-index: 100;
-    transition: background-color 0.3s ease;
-}
-
-/* Define el estado "scrolled" (desplazado) */
-.navbar.sticky-top.navbar-scrolled {
-    background: #103652f5 !important; /* Fondo azul sólido al hacer scroll */
-    box-shadow: 0 2px 20px rgba(0,0,0,0.1) !important;
-}
-.navbar.sticky-top .navbar-brand {
-    filter: none;
-}
-.navbar.sticky-top .nav-link,
-.navbar.sticky-top .dropdown-toggle {
-    color: #ffffff !important;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-}
-.navbar.sticky-top .dropdown-menu .dropdown-item {
-    color: #212529 !important; 
-    text-shadow: none;
-}
-.navbar.sticky-top .btn-outline-secondary {
-    background-color: rgba(255,255,255,0.2);
-    border-color: #ffffff;
-    color: #ffffff;
-}
- .navbar.sticky-top .btn-primary {
-    background-color: #ffffff;
-    border-color: #ffffff;
-    color: #0d6efd;
-}
-body > main.container.mt-4 {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-}
-
-/* --- 2. ESTILOS DEL HERO (CENTRADO) --- */
-.hero-quickbite {
-    background: linear-gradient(135deg, #0d324d, #1c5f8e);
-    color: #ffffff;
-    position: relative;
-    overflow: hidden; /* Oculta la imagen en móvil */
-    display: flex;
-    align-items: center;
-    min-height: 100vh;
-    padding-bottom: 80px;    
-    box-sizing: border-box;
-}
-.hero-quickbite .container {
-    padding-top: 0px;
-}
-.hero-quickbite .hero-text {
-    position: relative;
-    z-index: 3; /* Texto delante de la imagen */
-}
-.hero-quickbite .hero-text h1 {
-    font-size: 3.5rem;
-    font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.hero-quickbite .hero-text .lead {
-    color: #edf2f4;
-    font-size: 1.25rem;
-}
-.hero-quickbite .btn-order-now {
-    background-color: transparent;
-    color: #ffffff;
-    border: 2px solid #ffffff;
-    font-weight: 700;
-    padding: 0.75rem 2rem;
-    border-radius: 50px;
-    transition: all 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-}
-.hero-quickbite .btn-order-now:hover {
-    background-color: #ffffff;
-    color: #0d6efd;
-    transform: translateY(-3px);
-}
-.hero-quickbite .hero-image {
-    z-index: 2; /* Imagen detrás del texto */
-}
-.hero-quickbite .hero-image img {
-    padding-left: 50px;
-    max-width: 100%;
-    animation: float 4s ease-in-out infinite;
-    position: relative;
-}
-@keyframes float {
-    0% { transform: translatey(0px); }
-    50% { transform: translatey(-40px); }
-    100% { transform: translatey(0px); }
-}
-
-/* --- 3. TARJETA SUPERPUESTA (CON ONDA VISIBLE) --- */
-.main-content-overlay {
-    background-color: #ffffff; 
-    position: relative;
-    overflow: hidden;
-    background-image: linear-gradient(
-      100deg,
-      rgba(13, 50, 77, 0) 20%,
-      rgba(13, 50, 77, 0.08) 50%,
-      rgba(13, 50, 77, 0) 80%
-    );
-    background-size: 300% 300%; 
-    animation: wave-animation 15s ease-in-out infinite;
-    border-radius: 1.5rem 1.5rem 0 0;
-    padding: 3rem 0;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
-    margin-top: -80px; 
-    z-index: 2;
-}
-
-/* --- 4. AJUSTES AL CONTENIDO INTERNO --- */
-.main-content-overlay .category-section .scroller {
-     -webkit-mask: none;
-     mask: none;
-}
-.main-content-overlay .category-card-v2 {
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #f0f0f0;
-}
-.main-content-overlay .card-restaurant {
-     border-radius: 1rem;
-     box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-     border: 1px solid #f0f0f0;
-}
-.main-content-overlay .form-control {
-    border-radius: 0.5rem 0 0 0.5rem !important;
-}
-.main-content-overlay .input-group .btn-primary {
-    border-radius: 0 0.5rem 0.5rem 0 !important;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-
-/* --- Estilos existentes del Hero (MANTENER) --- */
-/* ... (tu código del hero existente) ... */
-
-/* --- MEJORA: Tarjetas de Restaurantes --- */
-.card-restaurant {
-    border: none;
-    border-radius: 16px;
-    background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-    overflow: hidden;
-}
-
-.card-restaurant:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
-}
-
-/* Imagen perfecta siempre */
-.card-restaurant .card-img-top {
-    height: 200px;
-    width: 100%;
-    object-fit: cover;
-    aspect-ratio: 4/3;
-}
-
-.card-restaurant .card-body { padding: 1.5rem; }
-
-/* ===================================== */
-/* ESTILOS EXCLUSIVOS PARA INDEX.PHP     */
-/* ===================================== */
-
-/* --- 1. HERO SECTION (El Banner Principal) --- */
-.hero-quickbite {
-    background: linear-gradient(135deg, #0d324d, #1c5f8e);
-    color: #ffffff;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    min-height: 85vh; /* Altura ajustada */
-    padding-bottom: 80px;    
-    box-sizing: border-box;
-}
-
-.hero-quickbite .hero-text {
     position: relative;
     z-index: 3;
 }
@@ -365,406 +55,320 @@ body > main.container.mt-4 {
 .hero-quickbite .hero-text h1 {
     font-size: 3.5rem;
     font-weight: 800;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, #ffffff, #e0e0e0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 10px 30px rgba(0,0,0,0.3); /* Sombra suave para legibilidad */
 }
 
+.hero-quickbite .hero-text .lead {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 2rem;
+}
+
+/* Botón de llamada a la acción */
 .hero-quickbite .btn-order-now {
-    background-color: transparent;
-    color: #ffffff;
-    border: 2px solid #ffffff;
+    background-color: #ffffff;
+    color: #0d324d;
+    border: none;
     font-weight: 700;
-    padding: 0.75rem 2rem;
+    padding: 1rem 2.5rem;
     border-radius: 50px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .hero-quickbite .btn-order-now:hover {
-    background-color: #ffffff;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    background-color: #f8f9fa;
     color: #0d6efd;
-    transform: translateY(-3px);
 }
 
-/* Animación de la imagen del Hero */
+/* Imagen flotante del Hero */
 .hero-quickbite .hero-image img {
-    max-width: 100%;
-    animation: float 4s ease-in-out infinite;
+    max-width: 110%; /* Un poco más grande para impacto */
+    margin-left: -20px;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.4));
+    animation: float 6s ease-in-out infinite;
 }
 
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-    100% { transform: translateY(0px); }
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-25px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
 }
 
-/* --- 2. TARJETA BLANCA SUPERPUESTA (Overlay) --- */
+/* --- 3. OVERLAY (LA ONDA DE TRANSICIÓN) --- */
 .main-content-overlay {
-    background-color: #ffffff; 
+    background-color: #f8f9fa; /* Gris muy claro para el fondo del cuerpo */
     position: relative;
-    border-radius: 24px 24px 0 0;
-    padding: 3rem 0;
-    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
-    margin-top: -80px; /* Efecto de superposición */
+    border-radius: 40px 40px 0 0; /* Bordes más redondeados */
+    padding: 4rem 0;
+    margin-top: -100px; /* Superposición más agresiva */
     z-index: 2;
+    box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
+    
+    /* Patrón sutil de fondo */
+    background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+    background-size: 20px 20px;
 }
 
-/* ====================================================== */
-/* 3. ESTILOS DEL CARRUSEL (SCROLLER) - ¡LO QUE FALTABA! */
-/* ====================================================== */
-
-/* El contenedor que oculta lo que se desborda */
+/* --- 4. CARRUSEL INFINITO DE CATEGORÍAS (SCROLLER) --- */
 .scroller {
     max-width: 100%;
     overflow: hidden; 
-    /* Efecto de desvanecimiento en los bordes */
+    /* Desvanecimiento en los bordes para efecto infinito */
     -webkit-mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
     mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+    margin-bottom: 3rem;
 }
 
-/* La lista interna que se mueve */
 .scroller__inner {
     padding-block: 1rem;
     display: flex;
-    flex-wrap: nowrap; /* Importante: fuerza una sola línea */
+    flex-wrap: nowrap;
     gap: 1.5rem;
     list-style: none;
     padding-left: 0;
-    width: max-content; /* Toma el ancho de los elementos */
+    width: max-content;
 }
 
-/* Activamos la animación si el atributo data exist (o siempre) */
+/* Animación activada */
 .scroller[data-animated="true"] .scroller__inner {
     animation: scroll 40s linear infinite;
 }
 
-/* La animación de desplazamiento */
 @keyframes scroll {
-    to {
-        /* Se mueve hacia la izquierda la mitad de su tamaño */
-        transform: translate(calc(-50% - 0.75rem)); 
-    }
+    to { transform: translate(calc(-50% - 0.75rem)); }
 }
 
-/* Pausar animación al pasar el mouse */
 .scroller:hover .scroller__inner {
     animation-play-state: paused;
 }
 
-/* --- ESTILO DE LAS TARJETAS DE CATEGORÍA --- */
+/* Estilo de Tarjetas de Categoría */
 .category-card-v2 {
-    width: 140px; /* Ancho fijo para que no se aplasten */
-    border: 1px solid #f0f0f0;
-    border-radius: 16px;
+    width: 150px;
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
     overflow: hidden;
-    background: #fff;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.category-card-link { text-decoration: none; }
-
 .category-card-v2:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    border-color: #0d6efd;
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(13, 110, 253, 0.15);
 }
 
 .category-card-v2 .card-img-top {
-    height: 90px;
+    height: 100px;
     width: 100%;
     object-fit: cover;
+    padding: 10px;
+    border-radius: 20px 20px 0 0;
 }
 
 .category-card-v2 .card-body {
-    padding: 0.75rem;
+    padding: 0.5rem;
 }
 
 .category-card-v2 .card-title {
     font-size: 0.9rem;
-    color: #333;
+    color: #4b5563;
+    font-weight: 700;
 }
 
-/* ===================================== */
-/* 4. ESTILOS DE RESTAURANTES (Pro)      */
-/* ===================================== */
+.category-card-link { text-decoration: none; }
+
+/* --- 5. TARJETAS DE RESTAURANTES (DISEÑO LIMPIO) --- */
 .card-restaurant {
     border: none;
-    border-radius: 16px;
+    border-radius: 24px;
     background: #ffffff;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     transition: all 0.3s ease;
     overflow: hidden;
+    height: 100%;
 }
 
 .card-restaurant:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 .card-restaurant .card-img-top {
-    height: 200px;
+    height: 220px;
     width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.card-restaurant:hover .card-img-top {
+    transform: scale(1.05); /* Zoom sutil en la imagen */
+}
+
+.card-restaurant .card-body {
+    padding: 1.5rem;
+    position: relative;
+    background: #fff;
+}
+
+.card-restaurant .badge {
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    padding: 0.5em 1em;
+    font-size: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-radius: 30px;
+}
+
+.card-restaurant .card-title {
+    color: #1f2937;
+    margin-bottom: 0.5rem;
+}
+
+/* Buscador Estilizado */
+.input-group-lg .form-control {
+    border-radius: 50px 0 0 50px;
+    border: 1px solid #e5e7eb;
+    padding-left: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.input-group-lg .btn-primary {
+    border-radius: 0 50px 50px 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* --- 6. BANNER DE UBICACIÓN (PASCO) --- */
+.location-banner-pasco {
+    position: relative;
+    border-radius: 30px;
+    overflow: hidden;
+    padding: 6rem 2rem;
+    background-image: url('../img/pasco.png'); 
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    margin-bottom: 4rem;
+}
+
+.location-banner-pasco::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Overlay degradado negro/azul */
+    background: linear-gradient(0deg, rgba(13, 50, 77, 0.9) 0%, rgba(13, 50, 77, 0.4) 100%);
+    z-index: 1;
+}
+
+.location-banner-pasco .location-banner-content {
+    position: relative;
+    z-index: 2;
+}
+
+.location-banner-pasco h2 {
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+/* Animación del icono de ubicación */
+@keyframes bounce-y {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+}
+
+.location-banner-pasco .bi-geo-alt-fill {
+    display: inline-block;
+    color: #ffc107; /* Amarillo para resaltar */
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    animation: bounce-y 2s infinite ease-in-out;
+}
+
+/* --- 7. TARJETAS CTA (ÚNETE) --- */
+.cta-card {
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    background: #fff;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.cta-card:hover {
+    transform: translateY(-10px);
+}
+
+.cta-card img {
+    height: 200px;
     object-fit: cover;
 }
 
-.card-restaurant .card-body { padding: 1.5rem; }
-
-/* ===================================== */
-/* 5. RESPONSIVE (Móvil)                 */
-/* ===================================== */
-@media (max-width: 768px) {
-    .hero-quickbite {
-        display: block; 
-        text-align: center;
-        padding-top: 100px;
-    }
-    
-    .hero-quickbite .hero-image {
-        margin-top: 2rem;
-    }
-
-    .category-card-v2 {
-        width: 110px; /* Tarjetas más pequeñas en celular */
-    }
-    
-    .category-card-v2 .card-img-top {
-        height: 70px;
-    }
+.cta-card .card-body {
+    padding: 2rem;
 }
 
-
-
 /* ===================================== */
-/* --- 5. RESPONSIVIDAD (¡CORREGIDO!) --- */
+/* 8. RESPONSIVIDAD MÓVIL (CRÍTICO)      */
 /* ===================================== */
 @media (max-width: 991px) {
     .hero-quickbite {
-        padding-top: 100px;
-        min-height: auto; 
-        display: block; /* Desactivamos flexbox */
-        padding-bottom: 6rem;
+        flex-direction: column;
         text-align: center;
-        overflow-x: hidden; /* Asegura que nada se desborde */
+        padding-top: 120px;
+        justify-content: flex-start;
+        min-height: auto;
     }
-    .hero-quickbite .container {
-        padding-top: 20px;
-        position: relative; /* Necesario para la imagen */
-    }
-    .navbar.sticky-top .navbar-collapse.show {
-        background: rgba(0,0,0,0.1);
-        backdrop-filter: blur(5px);
-        border-radius: 10px;
-        padding: 10px;
-    }
-    .main-content-overlay {
-        margin-top: -50px;
-        padding: 2rem 0;
-    }
+
     .hero-quickbite .hero-text h1 {
-        font-size: 2.5rem;
+        font-size: 2.5rem; /* Texto más pequeño en móvil */
     }
     
-    
-    /* ===================================== */
-    /* ¡AQUÍ ESTÁ LA CORRECCIÓN DE RESPONSIVIDAD! */
-    /* ===================================== */
+    .hero-quickbite .hero-text .lead {
+        font-size: 1.1rem;
+    }
+
+    /* TRUCO VISUAL PARA MÓVIL: Imagen detrás del texto */
     .hero-quickbite .hero-image {
         position: absolute;
-        top: 120px;    /* Lo subimos un poco */
-        
-        /* === INICIO DE LA CORRECCIÓN === */
-        /* Eliminamos 'right: -130px'.
-          Usamos left: 50% y transform: translateX(-50%) para centrar
-          la imagen horizontalmente de forma segura en CUALQUIER pantalla.
-        */
+        top: 50%;
         left: 50%;
-        transform: translateX(-50%);
-        /* === FIN DE LA CORRECCIÓN === */
-        
-        width: 90%;    /* Un tamaño grande */
-        max-width: 400px; /* Un límite para que no sea demasiado grande */
-        opacity: 0.4;  /* Un poco más sutil */
-        z-index: 1;    /* Detrás del texto */
-        animation: none; /* Quitamos el 'float' en móvil */
-        pointer-events: none; /* Evita que se pueda clickear */
+        transform: translate(-50%, -50%);
+        width: 80%;
+        opacity: 0.15; /* Muy transparente para no molestar al texto */
+        z-index: 0;
+        pointer-events: none;
     }
+
     .hero-quickbite .hero-image img {
-        padding-left: 0;
+        margin-left: 0;
+        animation: none; /* Desactivar animación pesada en móvil */
+    }
+    
+    /* Ajustes del overlay en móvil */
+    .main-content-overlay {
         margin-top: 0;
-        max-width: 100%;
+        border-radius: 30px 30px 0 0;
+        padding: 2rem 0;
     }
-    .hero-quickbite .hero-text {
-        position: relative;
-        z-index: 2; /* Asegura que el texto esté delante */
-    }
-}
-
-/* --- 6. ANIMACIÓN DE LA ONDA --- */
-@keyframes wave-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* ===================================== */
-/* --- 7. SECCIÓN MAPA PASCO (CORREGIDO) --- */
-/* ===================================== */
-.location-banner-pasco {
-    position: relative;
-    border-radius: 1.5rem; /* Bordes redondeados como las tarjetas */
-    overflow: hidden; /* Para que el overlay respete el borde */
-    padding: 5rem 2rem;
     
-    /* === INICIO DE LA CORRECCIÓN DE IMAGEN === */
-    /* La ruta correcta es '../img/cdp.png'
-      (desde la carpeta 'css' sube a 'assets' y entra a 'img')
-    */
-    background-image: url('../img/cdp.png'); /* Usa la imagen cdp.png */
-    /* === FIN DE LA CORRECCIÓN DE IMAGEN === */
-
-    background-size: cover;
-    background-position: center 50%; /* Centra la panorámica */
-    color: #ffffff;
-    text-align: center;
-}
-
-/* Capa oscura para legibilidad */
-.location-banner-pasco::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6); /* Overlay oscuro */
-    z-index: 1;
-}
-
-/* Contenido de texto */
-.location-banner-pasco .location-banner-content {
-    position: relative;
-    z-index: 2; /* Texto por encima del overlay */
-}
-
-.location-banner-pasco h2 {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.location-banner-pasco .lead {
-    color: #f0f0f0; /* Un blanco más suave */
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* ===================================== */
-/* --- 8. ANIMACIONES (CORREGIDO) --- */
-/* ===================================== */
-
-/* Definición de la animación (esta no cambia) */
-@keyframes bounce-y {
-    0%, 100% {
-        transform: translateY(0); 
+    .category-card-v2 {
+        width: 120px; /* Tarjetas de categoría más pequeñas */
     }
-    50% {
-        transform: translateY(-10px); 
-    }
-}
-
-/* Regla del icono (Corregida para que la animación funcione) */
-.location-banner-pasco .bi-geo-alt-fill {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-    /* Añadimos 'display: inline-block' para que 
-      'transform' se aplique correctamente.
-    */
-    display: inline-block; 
-    animation: bounce-y 2s infinite; 
-}
-
-/* --- 6. ANIMACIÓN DE LA ONDA --- */
-@keyframes wave-animation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
-}
-
-/* ===================================== */
-/* --- 7. SECCIÓN MAPA PASCO (NUEVO) --- */
-/* ===================================== */
-.location-banner-pasco {
-    position: relative;
-    border-radius: 1.5rem; /* Bordes redondeados como las tarjetas */
-    overflow: hidden; /* Para que el overlay respete el borde */
-    padding: 5rem 2rem;
-    background-image: url('../img/pasco.png'); /* Usa la imagen cdp.png */
-    background-size: cover;
-    background-position: center 50%; /* Centra la panorámica */
-    color: #ffffff;
-    text-align: center;
-}
-
-/* Capa oscura para legibilidad */
-.location-banner-pasco::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.6); /* Overlay oscuro */
-    z-index: 1;
-}
-
-/* Contenido de texto */
-.location-banner-pasco .location-banner-content {
-    position: relative;
-    z-index: 2; /* Texto por encima del overlay */
-}
-
-.location-banner-pasco h2 {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-}
-
-.location-banner-pasco .lead {
-    color: #f0f0f0; /* Un blanco más suave */
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* ... (los estilos .location-banner-pasco::before, .location-banner-content, h2, y .lead no cambian) ... */
-
-/* ===================================== */
-/* --- 8. ANIMACIONES (CORREGIDO) --- */
-/* ===================================== */
-
-/* Definición de la animación (esta no cambia) */
-@keyframes bounce-y {
-    0%, 100% {
-        transform: translateY(0); 
-    }
-    50% {
-        transform: translateY(-10px); 
-    }
-}
-
-/* Regla del icono (AQUÍ ESTÁ LA CORRECCIÓN) */
-.location-banner-pasco .bi-geo-alt-fill {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     
-    /* === INICIO DE LA CORRECCIÓN === */
-    /* Añadimos 'display: inline-block'.
-      Las animaciones 'transform' no se aplican 
-      correctamente a elementos 'inline' (como la etiqueta <i>).
-    */
-    display: inline-block; 
-    /* === FIN DE LA CORRECCIÓN === */
-
-    /* Aplicación de la animación (esto no cambia) */
-    animation: bounce-y 2s infinite; 
+    .location-banner-pasco {
+        padding: 3rem 1rem;
+    }
 }
-

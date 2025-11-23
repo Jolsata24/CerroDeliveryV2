@@ -26,7 +26,14 @@ if (session_status() == PHP_SESSION_NONE) {
         <link rel="stylesheet" href="assets/css/checkout.css">
     <?php elseif ($script_name == 'mis_pedidos.php'): ?>
         <link rel="stylesheet" href="assets/css/mis_pedidos.css">
+    <?php elseif ($script_name == 'login_cliente.php'): ?>
+        <link rel="stylesheet" href="assets/css/login.css">
+    <?php elseif ($script_name == 'login_repartidor.php'): ?>
+        <link rel="stylesheet" href="assets/css/login.css">
+    <?php elseif ($script_name == 'login_restaurante.php'): ?>
+        <link rel="stylesheet" href="assets/css/login.css">
     <?php endif; ?>
+    
 
     <script>
         const CLIENTE_ID = <?php echo isset($_SESSION['cliente_id']) ? json_encode($_SESSION['cliente_id']) : 'null'; ?>;
