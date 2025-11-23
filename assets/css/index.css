@@ -312,6 +312,225 @@ body > main.container.mt-4 {
     border-color: #0d6efd;
 }
 
+/* --- Estilos existentes del Hero (MANTENER) --- */
+/* ... (tu código del hero existente) ... */
+
+/* --- MEJORA: Tarjetas de Restaurantes --- */
+.card-restaurant {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card-restaurant:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Imagen perfecta siempre */
+.card-restaurant .card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 4/3;
+}
+
+.card-restaurant .card-body { padding: 1.5rem; }
+
+/* ===================================== */
+/* ESTILOS EXCLUSIVOS PARA INDEX.PHP     */
+/* ===================================== */
+
+/* --- 1. HERO SECTION (El Banner Principal) --- */
+.hero-quickbite {
+    background: linear-gradient(135deg, #0d324d, #1c5f8e);
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 85vh; /* Altura ajustada */
+    padding-bottom: 80px;    
+    box-sizing: border-box;
+}
+
+.hero-quickbite .hero-text {
+    position: relative;
+    z-index: 3;
+}
+
+.hero-quickbite .hero-text h1 {
+    font-size: 3.5rem;
+    font-weight: 800;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.hero-quickbite .btn-order-now {
+    background-color: transparent;
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    font-weight: 700;
+    padding: 0.75rem 2rem;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.hero-quickbite .btn-order-now:hover {
+    background-color: #ffffff;
+    color: #0d6efd;
+    transform: translateY(-3px);
+}
+
+/* Animación de la imagen del Hero */
+.hero-quickbite .hero-image img {
+    max-width: 100%;
+    animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+}
+
+/* --- 2. TARJETA BLANCA SUPERPUESTA (Overlay) --- */
+.main-content-overlay {
+    background-color: #ffffff; 
+    position: relative;
+    border-radius: 24px 24px 0 0;
+    padding: 3rem 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.05);
+    margin-top: -80px; /* Efecto de superposición */
+    z-index: 2;
+}
+
+/* ====================================================== */
+/* 3. ESTILOS DEL CARRUSEL (SCROLLER) - ¡LO QUE FALTABA! */
+/* ====================================================== */
+
+/* El contenedor que oculta lo que se desborda */
+.scroller {
+    max-width: 100%;
+    overflow: hidden; 
+    /* Efecto de desvanecimiento en los bordes */
+    -webkit-mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+    mask: linear-gradient(90deg, transparent, white 5%, white 95%, transparent);
+}
+
+/* La lista interna que se mueve */
+.scroller__inner {
+    padding-block: 1rem;
+    display: flex;
+    flex-wrap: nowrap; /* Importante: fuerza una sola línea */
+    gap: 1.5rem;
+    list-style: none;
+    padding-left: 0;
+    width: max-content; /* Toma el ancho de los elementos */
+}
+
+/* Activamos la animación si el atributo data exist (o siempre) */
+.scroller[data-animated="true"] .scroller__inner {
+    animation: scroll 40s linear infinite;
+}
+
+/* La animación de desplazamiento */
+@keyframes scroll {
+    to {
+        /* Se mueve hacia la izquierda la mitad de su tamaño */
+        transform: translate(calc(-50% - 0.75rem)); 
+    }
+}
+
+/* Pausar animación al pasar el mouse */
+.scroller:hover .scroller__inner {
+    animation-play-state: paused;
+}
+
+/* --- ESTILO DE LAS TARJETAS DE CATEGORÍA --- */
+.category-card-v2 {
+    width: 140px; /* Ancho fijo para que no se aplasten */
+    border: 1px solid #f0f0f0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.category-card-link { text-decoration: none; }
+
+.category-card-v2:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border-color: #0d6efd;
+}
+
+.category-card-v2 .card-img-top {
+    height: 90px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.category-card-v2 .card-body {
+    padding: 0.75rem;
+}
+
+.category-card-v2 .card-title {
+    font-size: 0.9rem;
+    color: #333;
+}
+
+/* ===================================== */
+/* 4. ESTILOS DE RESTAURANTES (Pro)      */
+/* ===================================== */
+.card-restaurant {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card-restaurant:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-restaurant .card-img-top {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.card-restaurant .card-body { padding: 1.5rem; }
+
+/* ===================================== */
+/* 5. RESPONSIVE (Móvil)                 */
+/* ===================================== */
+@media (max-width: 768px) {
+    .hero-quickbite {
+        display: block; 
+        text-align: center;
+        padding-top: 100px;
+    }
+    
+    .hero-quickbite .hero-image {
+        margin-top: 2rem;
+    }
+
+    .category-card-v2 {
+        width: 110px; /* Tarjetas más pequeñas en celular */
+    }
+    
+    .category-card-v2 .card-img-top {
+        height: 70px;
+    }
+}
+
+
 
 /* ===================================== */
 /* --- 5. RESPONSIVIDAD (¡CORREGIDO!) --- */

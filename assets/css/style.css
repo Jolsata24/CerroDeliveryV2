@@ -1,0 +1,54 @@
+/* === GLOBALES (Fuentes y Reset) === */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+    color: #1f2937;
+    overflow-x: hidden;
+}
+
+/* === NAVBAR (Menú Superior - Esencial) === */
+.navbar {
+    padding: 0.75rem 0;
+    transition: all 0.3s ease;
+}
+.navbar.sticky-top {
+    position: fixed;
+    width: 100%;
+    z-index: 100;
+}
+.navbar.sticky-top.navbar-scrolled {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
+}
+.navbar-brand img { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1)); }
+
+/* === LOGIN Y REGISTRO (Auth Pages) === */
+.auth-page { 
+    display: flex; justify-content: center; align-items: center; 
+    min-height: 100vh; padding: 2rem;
+    background: url('../img/plaza.jpg') center/cover no-repeat;
+    position: relative;
+}
+.auth-page::before {
+    content: ''; position: absolute; top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.5); z-index: 1;
+}
+.auth-card {
+    width: 100%; max-width: 400px; z-index: 2;
+    border-radius: 1.5rem; border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    backdrop-filter: blur(10px); background: rgba(255,255,255,0.95);
+}
+
+/* === UTILIDADES === */
+.btn { border-radius: 0.5rem; font-weight: 600; }
+#preloader {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #fff; z-index: 9999;
+    display: flex; justify-content: center; align-items: center;
+    transition: opacity 0.5s ease;
+}
+body.loaded #preloader { opacity: 0; visibility: hidden; }

@@ -93,6 +93,40 @@ body > main.container.mt-4 {
     margin-top: -80px; 
     z-index: 2;
 }
+/* --- MEJORA: Checkout --- */
+.checkout-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+.checkout-card .card-header {
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 1.5rem;
+    font-weight: 700;
+}
+
+/* Mapa Leaflet */
+#mapa-checkout {
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    z-index: 1; /* Para que no tape el menú desplegable */
+}
+
+/* Inputs más grandes */
+.form-control, .form-select {
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+}
+.form-control:focus {
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+}
+
 
 /* --- 4. RESPONSIVIDAD --- */
 @media (max-width: 991px) {
