@@ -90,36 +90,44 @@ $imagenes_locales = [
 
 <div class="main-content-overlay">
 
-    <div class="container category-section mb-5"> <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
-             <h2 class="fw-bold mb-0">¿Qué se te antoja hoy?</h2>
-             <?php if($categoria_seleccionada_id > 0): // Lógica sin cambios ?>
-                <a href="index.php" class="btn btn-outline-secondary btn-sm">Ver todas</a>
-            <?php endif; ?>
-        </div>
-        
-        <div class="scroller" data-speed="slow">
-            <ul class="tag-list scroller__inner">
-                <?php
-                // Lógica sin cambios
-                $categorias_combinadas = array_merge($categorias_data, $categorias_data);
-                foreach ($categorias_combinadas as $categoria):
-                    $key_imagen = strtolower(str_replace(' ', '', $categoria['nombre_categoria']));
-                    $nombre_imagen = $imagenes_locales[$key_imagen] ?? 'default.png';
-                ?>
-                    <li>
-                        <a href="cerrodeliveryv2/index.php?categoria_id=<?php echo $categoria['id']; ?>" class="category-card-link text-decoration-none">
-                            <div class="card category-card-v2 h-100">
-                                <img src="/cerrodeliveryv2/assets/img/categorias/<?php echo $nombre_imagen; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($categoria['nombre_categoria']); ?>">
-                                <div class="card-body text-center">
-                                    <h6 class="card-title fw-bold mb-0"><?php echo htmlspecialchars($categoria['nombre_categoria']); ?></h6>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
+    <div class="container category-section mb-5"> 
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+         <h2 class="fw-bold mb-0">¿Qué se te antoja hoy?</h2>
+         <?php if($categoria_seleccionada_id > 0): ?>
+            <a href="index.php" class="btn btn-outline-secondary btn-sm rounded-pill">
+                <i class="bi bi-x-lg"></i> Ver todas
+            </a>
+        <?php endif; ?>
     </div>
+    
+    <div class="scroller" data-speed="slow">
+        <ul class="tag-list scroller__inner">
+            <?php
+            // Duplicamos el array para el efecto de scroll infinito
+            $categorias_combinadas = array_merge($categorias_data, $categorias_data);
+            
+            foreach ($categorias_combinadas as $categoria):
+                // Lógica para asignar imagen según el nombre (se mantiene igual)
+                $key_imagen = strtolower(str_replace(' ', '', $categoria['nombre_categoria']));
+                $nombre_imagen = $imagenes_locales[$key_imagen] ?? 'default.png';
+                
+                // Determinar si esta categoría está activa para resaltarla visualmente
+                $clase_activa = ($categoria['id'] == $categoria_seleccionada_id) ? 'border-primary bg-light' : '';
+            ?>
+                <li>
+                    <a href="index.php?categoria_id=<?php echo $categoria['id']; ?>#restaurantes-section" class="category-card-link text-decoration-none">
+                        <div class="card category-card-v2 h-100 <?php echo $clase_activa; ?>">
+                            <img src="assets/img/categorias/<?php echo $nombre_imagen; ?>" class="card-img-top" alt="<?php echo htmlspecialchars($categoria['nombre_categoria']); ?>">
+                            <div class="card-body text-center">
+                                <h6 class="card-title fw-bold mb-0 text-dark"><?php echo htmlspecialchars($categoria['nombre_categoria']); ?></h6>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    </div>
+</div>
 
     <div class="container" id="restaurantes-section">
         <h2 class="fw-bold mb-4"><?php echo $nombre_categoria_actual; // Lógica sin cambios ?></h2>

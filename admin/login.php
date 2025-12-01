@@ -19,6 +19,7 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 <div class="auth-page">
     <div class="card auth-card">
         <div class="card-body">
+             
             <h3 class="card-title text-center mb-4">Acceso de Administrador</h3>
             <form action="../procesos/procesar_login_admin.php" method="POST">
                 <div class="mb-3">
@@ -30,6 +31,10 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                <a href="index.php" class="btn w-100 mt-3 rounded-pill"
+                        style="font-weight: 600; border: 2px solid #e5e7eb; background-color: #fff; color: #6b7280; transition: all 0.3s ease; text-decoration: none;">
+                        <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
+                    </a>
             </form>
         </div>
     </div>

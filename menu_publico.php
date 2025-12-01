@@ -21,7 +21,29 @@ if ($resultado_restaurante->num_rows == 0) {
     die("Restaurante no encontrado o no disponible.");
 }
 $restaurante = $resultado_restaurante->fetch_assoc();
+// --- CAMBIO 1: Agregamos 'imagen_fondo' a la consulta SELECT ---
+$sql_restaurante = "SELECT id, nombre_restaurante, direccion, telefono, puntuacion_promedio, total_puntuaciones, imagen_fondo 
+                    FROM restaurantes 
+                    WHERE id = ? AND estado = 'activo' LIMIT 1";
+$stmt_restaurante = $conn->prepare($sql_restaurante);
+$stmt_restaurante->bind_param("i", $id_restaurante);
+$stmt_restaurante->execute();
+$resultado_restaurante = $stmt_restaurante->get_result();
 
+if ($resultado_restaurante->num_rows == 0) {
+    die("Restaurante no encontrado o no disponible.");
+}
+$restaurante = $resultado_restaurante->fetch_assoc();
+
+// --- CAMBIO 2: Lógica para definir qué imagen mostrar ---
+// Si hay imagen en BD y el archivo existe, úsalo. Si no, usa el fondo por defecto.
+$imagen_fondo = 'assets/img/fondo3.jpg'; // Imagen por defecto
+if (!empty($restaurante['imagen_fondo'])) {
+    $ruta_personalizada = 'assets/img/restaurantes/' . $restaurante['imagen_fondo'];
+    if (file_exists($ruta_personalizada)) {
+        $imagen_fondo = $ruta_personalizada;
+    }
+}
 // Obtener los platos del restaurante
 // Obtener los platos del restaurante (SOLO LOS VISIBLES)
 $sql_platos = "SELECT * FROM menu_platos WHERE id_restaurante = ? AND esta_visible = 1 ORDER BY nombre_plato ASC";
@@ -33,7 +55,7 @@ $resultado_platos = $stmt_platos->get_result();
 include 'includes/header.php'; // Se incluye el header normalmente
 ?>
 
-<div class="menu-hero-banner" style="background-image: url('assets/img/fondo3.jpg');">
+<div class="menu-hero-banner" style="background-image: url('<?php echo htmlspecialchars($imagen_fondo); ?>');">
     <div class="restaurant-header">
         <h1 class="display-5 fw-bold mb-3"><?php echo htmlspecialchars($restaurante['nombre_restaurante']); ?></h1>
         <div class="d-flex align-items-center justify-content-center mb-3">
@@ -51,7 +73,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
                 <i class="bi bi-star-fill me-2"></i> Calificar este restaurante
             </button>
         <?php endif; ?>
-        </div>
+    </div>
 </div>
 
 <div class="container py-5">
@@ -93,7 +115,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
                                     <a href="login_cliente.php" class="btn btn-secondary">
                                         Inicia Sesión
                                     </a>
-                                    <?php endif; ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -107,7 +129,6 @@ include 'includes/header.php'; // Se incluye el header normalmente
     </div>
 </div>
 
-
 <?php if (isset($_SESSION['cliente_id'])): ?>
 <div class="modal fade rating-modal" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true" data-restaurante-id="<?php echo $id_restaurante; ?>">
     <div class="modal-dialog modal-dialog-centered">
@@ -118,7 +139,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
             </div>
             <div class="modal-body text-center">
                 <p>¿Qué te pareció este restaurante? Tu opinión es importante.</p>
-                <div classs="rating-stars mb-3">
+                <div class="rating-stars mb-3">
                     <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="5 estrellas">★</label>
                     <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="4 estrellas">★</label>
                     <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="3 estrellas">★</label>
@@ -135,6 +156,7 @@ include 'includes/header.php'; // Se incluye el header normalmente
     </div>
 </div>
 <?php endif; ?>
+
 <?php
 $stmt_restaurante->close();
 $stmt_platos->close();

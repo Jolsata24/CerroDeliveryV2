@@ -24,6 +24,27 @@ $stmt_platos->bind_param("i", $id_restaurante_actual);
 $stmt_platos->execute();
 $resultado_platos = $stmt_platos->get_result();
 
+// ... (después de $resultado_platos = ... )
+
+// 1. Obtener TODAS las categorías posibles (para el formulario)
+$sql_all_cats = "SELECT * FROM categorias ORDER BY nombre_categoria ASC";
+$res_all_cats = $conn->query($sql_all_cats);
+
+// 2. Obtener las categorías QUE YA TIENE el restaurante (para marcarlas)
+$sql_my_cats = "SELECT id_categoria FROM restaurante_categorias WHERE id_restaurante = ?";
+$stmt_my_cats = $conn->prepare($sql_my_cats);
+$stmt_my_cats->bind_param("i", $id_restaurante_actual);
+$stmt_my_cats->execute();
+$res_my_cats = $stmt_my_cats->get_result();
+
+// Guardamos los IDs en un array simple para buscar fácil: [1, 5, 8]
+$mis_categorias_ids = [];
+while($row = $res_my_cats->fetch_assoc()) {
+    $mis_categorias_ids[] = $row['id_categoria'];
+}
+$stmt_my_cats->close();
+
+// ... (sigue el include header.php)
 // Consulta para pedidos pendientes (SIN CAMBIOS)
 $sql_count = "SELECT COUNT(id) AS total_pendientes FROM pedidos WHERE id_restaurante = ? AND (estado_pedido = 'Pendiente' OR estado_pedido = 'En preparación')";
 $stmt_count = $conn->prepare($sql_count);
@@ -148,6 +169,45 @@ include '../includes/header.php';
                     </div>
                 </div>
             </div>
+            <div class="col-lg-6">
+    <div class="card dashboard-card h-100">
+        <div class="card-header bg-white">
+            <h5 class="mb-0 fw-bold"><i class="bi bi-tags-fill me-2 text-primary"></i>Categorías del Restaurante</h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted small mb-3">Selecciona las categorías que mejor describen tu comida. Esto ayuda a los clientes a encontrarte en los filtros.</p>
+            
+            <form action="../procesos/actualizar_categorias.php" method="POST">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <?php if ($res_all_cats->num_rows > 0): ?>
+                        <?php while($cat = $res_all_cats->fetch_assoc()): 
+                            // Verificamos si el restaurante ya tiene esta categoría
+                            $checked = in_array($cat['id'], $mis_categorias_ids) ? 'checked' : '';
+                            $clase_activa = in_array($cat['id'], $mis_categorias_ids) ? 'border-primary bg-primary text-white' : 'border-secondary text-muted';
+                        ?>
+                            <input type="checkbox" class="btn-check" 
+                                   id="cat_<?php echo $cat['id']; ?>" 
+                                   name="categorias[]" 
+                                   value="<?php echo $cat['id']; ?>" 
+                                   <?php echo $checked; ?>>
+                            
+                            <label class="btn btn-outline-primary btn-sm rounded-pill" for="cat_<?php echo $cat['id']; ?>">
+                                <?php echo htmlspecialchars($cat['nombre_categoria']); ?>
+                            </label>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <div class="alert alert-warning w-100">
+                            No hay categorías registradas en el sistema. Contacta al administrador.
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Guardar Categorías</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
         </div>
 
         <div class="row g-4 mb-4">
@@ -204,7 +264,7 @@ include '../includes/header.php';
                                         while ($plato = $resultado_platos->fetch_assoc()):
                                             // Determinamos el estilo si el plato está oculto
                                             $estilo_fila = ($plato['esta_visible'] == 0) ? 'style="opacity: 0.5; background-color: #f8f9fa;"' : '';
-                                            ?>
+                                        ?>
                                             <tr <?php echo $estilo_fila; ?>>
                                                 <td>
                                                     <img src="/cerrodeliveryv2/assets/img/platos/<?php echo htmlspecialchars($plato['foto_url']); ?>"
@@ -217,6 +277,10 @@ include '../includes/header.php';
                                                 <td class="text-end">S/ <?php echo number_format($plato['precio'], 2); ?></td>
 
                                                 <td class="text-center">
+                                                    <a href="editar_plato.php?id=<?php echo $plato['id']; ?>" class="btn btn-outline-primary btn-sm me-1" title="Editar este plato">
+                                                        <i class="bi bi-pencil-square"></i> Editar
+                                                    </a>
+
                                                     <?php if ($plato['esta_visible'] == 1): ?>
                                                         <a href="../procesos/alternar_visibilidad_plato.php?id_plato=<?php echo $plato['id']; ?>"
                                                             class="btn btn-outline-warning btn-sm"
@@ -231,6 +295,7 @@ include '../includes/header.php';
                                                         </a>
                                                     <?php endif; ?>
                                                 </td>
+
                                             </tr>
                                         <?php endwhile; ?>
                                     <?php else: ?>
@@ -249,9 +314,9 @@ include '../includes/header.php';
 
     </div>
 </div> <?php
-// --- Cierres de conexión (SIN CAMBIOS) ---
-$stmt_platos->close();
-$stmt_count->close();
-$conn->close();
-include '../includes/footer.php';
-?>
+        // --- Cierres de conexión (SIN CAMBIOS) ---
+        $stmt_platos->close();
+        $stmt_count->close();
+        $conn->close();
+        include '../includes/footer.php';
+        ?>

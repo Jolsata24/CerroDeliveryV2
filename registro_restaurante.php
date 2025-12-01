@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registra tu Negocio - CerroDelivery</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body>
 
@@ -32,6 +32,10 @@
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-success w-100">Crear Cuenta</button>
+                <a href="index.php" class="btn w-100 mt-3 rounded-pill"
+                        style="font-weight: 600; border: 2px solid #e5e7eb; background-color: #fff; color: #6b7280; transition: all 0.3s ease; text-decoration: none;">
+                        <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
+                    </a>
             </form>
         </div>
         <p class="text-center mt-3 mb-0">¿Ya tienes una cuenta? <a href="login_restaurante.php">Inicia Sesión aquí</a></p>

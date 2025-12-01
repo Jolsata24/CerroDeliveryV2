@@ -45,6 +45,10 @@ if (isset($_SESSION['repartidor_id'])) {
                     <input type="password" class="form-control" name="password" required>
                 </div>
                 <button type="submit" class="btn btn-info w-100 text-white">Ingresar</button>
+                <a href="index.php" class="btn w-100 mt-3 rounded-pill"
+                        style="font-weight: 600; border: 2px solid #e5e7eb; background-color: #fff; color: #6b7280; transition: all 0.3s ease; text-decoration: none;">
+                        <i class="bi bi-arrow-left me-1"></i> Volver al Inicio
+                    </a>
             </form>
         </div>
         <p class="text-center mt-3 mb-0">¿Aún no te unes? <a href="registro_repartidor.php">Conviértete en repartidor</a></p>

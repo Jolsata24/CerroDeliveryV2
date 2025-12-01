@@ -83,34 +83,39 @@
 }
 
 /* --- 4. FORMULARIO (INPUTS) --- */
+/* --- 4. FORMULARIO (INPUTS) MEJORADO --- */
 .form-label {
-    font-weight: 600;
-    color: #4b5563;
-    font-size: 0.9rem;
+    font-weight: 700; /* Texto más negrita para mejor lectura */
+    color: #374151;   /* Color más oscuro */
+    font-size: 0.95rem;
     margin-bottom: 0.5rem;
     margin-left: 0.2rem;
 }
 
 .form-control {
-    background-color: #f3f4f6; /* Gris muy claro */
-    border: 2px solid transparent;
-    border-radius: 12px; /* Bordes redondeados modernos */
-    padding: 0.8rem 1rem;
+    background-color: #ffffff; /* Fondo blanco puro para resaltar sobre la tarjeta */
+    border: 2px solid #cbd5e1; /* Borde gris visible (antes era transparent) */
+    border-radius: 12px;
+    padding: 0.9rem 1rem;      /* Un poco más de espacio interno */
     font-size: 1rem;
     color: #1f2937;
     transition: all 0.3s ease;
+    /* Sombra interna sutil para dar sensación de "caja de texto" */
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05); 
 }
 
 .form-control:focus {
     background-color: #ffffff;
-    border-color: #0d6efd; /* Azul marca */
-    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.1);
+    border-color: #0d6efd; /* Azul intenso al hacer clic */
+    /* Resplandor azul más notorio */
+    box-shadow: 0 0 0 4px rgba(13, 110, 253, 0.25); 
+    outline: none;
 }
 
-/* Iconos o Placeholders */
+/* Color del texto de ayuda (placeholder) */
 .form-control::placeholder {
     color: #9ca3af;
-    font-size: 0.95rem;
+    font-weight: 400;
 }
 
 /* Espaciado entre campos */
