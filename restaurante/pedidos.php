@@ -78,3 +78,47 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(cargarPedidos, 6000); // Se actualiza cada 6 segundos
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const container = document.getElementById('pedidos-container');
+
+    // Función para cargar las solicitudes de repartidores
+    const cargarSolicitudes = () => {
+        const contenedoresSolicitudes = document.querySelectorAll('.solicitudes-container');
+        contenedoresSolicitudes.forEach(contenedor => {
+            const idPedido = contenedor.dataset.idPedido;
+            if (idPedido) {
+                fetch(`ajax_cargar_solicitudes.php?id_pedido=${idPedido}`)
+                    .then(response => response.text())
+                    .then(html => { contenedor.innerHTML = html; })
+                    .catch(error => console.error('Error al cargar solicitudes:', error));
+            }
+        });
+    };
+
+    // --- FUNCIÓN PRINCIPAL MODIFICADA ---
+    const cargarPedidos = () => {
+        // 1. VERIFICACIÓN: Si hay un modal abierto (clase .show), NO actualizamos
+        if (document.querySelector('.modal.show')) {
+            console.log("Actualización pausada: Usuario viendo un comprobante.");
+            return; 
+        }
+
+        fetch('ajax_cargar_pedidos.php')
+            .then(response => response.text())
+            .then(html => {
+                container.innerHTML = html;
+                cargarSolicitudes(); // Volver a cargar solicitudes tras actualizar
+            })
+            .catch(error => {
+                console.error('Error al cargar pedidos:', error);
+            });
+    };
+
+    // Carga inicial
+    cargarPedidos();
+    
+    // Intervalo de actualización (cada 6 segundos)
+    setInterval(cargarPedidos, 6000);
+});
+</script>

@@ -9,7 +9,9 @@ require_once '../includes/conexion.php';
 $id_restaurante_actual = $_SESSION['restaurante_id'];
 
 // Consultas para datos del restaurante y platos (SIN CAMBIOS)
-$sql_restaurante = "SELECT hora_apertura, hora_cierre, telefono FROM restaurantes WHERE id = ?";
+// Consultas para datos del restaurante y platos (CORREGIDO)
+// Agregamos latitud, longitud y datos de yape para que el dashboard no falle
+$sql_restaurante = "SELECT hora_apertura, hora_cierre, telefono, yape_numero, yape_qr, latitud, longitud FROM restaurantes WHERE id = ?";
 $stmt_restaurante = $conn->prepare($sql_restaurante);
 $stmt_restaurante->bind_param("i", $id_restaurante_actual);
 $stmt_restaurante->execute();
@@ -200,12 +202,23 @@ include '../includes/header.php';
                                 </form>
                             </div>
                         </div>
-                        <div class="mt-4 pt-3 border-top">
-                            <h6 class="fw-bold text-primary"><i class="bi bi-geo-alt-fill me-2"></i>Ubicación del Local (Para envíos)</h6>
+                    </div>
+                    
+                </div>
+                
+            </div>
+
+            <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold text-primary mb-0"><i class="bi bi-geo-alt-fill me-2"></i>Ubicación del Local</h6>
+                                <button type="button" class="btn btn-outline-primary btn-sm" id="btn-detectar-ubicacion">
+                                    <i class="bi bi-crosshair"></i> Usar mi GPS
+                                </button>
+                            </div>
                             <p class="small text-muted">Mueve el pin rojo a la ubicación exacta de tu restaurante. Esto es vital para calcular el costo de envío.</p>
 
                             <form action="../procesos/actualizar_ubicacion_restaurante.php" method="POST">
-                                <div id="mapa-restaurante" class="mb-3 border"></div>
+                                <div id="mapa-restaurante" class="mb-3 border bg-light"></div>
 
                                 <div class="row g-2">
                                     <div class="col">
@@ -218,11 +231,9 @@ include '../includes/header.php';
                                         <button type="submit" class="btn btn-primary btn-sm">Guardar Ubicación</button>
                                     </div>
                                 </div>
+                                <div id="gps-status" class="form-text mt-1"></div>
                             </form>
                         </div>
-                    </div>
-                </div>
-            </div>
             <div class="col-lg-6">
                 <div class="card dashboard-card h-100">
                     <div class="card-header bg-white">
@@ -369,41 +380,220 @@ include '../includes/header.php';
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Coordenadas iniciales (Cerro de Pasco por defecto o las guardadas si existieran)
-        // Nota: Si ya tienes coordenadas guardadas, puedes imprimirlas aquí con PHP
-        var latInicial = <?php echo !empty($restaurante_data['latitud']) ? $restaurante_data['latitud'] : -10.683; ?>;
-        var lonInicial = <?php echo !empty($restaurante_data['longitud']) ? $restaurante_data['longitud'] : -76.256; ?>;
+document.addEventListener('DOMContentLoaded', function() {
+    // ==========================================
+    // 1. VARIABLES Y CONFIGURACIÓN INICIAL
+    // ==========================================
+    const selectPago = document.getElementById('metodo_pago');
+    const containerYape = document.getElementById('info-yape-container');
+    const displayYapeNum = document.getElementById('yape-numero-display');
+    const displayYapeQR = document.getElementById('yape-qr-img-placeholder');
+    const btnCopiar = document.getElementById('btn-copiar-yape');
+    const msgCopia = document.getElementById('mensaje-copia');
+    const divVuelto = document.getElementById('div-vuelto');
+    const inputVuelto = document.getElementById('monto_pagar');
+    
+    // Variables para el mapa y envío
+    const defaultLat = -10.683; // Cerro de Pasco
+    const defaultLng = -76.256;
+    let userLat = defaultLat;
+    let userLng = defaultLng;
+    let datosRestaurante = { lat: null, lon: null, yapeNumero: '', yapeQR: '' };
 
-        var mapa = L.map('mapa-restaurante').setView([latInicial, lonInicial], 15);
+    // Inicializar Mapa
+    const mapa = L.map('mapa-checkout').setView([defaultLat, defaultLng], 15);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+        attribution: '© OpenStreetMap' 
+    }).addTo(mapa);
+    
+    // Marcador movible
+    let marcador = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(mapa);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'OpenStreetMap'
-        }).addTo(mapa);
+    // ==========================================
+    // 2. OBTENER DATOS DEL RESTAURANTE
+    // ==========================================
+    // Recuperamos el ID del restaurante guardado en el carrito
+    const carritoKey = `carritoData_${CLIENTE_ID}`; // CLIENTE_ID viene de PHP
+    const carritoData = JSON.parse(sessionStorage.getItem(carritoKey));
 
-        var marcador = L.marker([latInicial, lonInicial], {
-            draggable: true
-        }).addTo(mapa);
+    if (carritoData && carritoData.restauranteId) {
+        // Rellenar el input hidden del ID restaurante
+        document.getElementById('id_restaurante').value = carritoData.restauranteId;
+        document.getElementById('carrito_data').value = JSON.stringify(carritoData.items);
 
-        // Actualizar inputs al mover el pin
-        function actualizarInputs(lat, lon) {
-            document.getElementById('lat_rest').value = lat;
-            document.getElementById('lon_rest').value = lon;
+        // Pedir datos al servidor
+        fetch(`procesos/obtener_datos_restaurante.php?id_restaurante=${carritoData.restauranteId}`)
+            .then(response => response.json())
+            .then(resp => {
+                if (resp.status === 'success') {
+                    datosRestaurante.lat = parseFloat(resp.data.latitud);
+                    datosRestaurante.lon = parseFloat(resp.data.longitud);
+                    datosRestaurante.yapeNumero = resp.data.yape_numero;
+                    datosRestaurante.yapeQR = resp.data.yape_qr;
+                    
+                    // Una vez tenemos los datos, recalculamos por si acaso
+                    actualizarTotalesEnvio();
+                }
+            })
+            .catch(err => console.error("Error cargando datos restaurante:", err));
+    }
+
+    // ==========================================
+    // 3. LÓGICA DE CÁLCULO DE ENVÍO
+    // ==========================================
+    function calcularCosto(clienteLat, clienteLon) {
+        // Si el restaurante no tiene mapa configurado, cobramos tarifa base
+        if (!datosRestaurante.lat || !datosRestaurante.lon) return 5.00;
+
+        const R = 6371; // Radio tierra km
+        const dLat = (clienteLat - datosRestaurante.lat) * Math.PI / 180;
+        const dLon = (clienteLon - datosRestaurante.lon) * Math.PI / 180;
+        const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                  Math.cos(datosRestaurante.lat * Math.PI / 180) * Math.cos(clienteLat * Math.PI / 180) * Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distancia = R * c; 
+
+        // TARIFA: Base S/5.00 por 1.5km, luego S/2.00 por cada km extra
+        let costo = 5.00; 
+        if (distancia > 1.5) {
+            costo += (distancia - 1.5) * 2.00;
+        }
+        return Math.round(costo * 10) / 10; // Redondear a 1 decimal
+    }
+
+    function actualizarTotalesEnvio() {
+        const costoEnvio = calcularCosto(userLat, userLng);
+        
+        // 1. Actualizar inputs ocultos para que se guarden en BD
+        document.getElementById('latitud').value = userLat;
+        document.getElementById('longitud').value = userLng;
+
+        // 2. Calcular subtotal de productos desde el carrito guardado
+        let subtotalProductos = 0;
+        if(carritoData && carritoData.items) {
+            carritoData.items.forEach(item => {
+                subtotalProductos += (item.precio * item.cantidad);
+            });
+        }
+        const totalPagar = subtotalProductos + costoEnvio;
+
+        // 3. ACTUALIZAR LA TABLA VISUALMENTE
+        const tfoot = document.querySelector('.summary-table tfoot');
+        let rowEnvio = document.getElementById('row-costo-envio');
+
+        // Si la fila de envío no existe, la creamos
+        if (!rowEnvio && tfoot) {
+            rowEnvio = document.createElement('tr');
+            rowEnvio.id = 'row-costo-envio';
+            // Insertamos antes de la última fila (que es el Total)
+            const filaTotal = tfoot.lastElementChild;
+            rowEnvio.innerHTML = `
+                <td colspan="2" class="text-end text-muted small pe-4">Costo de Envío (Distancia)</td>
+                <td class="text-end text-muted small pe-4" id="valor-envio"></td>
+                <td></td>
+            `;
+            tfoot.insertBefore(rowEnvio, filaTotal);
         }
 
-        // Inicializar inputs
-        actualizarInputs(latInicial, lonInicial);
+        // Actualizar textos
+        if(document.getElementById('valor-envio')) {
+            document.getElementById('valor-envio').textContent = `S/ ${costoEnvio.toFixed(2)}`;
+        }
+        
+        // Actualizar el Total Grande
+        const celdaTotal = document.querySelector('.total-row .h5');
+        if(celdaTotal) {
+            celdaTotal.textContent = `S/ ${totalPagar.toFixed(2)}`;
+        }
+    }
 
-        marcador.on('dragend', function(e) {
-            var position = marcador.getLatLng();
-            actualizarInputs(position.lat, position.lng);
-        });
-
-        // Corregir visualización del mapa al cargar pestañas o modales
-        setTimeout(function() {
-            mapa.invalidateSize();
-        }, 500);
+    // ==========================================
+    // 4. EVENTOS DEL MAPA Y GPS
+    // ==========================================
+    
+    // A) Si muevo el pin manualmente
+    marcador.on('dragend', function(e) {
+        const pos = e.target.getLatLng();
+        userLat = pos.lat;
+        userLng = pos.lng;
+        actualizarTotalesEnvio(); // <--- IMPORTANTE: Recalcula al soltar
     });
+
+    // B) Si uso el botón de GPS
+    const btnGps = document.getElementById('usar-gps-btn');
+    const gpsStatus = document.getElementById('gps-status');
+    const dirInput = document.getElementById('direccion_pedido');
+
+    if(btnGps) {
+        btnGps.addEventListener('click', function() {
+            if (navigator.geolocation) {
+                gpsStatus.innerHTML = '<span class="text-primary spinner-border spinner-border-sm"></span> Buscando...';
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        userLat = position.coords.latitude;
+                        userLng = position.coords.longitude;
+
+                        // 1. Mover mapa y marcador
+                        mapa.setView([userLat, userLng], 16);
+                        marcador.setLatLng([userLat, userLng]);
+                        
+                        // 2. Rellenar campo de texto (opcional)
+                        dirInput.value = `Ubicación GPS (Lat: ${userLat.toFixed(4)}, Lon: ${userLng.toFixed(4)}) - Completa detalles...`;
+                        
+                        // 3. RECALCULAR PRECIO
+                        actualizarTotalesEnvio(); 
+
+                        gpsStatus.innerHTML = '<span class="text-success fw-bold"><i class="bi bi-check-circle"></i> Ubicación y precio actualizados</span>';
+                    },
+                    function(error) {
+                        console.error(error);
+                        gpsStatus.innerHTML = '<span class="text-danger">Error: No se pudo obtener ubicación.</span>';
+                    }, 
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                gpsStatus.innerHTML = '<span class="text-danger">Tu navegador no soporta GPS.</span>';
+            }
+        });
+    }
+
+    // ==========================================
+    // 5. LÓGICA DE YAPE Y VUELTO (Visualización)
+    // ==========================================
+    selectPago.addEventListener('change', function() {
+        containerYape.style.display = 'none';
+        divVuelto.style.display = 'none';
+        inputVuelto.removeAttribute('required');
+
+        if (this.value === 'yape') {
+            containerYape.style.display = 'block';
+            displayYapeNum.textContent = datosRestaurante.yapeNumero || "No registrado";
+            if (datosRestaurante.yapeQR) {
+                displayYapeQR.innerHTML = `<img src="assets/img/qr/${datosRestaurante.yapeQR}" class="img-fluid rounded border" style="max-width: 200px;">`;
+            } else {
+                displayYapeQR.innerHTML = '<span class="text-muted small">Sin código QR</span>';
+            }
+        } else if (this.value === 'efectivo') {
+            divVuelto.style.display = 'block';
+            inputVuelto.setAttribute('required', 'true');
+        }
+    });
+
+    // Copiar número Yape
+    if(btnCopiar) {
+        btnCopiar.addEventListener('click', function() {
+            const num = displayYapeNum.textContent;
+            if(num && num.length > 5) {
+                navigator.clipboard.writeText(num);
+                if(msgCopia) { msgCopia.style.display = 'inline-block'; setTimeout(()=> msgCopia.style.display='none', 2000); }
+            }
+        });
+    }
+
+    // Ajuste final visual del mapa
+    setTimeout(() => { mapa.invalidateSize(); }, 500);
+});
 </script>
 <?php
 // --- Cierres de conexión (SIN CAMBIOS) ---
