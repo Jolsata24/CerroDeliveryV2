@@ -53,9 +53,20 @@ $stmt_count->execute();
 $row_count = $stmt_count->get_result()->fetch_assoc();
 $total_pendientes = $row_count['total_pendientes'];
 
+
+
 include '../includes/header.php';
 ?>
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+    #mapa-restaurante {
+        height: 300px;
+        width: 100%;
+        border-radius: 10px;
+        z-index: 1;
+    }
+</style>
 <div class="hero-quickbite">
     <div class="container hero-text">
         <div class="dashboard-header d-flex flex-wrap justify-content-between align-items-center mb-4">
@@ -188,6 +199,26 @@ include '../includes/header.php';
                                     <button type="submit" class="btn btn-primary w-100" style="background: #8E44AD; border: none;">Guardar Datos</button>
                                 </form>
                             </div>
+                        </div>
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-bold text-primary"><i class="bi bi-geo-alt-fill me-2"></i>Ubicación del Local (Para envíos)</h6>
+                            <p class="small text-muted">Mueve el pin rojo a la ubicación exacta de tu restaurante. Esto es vital para calcular el costo de envío.</p>
+
+                            <form action="../procesos/actualizar_ubicacion_restaurante.php" method="POST">
+                                <div id="mapa-restaurante" class="mb-3 border"></div>
+
+                                <div class="row g-2">
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm bg-light" name="latitud" id="lat_rest" readonly placeholder="Latitud" required>
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" class="form-control form-control-sm bg-light" name="longitud" id="lon_rest" readonly placeholder="Longitud" required>
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-primary btn-sm">Guardar Ubicación</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -336,10 +367,48 @@ include '../includes/header.php';
         </div>
 
     </div>
-</div> <?php
-        // --- Cierres de conexión (SIN CAMBIOS) ---
-        $stmt_platos->close();
-        $stmt_count->close();
-        $conn->close();
-        include '../includes/footer.php';
-        ?>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Coordenadas iniciales (Cerro de Pasco por defecto o las guardadas si existieran)
+        // Nota: Si ya tienes coordenadas guardadas, puedes imprimirlas aquí con PHP
+        var latInicial = <?php echo !empty($restaurante_data['latitud']) ? $restaurante_data['latitud'] : -10.683; ?>;
+        var lonInicial = <?php echo !empty($restaurante_data['longitud']) ? $restaurante_data['longitud'] : -76.256; ?>;
+
+        var mapa = L.map('mapa-restaurante').setView([latInicial, lonInicial], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'OpenStreetMap'
+        }).addTo(mapa);
+
+        var marcador = L.marker([latInicial, lonInicial], {
+            draggable: true
+        }).addTo(mapa);
+
+        // Actualizar inputs al mover el pin
+        function actualizarInputs(lat, lon) {
+            document.getElementById('lat_rest').value = lat;
+            document.getElementById('lon_rest').value = lon;
+        }
+
+        // Inicializar inputs
+        actualizarInputs(latInicial, lonInicial);
+
+        marcador.on('dragend', function(e) {
+            var position = marcador.getLatLng();
+            actualizarInputs(position.lat, position.lng);
+        });
+
+        // Corregir visualización del mapa al cargar pestañas o modales
+        setTimeout(function() {
+            mapa.invalidateSize();
+        }, 500);
+    });
+</script>
+<?php
+// --- Cierres de conexión (SIN CAMBIOS) ---
+$stmt_platos->close();
+$stmt_count->close();
+$conn->close();
+include '../includes/footer.php';
+?>

@@ -84,11 +84,29 @@ include 'includes/header.php';
                                 </select>
                                 <div id="info-yape-container" class="card mb-3 border-primary" style="display: none; background-color: #f8f9fa;">
                                     <div class="card-body text-center">
-                                        <h6 class="text-primary fw-bold mb-2"> <i class="bi bi-qr-code"></i> Escanea para pagar</h6>
-                                        <div id="yape-qr-img-placeholder" class="mb-2"></div>
-                                        <h5 class="fw-bold" id="yape-numero-display">Cargando...</h5>
-                                        <div class="alert alert-warning py-1 small mt-2">
-                                            Realiza el pago y espera confirmación.
+                                        <h6 class="text-primary fw-bold mb-3">
+                                            <i class="bi bi-qr-code-scan"></i> Escanea el QR o usa el número
+                                        </h6>
+
+                                        <div id="yape-qr-img-placeholder" class="mb-3 d-flex justify-content-center">
+                                        </div>
+
+                                        <p class="mb-1 text-muted small">Número asociado:</p>
+
+                                        <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                                            <h3 class="fw-bold mb-0 text-dark" id="yape-numero-display">...</h3>
+
+                                            <button type="button" class="btn btn-outline-primary btn-sm rounded-circle" id="btn-copiar-yape" title="Copiar número" style="width: 38px; height: 38px;">
+                                                <i class="bi bi-clipboard-check"></i>
+                                            </button>
+                                        </div>
+
+                                        <div id="mensaje-copia" class="badge bg-success mb-2" style="display:none;">
+                                            ¡Número copiado!
+                                        </div>
+
+                                        <div class="alert alert-warning py-2 small mt-2 mb-0 border-0 bg-warning bg-opacity-10 text-warning-emphasis">
+                                            <i class="bi bi-info-circle-fill me-1"></i> Realiza el pago y espera la confirmación del restaurante.
                                         </div>
                                     </div>
                                 </div>
@@ -271,27 +289,37 @@ include 'includes/header.php';
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- 1. CONFIGURACIÓN DEL MAPA ---
-        const defaultLat = -10.683; // Cerro de Pasco
+        // --- VARIABLES GLOBALES ---
+        const selectPago = document.getElementById('metodo_pago');
+        const containerYape = document.getElementById('info-yape-container');
+        const displayYapeNum = document.getElementById('yape-numero-display');
+        const displayYapeQR = document.getElementById('yape-qr-img-placeholder');
+        const divVuelto = document.getElementById('div-vuelto');
+        const inputVuelto = document.getElementById('monto_pagar');
+
+        // Variables de datos del restaurante
+        let datosRestaurante = {
+            lat: null,
+            lon: null,
+            yapeNumero: '',
+            yapeQR: ''
+        };
+
+        // Configuración mapa
+        const defaultLat = -10.683;
         const defaultLng = -76.256;
         let userLat = defaultLat;
         let userLng = defaultLng;
 
         const mapa = L.map('mapa-checkout').setView([defaultLat, defaultLng], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapa);
-        
-        // Marcador del cliente (movible)
-        let marcador = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(mapa);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(mapa);
+        let marcador = L.marker([defaultLat, defaultLng], {
+            draggable: true
+        }).addTo(mapa);
 
-        // Variables para el cálculo (se llenarán via API)
-        const TARIFA_BASE = 5.00;
-        const KM_BASE = 1.5;
-        const PRECIO_KM_EXTRA = 2.00;
-        let restLat = null;
-        let restLon = null;
-
-        // --- 2. OBTENER DATOS DEL RESTAURANTE (COORDENADAS) ---
-        // Recuperamos el ID del restaurante del carrito guardado
+        // --- 1. OBTENER DATOS DEL RESTAURANTE (COORDENADAS Y YAPE) ---
         const carritoKey = `carritoData_${CLIENTE_ID}`;
         const carritoData = JSON.parse(sessionStorage.getItem(carritoKey));
 
@@ -299,114 +327,213 @@ include 'includes/header.php';
             fetch(`procesos/obtener_datos_restaurante.php?id_restaurante=${carritoData.restauranteId}`)
                 .then(response => response.json())
                 .then(resp => {
-                    if (resp.status === 'success' && resp.data.latitud && resp.data.longitud) {
-                        restLat = parseFloat(resp.data.latitud);
-                        restLon = parseFloat(resp.data.longitud);
-                        console.log("Coordenadas restaurante cargadas:", restLat, restLon);
-                        
-                        // Recalcular envío inicial por si acaso
-                        actualizarTotalesEnvio(); 
+                    if (resp.status === 'success') {
+                        // Guardamos los datos recibidos
+                        datosRestaurante.lat = parseFloat(resp.data.latitud);
+                        datosRestaurante.lon = parseFloat(resp.data.longitud);
+                        datosRestaurante.yapeNumero = resp.data.yape_numero;
+                        datosRestaurante.yapeQR = resp.data.yape_qr;
+
+                        // Recalcular envío ahora que tenemos coordenadas del restaurante
+                        actualizarTotalesEnvio();
                     }
                 })
-                .catch(err => console.error("Error cargando ubicación restaurante:", err));
+                .catch(err => console.error("Error datos restaurante:", err));
         }
 
-        // --- 3. LÓGICA DE CÁLCULO DE DISTANCIA ---
-        function calcularEnvio(clienteLat, clienteLon) {
-            // Si el restaurante no ha configurado su ubicación, cobramos tarifa base
-            if (!restLat || !restLon) return TARIFA_BASE;
+        // --- 2. LÓGICA DE PAGO (YAPE / EFECTIVO) ---
+        selectPago.addEventListener('change', function() {
+            // Resetear visualización
+            containerYape.style.display = 'none';
+            divVuelto.style.display = 'none';
+            inputVuelto.removeAttribute('required');
 
-            const R = 6371; // Radio tierra km
-            const dLat = (clienteLat - restLat) * Math.PI / 180;
-            const dLon = (clienteLon - restLon) * Math.PI / 180;
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                      Math.cos(restLat * Math.PI / 180) * Math.cos(clienteLat * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distancia = R * c; 
+            if (this.value === 'yape') {
+                containerYape.style.display = 'block';
+                displayYapeNum.textContent = datosRestaurante.yapeNumero || "Sin número registrado";
 
-            let costoEnvio = TARIFA_BASE;
-            if (distancia > KM_BASE) {
-                costoEnvio += (distancia - KM_BASE) * PRECIO_KM_EXTRA;
+                if (datosRestaurante.yapeQR) {
+                    displayYapeQR.innerHTML = `<img src="assets/img/qr/${datosRestaurante.yapeQR}" class="img-fluid rounded border" style="max-width: 200px;">`;
+                } else {
+                    displayYapeQR.innerHTML = '<span class="text-muted small">Sin código QR</span>';
+                }
+
+            } else if (this.value === 'efectivo') {
+                divVuelto.style.display = 'block';
+                inputVuelto.setAttribute('required', 'true');
             }
-            return Math.round(costoEnvio * 10) / 10;
+        });
+
+        // --- 3. CÁLCULO DE ENVÍO DINÁMICO ---
+        function calcularEnvio(clienteLat, clienteLon) {
+            if (!datosRestaurante.lat || !datosRestaurante.lon) return 5.00; // Default si no hay mapa
+
+            const R = 6371;
+            const dLat = (clienteLat - datosRestaurante.lat) * Math.PI / 180;
+            const dLon = (clienteLon - datosRestaurante.lon) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(datosRestaurante.lat * Math.PI / 180) * Math.cos(clienteLat * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distancia = R * c;
+
+            let costo = 5.00; // Tarifa base
+            if (distancia > 1.5) { // Si pasa de 1.5km
+                costo += (distancia - 1.5) * 2.00; // S/ 2.00 por km extra
+            }
+            return Math.round(costo * 10) / 10;
         }
 
         function actualizarTotalesEnvio() {
-            const costo = calcularEnvio(userLat, userLng);
-            
-            // Aquí intentamos buscar si ya existe la fila de envío en la tabla para actualizarla
-            // Nota: Esto depende de que tu función renderCarrito() (en el otro script) cree la tabla primero.
-            // Para simplificar, podrías mostrar el costo en un elemento separado o inyectarlo en la tabla.
-            
-            // Opción simple: Crear un div flotante o actualizar un elemento específico si existe
-            console.log("Costo de envío calculado: S/", costo);
-            
-            // Agregar el costo al input oculto si tuvieras uno, o manejarlo visualmente
-            // (La validación final y cobro real se hace en el servidor PHP)
-            
-            // Buscar la fila del total y actualizarla visualmente (Opcional avanzado)
-            const filaTotal = document.querySelector('.total-row .h5');
-            if(filaTotal) {
-                // Esto es solo visual, para hacerlo bien deberías integrar esto en renderCarrito
-                // Por ahora dejaremos que el PHP haga el cobro final real.
+            const costoEnvio = calcularEnvio(userLat, userLng);
+
+            // Actualizar visualmente la tabla (Buscamos la fila del total)
+            // Nota: Esto asume que el script de renderizado de tabla ya corrió
+            const celdaTotal = document.querySelector('.total-row .h5');
+
+            if (celdaTotal) {
+                // Recalculamos sumando lo que ya hay en el carrito (truco rápido)
+                // Lo ideal es regenerar la tabla, pero para no complicar tu código:
+                // Vamos a leer el subtotal de items del sessionStorage
+                let totalProductos = 0;
+                if (carritoData && carritoData.items) {
+                    carritoData.items.forEach(i => totalProductos += i.precio * i.cantidad);
+                }
+
+                const totalFinal = totalProductos + costoEnvio;
+
+                // Insertamos una fila de envío si no existe
+                let tfoot = document.querySelector('.summary-table tfoot');
+                let rowEnvio = document.getElementById('row-envio-dinamico');
+
+                if (!rowEnvio && tfoot) {
+                    rowEnvio = document.createElement('tr');
+                    rowEnvio.id = 'row-envio-dinamico';
+                    rowEnvio.innerHTML = `<td colspan="2" class="text-end text-muted">Costo de Envío (Aprox.)</td><td class="text-end text-muted" id="val-envio"></td><td></td>`;
+                    tfoot.insertBefore(rowEnvio, tfoot.firstChild); // Poner antes del total
+                }
+
+                if (document.getElementById('val-envio')) {
+                    document.getElementById('val-envio').textContent = `S/ ${costoEnvio.toFixed(2)}`;
+                }
+
+                celdaTotal.textContent = `S/ ${totalFinal.toFixed(2)}`;
             }
+
+            // Actualizamos los inputs ocultos para enviarlos al PHP
+            document.getElementById('latitud').value = userLat;
+            document.getElementById('longitud').value = userLng;
         }
 
-        function actualizarCoordenadas(lat, lng) {
-            document.getElementById('latitud').value = lat;
-            document.getElementById('longitud').value = lng;
-            userLat = lat;
-            userLng = lng;
+        // Eventos del mapa
+        marcador.on('dragend', function(e) {
+            const pos = e.target.getLatLng();
+            userLat = pos.lat;
+            userLng = pos.lng;
             actualizarTotalesEnvio();
-        }
+        });
 
         // Inicializar
-        actualizarCoordenadas(defaultLat, defaultLng);
-
-        marcador.on('dragend', function(event) {
-            var position = marcador.getLatLng();
-            actualizarCoordenadas(position.lat, position.lng);
-        });
-
-        // --- 4. GPS ---
-        const gpsBtn = document.getElementById('usar-gps-btn');
-        const gpsStatus = document.getElementById('gps-status');
-
-        gpsBtn.addEventListener('click', function() {
-            if (navigator.geolocation) {
-                gpsStatus.textContent = 'Buscando satélites...';
-                navigator.geolocation.getCurrentPosition(
-                    function(position) {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        mapa.setView([lat, lon], 16);
-                        marcador.setLatLng([lat, lon]);
-                        actualizarCoordenadas(lat, lon);
-                        gpsStatus.innerHTML = '<span class="text-success">¡Ubicación encontrada!</span>';
-                    },
-                    function() { gpsStatus.innerHTML = '<span class="text-danger">Error GPS.</span>'; }
-                );
-            }
-        });
-
-        // --- 5. VISUALIZACIÓN DE PAGO ---
-        const selectPago = document.getElementById('metodo_pago');
-        const divVuelto = document.getElementById('div-vuelto');
-        const inputVuelto = document.getElementById('monto_pagar');
-
-        selectPago.addEventListener('change', function() {
-            if (this.value === 'efectivo') {
-                divVuelto.style.display = 'block';
-                inputVuelto.setAttribute('required', 'true');
-            } else {
-                divVuelto.style.display = 'none';
-                inputVuelto.removeAttribute('required');
-                inputVuelto.value = '';
-            }
-        });
-
-        setTimeout(() => mapa.invalidateSize(), 400);
+        setTimeout(() => {
+            mapa.invalidateSize();
+        }, 500);
     });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // --- ELEMENTOS DEL DOM ---
+    const selectPago = document.getElementById('metodo_pago');
+    const containerYape = document.getElementById('info-yape-container');
+    const displayYapeNum = document.getElementById('yape-numero-display');
+    const displayYapeQR = document.getElementById('yape-qr-img-placeholder');
+    const btnCopiar = document.getElementById('btn-copiar-yape');
+    const msgCopia = document.getElementById('mensaje-copia');
+    
+    const divVuelto = document.getElementById('div-vuelto');
+    const inputVuelto = document.getElementById('monto_pagar');
+    
+    // Objeto para guardar los datos del restaurante
+    let datosRestaurante = {
+        yapeNumero: '',
+        yapeQR: '',
+        lat: null, // Para el cálculo de envío (si lo estás usando)
+        lon: null
+    };
 
+    // --- 1. CARGAR DATOS DEL RESTAURANTE AL INICIO ---
+    // Usamos el ID del cliente definido en PHP
+    const carritoKey = `carritoData_${CLIENTE_ID}`;
+    const carritoData = JSON.parse(sessionStorage.getItem(carritoKey));
+
+    if (carritoData && carritoData.restauranteId) {
+        // Llamamos a tu API para obtener los datos reales (QR, Número, Ubicación)
+        fetch(`procesos/obtener_datos_restaurante.php?id_restaurante=${carritoData.restauranteId}`)
+            .then(response => response.json())
+            .then(resp => {
+                if (resp.status === 'success') {
+                    datosRestaurante.yapeNumero = resp.data.yape_numero;
+                    datosRestaurante.yapeQR = resp.data.yape_qr;
+                    datosRestaurante.lat = parseFloat(resp.data.latitud);
+                    datosRestaurante.lon = parseFloat(resp.data.longitud);
+                    
+                    // Si tienes la función de costo de envío dinámico, llámala aquí:
+                    if (typeof actualizarTotalesEnvio === 'function') {
+                        actualizarTotalesEnvio(); 
+                    }
+                }
+            })
+            .catch(err => console.error("Error cargando datos del restaurante:", err));
+    }
+
+    // --- 2. LÓGICA DE CAMBIO DE MÉTODO DE PAGO ---
+    selectPago.addEventListener('change', function() {
+        // Ocultamos todo por defecto para limpiar la vista
+        containerYape.style.display = 'none';
+        divVuelto.style.display = 'none';
+        inputVuelto.removeAttribute('required');
+
+        if (this.value === 'yape') {
+            // MOSTRAR YAPE
+            containerYape.style.display = 'block';
+            
+            // Inyectar el número
+            displayYapeNum.textContent = datosRestaurante.yapeNumero || "No registrado";
+            
+            // Inyectar la imagen del QR
+            if (datosRestaurante.yapeQR) {
+                displayYapeQR.innerHTML = `<img src="assets/img/qr/${datosRestaurante.yapeQR}" class="img-fluid rounded shadow-sm border" style="max-width: 220px;">`;
+            } else {
+                displayYapeQR.innerHTML = '<div class="p-3 bg-light rounded text-muted border">Sin código QR disponible</div>';
+            }
+
+        } else if (this.value === 'efectivo') {
+            // MOSTRAR OPCIÓN DE VUELTO
+            divVuelto.style.display = 'block';
+            inputVuelto.setAttribute('required', 'true');
+        }
+    });
+
+    // --- 3. FUNCIONALIDAD DEL BOTÓN COPIAR ---
+    if (btnCopiar) {
+        btnCopiar.addEventListener('click', function() {
+            const numero = displayYapeNum.textContent;
+            
+            if (numero && numero !== "No registrado" && numero !== "...") {
+                // API del portapapeles moderna
+                navigator.clipboard.writeText(numero).then(() => {
+                    // Mostrar mensaje de éxito
+                    msgCopia.style.display = 'inline-block';
+                    
+                    // Ocultar mensaje después de 2 segundos
+                    setTimeout(() => {
+                        msgCopia.style.display = 'none';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Error al copiar: ', err);
+                    alert('No se pudo copiar el número automáticamente.');
+                });
+            }
+        });
+    }
+});
+</script>
 <?php include 'includes/footer.php'; ?>
