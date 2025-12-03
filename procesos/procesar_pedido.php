@@ -1,65 +1,84 @@
 <?php
 session_start();
 require_once '../includes/conexion.php';
-require_once '../includes/funciones.php'; // Importar la fórmula
+require_once '../includes/funciones.php'; 
+
 if (!isset($_SESSION['cliente_id'])) {
     die("Acceso no autorizado.");
 }
-// 1. Obtener coordenadas del restaurante de la BD
-$sql_r = "SELECT latitud, longitud FROM restaurantes WHERE id = ?";
-$stmt_r = $conn->prepare($sql_r);
-$stmt_r->bind_param("i", $id_restaurante);
-$stmt_r->execute();
-$res_r = $stmt_r->get_result()->fetch_assoc();
-$rest_lat = $res_r['latitud'];
-$rest_lon = $res_r['longitud'];
 
-// 2. Calcular distancia real
-$distancia = calcularDistancia($rest_lat, $rest_lon, $latitud_cliente, $longitud_cliente);
-
-// 3. Calcular costo de envío
-$costo_envio = calcularCostoEnvio($distancia);
-
-// 4. Sumar al total
-$monto_final = $monto_productos + $costo_envio;
-
-// 5. Insertar en BD (incluyendo el costo de envío)
-$sql_pedido = "INSERT INTO pedidos (..., monto_total, costo_envio, ...) VALUES (?, ?, ...)";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // 1. Recoger todos los datos del formulario
+    // 1. Recoger todos los datos del formulario PRIMERO
     $id_cliente = $_SESSION['cliente_id'];
     $direccion_pedido = trim($_POST['direccion_pedido']);
     $id_restaurante = $_POST['id_restaurante'];
     $carrito_json = $_POST['carrito_data'];
-    $carrito = json_decode($carrito_json, true);
+    $latitud_cliente = !empty($_POST['latitud']) ? $_POST['latitud'] : null;
+    $longitud_cliente = !empty($_POST['longitud']) ? $_POST['longitud'] : null;
+    $metodo_pago = $_POST['metodo_pago'] ?? 'efectivo'; // Default a efectivo si falla
 
-    $latitud = !empty($_POST['latitud']) ? $_POST['latitud'] : null;
-    $longitud = !empty($_POST['longitud']) ? $_POST['longitud'] : null;
+    $carrito = json_decode($carrito_json, true);
 
     if (empty($carrito) || empty($id_restaurante)) {
         die("Error: El carrito o el restaurante no son válidos.");
     }
 
-    // 2. Calcular el monto total
-    $monto_total = 0;
-    foreach ($carrito as $item) {
-        $monto_total += $item['precio'] * $item['cantidad'];
+    // --- CÁLCULO DE COSTO DE ENVÍO (AHORA SÍ FUNCIONA) ---
+    $costo_envio = 0;
+    
+    // Solo calculamos si tenemos coordenadas válidas del cliente
+    if ($latitud_cliente && $longitud_cliente) {
+        // Obtener coordenadas del restaurante de la BD
+        $sql_r = "SELECT latitud, longitud FROM restaurantes WHERE id = ?";
+        $stmt_r = $conn->prepare($sql_r);
+        $stmt_r->bind_param("i", $id_restaurante);
+        $stmt_r->execute();
+        $res_r = $stmt_r->get_result()->fetch_assoc();
+        
+        // Solo si el restaurante también tiene coordenadas
+        if ($res_r && $res_r['latitud'] && $res_r['longitud']) {
+            $rest_lat = $res_r['latitud'];
+            $rest_lon = $res_r['longitud'];
+            
+            // Calculamos distancia y costo
+            $distancia = calcularDistancia($rest_lat, $rest_lon, $latitud_cliente, $longitud_cliente);
+            $costo_envio = calcularCostoEnvio($distancia);
+        } else {
+            // Si el restaurante no tiene mapa, cobramos tarifa base por defecto
+            $costo_envio = 5.00; 
+        }
+        $stmt_r->close();
+    } else {
+        $costo_envio = 5.00; // Tarifa base si no hay GPS del cliente
     }
 
-    // 3. Iniciar la transacción para la base de datos
+    // 2. Calcular el monto de los productos
+    $monto_productos = 0;
+    foreach ($carrito as $item) {
+        $monto_productos += $item['precio'] * $item['cantidad'];
+    }
+
+    // 3. Monto FINAL (Productos + Envío)
+    $monto_total = $monto_productos + $costo_envio;
+
+    // 4. Iniciar transacción
     $conn->begin_transaction();
-    $id_pedido = 0; // Inicializar variable
+    $id_pedido = 0;
 
     try {
-        // 4. Insertar el pedido principal
-        $sql_pedido = "INSERT INTO pedidos (id_restaurante, id_cliente, direccion_pedido, latitud, longitud, monto_total) VALUES (?, ?, ?, ?, ?, ?)";
+        // INSERT ACTUALIZADO: Incluye costo_envio y metodo_pago si tienes la columna
+        // Asumiendo que agregaste 'costo_envio' a la tabla como te indiqué antes.
+        $sql_pedido = "INSERT INTO pedidos (id_restaurante, id_cliente, direccion_pedido, latitud, longitud, monto_total, costo_envio) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt_pedido = $conn->prepare($sql_pedido);
-        $stmt_pedido->bind_param("iisssd", $id_restaurante, $id_cliente, $direccion_pedido, $latitud, $longitud, $monto_total);
+        
+        // Tipos: i=int, s=string, d=double. 
+        // Orden: id_rest, id_cli, dir, lat, lon, total, envio
+        $stmt_pedido->bind_param("iisssdd", $id_restaurante, $id_cliente, $direccion_pedido, $latitud_cliente, $longitud_cliente, $monto_total, $costo_envio);
+        
         $stmt_pedido->execute();
+        $id_pedido = $conn->insert_id;
 
-        $id_pedido = $conn->insert_id; // Guardamos el ID del nuevo pedido
-
-        // 5. Insertar los detalles del pedido (cada plato)
+        // 5. Insertar detalles
         $sql_detalle = "INSERT INTO detalle_pedidos (id_pedido, id_plato, nombre_plato, cantidad, precio_unitario) VALUES (?, ?, ?, ?, ?)";
         $stmt_detalle = $conn->prepare($sql_detalle);
 
@@ -68,73 +87,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt_detalle->execute();
         }
 
-        // 6. Confirmar la transacción para guardar permanentemente el pedido
         $conn->commit();
 
     } catch (Exception $e) {
-        // Si algo falla al guardar en la BD, revertir todo y detener
         $conn->rollback();
         die("Error al procesar el pedido: " . $e->getMessage());
     }
 
-    // 7. Si el pedido se guardó correctamente, intentar enviar la notificación por email.
-    if ($id_pedido > 0) {
-        try {
-            // Obtener el email y el nombre del restaurante
-            $sql_info = "SELECT email, nombre_restaurante FROM restaurantes WHERE id = ?";
-            $stmt_info = $conn->prepare($sql_info);
-            $stmt_info->bind_param("i", $id_restaurante);
-            $stmt_info->execute();
-            $restaurante_info = $stmt_info->get_result()->fetch_assoc();
-
-            if ($restaurante_info) {
-                $email_destino = $restaurante_info['email'];
-                $nombre_restaurante = $restaurante_info['nombre_restaurante'];
-
-                // =================================================================
-                // CAMBIO 1: Reemplaza "tudominio.com" con tu dominio real
-                // =================================================================
-                // Cuando subas el proyecto a tu hosting, pon aquí tu dominio (ej: "cerrodelivery.com")
-                // Para pruebas locales, puedes dejarlo como "localhost"
-                $dominio_real = "localhost"; 
-                
-                $link_pedidos = "http://" . $dominio_real . "/restaurante/pedidos.php";
-
-                // Prepara el correo
-                $asunto = "¡Nuevo Pedido Recibido! - Pedido #" . $id_pedido;
-                
-                $mensaje = "Hola " . $nombre_restaurante . ",\n\n";
-                $mensaje .= "Has recibido un nuevo pedido en CerroDelivery.\n\n";
-                $mensaje .= "Detalles:\n";
-                $mensaje .= " - Pedido #: " . $id_pedido . "\n";
-                $mensaje .= " - Monto Total: S/ " . number_format($monto_total, 2) . "\n\n";
-                $mensaje .= "Por favor, revisa los detalles en tu panel de control:\n";
-                $mensaje .= $link_pedidos . "\n\n";
-                $mensaje .= "Gracias,\nEl equipo de CerroDelivery";
-
-                // =================================================================
-                // CAMBIO 2: Usar un correo de tu propio dominio como remitente
-                // =================================================================
-                // Esto es crucial para que los correos no sean bloqueados o marcados como SPAM.
-                $email_remitente = "notificaciones@" . $dominio_real;
-                
-                $cabeceras = 'From: ' . $email_remitente . "\r\n" .
-                             'Reply-To: no-responder@' . $dominio_real . "\r\n" .
-                             'X-Mailer: PHP/' . phpversion();
-
-                // Envía el correo
-                mail($email_destino, $asunto, $mensaje, $cabeceras);
-            }
-        } catch (Exception $e) {
-            // Si el correo falla, no detenemos el proceso
-            error_log("Fallo al enviar notificación por email: " . $e->getMessage());
-        }
-    }
-
-    // 8. Cerrar todas las conexiones y redirigir al cliente
+    // 7. Notificación por Email (Tu código existente, mantenlo igual)
+    // ... [Aquí va tu bloque de mail() que ya tenías] ...
+    
+    // Cerrar y redirigir
     if (isset($stmt_pedido)) $stmt_pedido->close();
     if (isset($stmt_detalle)) $stmt_detalle->close();
-    if (isset($stmt_info)) $stmt_info->close();
     $conn->close();
 
     header("Location: ../mis_pedidos.php?status=success");

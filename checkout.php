@@ -82,7 +82,16 @@ include 'includes/header.php';
                                     <option value="tarjeta">Tarjeta (POS)</option>
                                     <option value="efectivo">Efectivo</option>
                                 </select>
-
+                                <div id="info-yape-container" class="card mb-3 border-primary" style="display: none; background-color: #f8f9fa;">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-primary fw-bold mb-2"> <i class="bi bi-qr-code"></i> Escanea para pagar</h6>
+                                        <div id="yape-qr-img-placeholder" class="mb-2"></div>
+                                        <h5 class="fw-bold" id="yape-numero-display">Cargando...</h5>
+                                        <div class="alert alert-warning py-1 small mt-2">
+                                            Realiza el pago y espera confirmación.
+                                        </div>
+                                    </div>
+                                </div>
                                 <div id="div-vuelto" style="display: none;">
                                     <label for="monto_pagar" class="form-label small">¿Con cuánto vas a pagar?</label>
                                     <div class="input-group">
@@ -250,71 +259,116 @@ include 'includes/header.php';
                         gpsStatus.className = 'text-success mt-2 text-center';
                     },
                     function(error) {
-                        /* ... (manejo de errores sin cambios) ... */ }
+                        /* ... (manejo de errores sin cambios) ... */
+                    }
                 );
             } else {
-                /* ... (manejo de errores sin cambios) ... */ }
+                /* ... (manejo de errores sin cambios) ... */
+            }
         });
     });
 </script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // --- 1. LÓGICA DEL MAPA (LEAFLET) ---
-        // Coordenadas por defecto (Cerro de Pasco aprox o Lima)
-        const defaultLat = -10.683;
+        // --- 1. CONFIGURACIÓN DEL MAPA ---
+        const defaultLat = -10.683; // Cerro de Pasco
         const defaultLng = -76.256;
+        let userLat = defaultLat;
+        let userLng = defaultLng;
 
         const mapa = L.map('mapa-checkout').setView([defaultLat, defaultLng], 15);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap'
-        }).addTo(mapa);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap' }).addTo(mapa);
+        
+        // Marcador del cliente (movible)
+        let marcador = L.marker([defaultLat, defaultLng], { draggable: true }).addTo(mapa);
 
-        // Marcador arrastrable
-        let marcador = L.marker([defaultLat, defaultLng], {
-            draggable: true
-        }).addTo(mapa);
+        // Variables para el cálculo (se llenarán via API)
         const TARIFA_BASE = 5.00;
         const KM_BASE = 1.5;
         const PRECIO_KM_EXTRA = 2.00;
+        let restLat = null;
+        let restLon = null;
 
-        const restLat = <?php echo $rest_lat; ?>;
-        const restLon = <?php echo $rest_lon; ?>;
+        // --- 2. OBTENER DATOS DEL RESTAURANTE (COORDENADAS) ---
+        // Recuperamos el ID del restaurante del carrito guardado
+        const carritoKey = `carritoData_${CLIENTE_ID}`;
+        const carritoData = JSON.parse(sessionStorage.getItem(carritoKey));
 
+        if (carritoData && carritoData.restauranteId) {
+            fetch(`procesos/obtener_datos_restaurante.php?id_restaurante=${carritoData.restauranteId}`)
+                .then(response => response.json())
+                .then(resp => {
+                    if (resp.status === 'success' && resp.data.latitud && resp.data.longitud) {
+                        restLat = parseFloat(resp.data.latitud);
+                        restLon = parseFloat(resp.data.longitud);
+                        console.log("Coordenadas restaurante cargadas:", restLat, restLon);
+                        
+                        // Recalcular envío inicial por si acaso
+                        actualizarTotalesEnvio(); 
+                    }
+                })
+                .catch(err => console.error("Error cargando ubicación restaurante:", err));
+        }
+
+        // --- 3. LÓGICA DE CÁLCULO DE DISTANCIA ---
         function calcularEnvio(clienteLat, clienteLon) {
-            // Fórmula de Haversine en JS
+            // Si el restaurante no ha configurado su ubicación, cobramos tarifa base
+            if (!restLat || !restLon) return TARIFA_BASE;
+
             const R = 6371; // Radio tierra km
             const dLat = (clienteLat - restLat) * Math.PI / 180;
             const dLon = (clienteLon - restLon) * Math.PI / 180;
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(restLat * Math.PI / 180) * Math.cos(clienteLat * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(restLat * Math.PI / 180) * Math.cos(clienteLat * Math.PI / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distancia = R * c; // Distancia en KM
+            const distancia = R * c; 
 
             let costoEnvio = TARIFA_BASE;
             if (distancia > KM_BASE) {
                 costoEnvio += (distancia - KM_BASE) * PRECIO_KM_EXTRA;
             }
-
-            // Redondear a 2 decimales
             return Math.round(costoEnvio * 10) / 10;
         }
-        // Función para actualizar inputs ocultos
+
+        function actualizarTotalesEnvio() {
+            const costo = calcularEnvio(userLat, userLng);
+            
+            // Aquí intentamos buscar si ya existe la fila de envío en la tabla para actualizarla
+            // Nota: Esto depende de que tu función renderCarrito() (en el otro script) cree la tabla primero.
+            // Para simplificar, podrías mostrar el costo en un elemento separado o inyectarlo en la tabla.
+            
+            // Opción simple: Crear un div flotante o actualizar un elemento específico si existe
+            console.log("Costo de envío calculado: S/", costo);
+            
+            // Agregar el costo al input oculto si tuvieras uno, o manejarlo visualmente
+            // (La validación final y cobro real se hace en el servidor PHP)
+            
+            // Buscar la fila del total y actualizarla visualmente (Opcional avanzado)
+            const filaTotal = document.querySelector('.total-row .h5');
+            if(filaTotal) {
+                // Esto es solo visual, para hacerlo bien deberías integrar esto en renderCarrito
+                // Por ahora dejaremos que el PHP haga el cobro final real.
+            }
+        }
+
         function actualizarCoordenadas(lat, lng) {
             document.getElementById('latitud').value = lat;
             document.getElementById('longitud').value = lng;
+            userLat = lat;
+            userLng = lng;
+            actualizarTotalesEnvio();
         }
-        // Inicializar inputs
+
+        // Inicializar
         actualizarCoordenadas(defaultLat, defaultLng);
 
-        // Escuchar evento de arrastre del marcador
         marcador.on('dragend', function(event) {
-            var position = marker.getLatLng();
+            var position = marcador.getLatLng();
             actualizarCoordenadas(position.lat, position.lng);
         });
 
-        // --- 2. LÓGICA DEL GPS ---
+        // --- 4. GPS ---
         const gpsBtn = document.getElementById('usar-gps-btn');
         const gpsStatus = document.getElementById('gps-status');
 
@@ -325,22 +379,17 @@ include 'includes/header.php';
                     function(position) {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-
-                        // Mover mapa y marcador
                         mapa.setView([lat, lon], 16);
                         marcador.setLatLng([lat, lon]);
                         actualizarCoordenadas(lat, lon);
-
-                        gpsStatus.innerHTML = '<span class="text-success">¡Ubicación encontrada! Ajusta el pin si es necesario.</span>';
+                        gpsStatus.innerHTML = '<span class="text-success">¡Ubicación encontrada!</span>';
                     },
-                    function() {
-                        gpsStatus.innerHTML = '<span class="text-danger">No pudimos detectar tu ubicación. Mueve el pin manualmente.</span>';
-                    }
+                    function() { gpsStatus.innerHTML = '<span class="text-danger">Error GPS.</span>'; }
                 );
             }
         });
 
-        // --- 3. LÓGICA DE PAGO ---
+        // --- 5. VISUALIZACIÓN DE PAGO ---
         const selectPago = document.getElementById('metodo_pago');
         const divVuelto = document.getElementById('div-vuelto');
         const inputVuelto = document.getElementById('monto_pagar');
@@ -356,10 +405,7 @@ include 'includes/header.php';
             }
         });
 
-        // Solución para renderizado correcto del mapa si estaba oculto o en tabs
-        setTimeout(function() {
-            mapa.invalidateSize();
-        }, 400);
+        setTimeout(() => mapa.invalidateSize(), 400);
     });
 </script>
 

@@ -39,7 +39,7 @@ $res_my_cats = $stmt_my_cats->get_result();
 
 // Guardamos los IDs en un array simple para buscar fácil: [1, 5, 8]
 $mis_categorias_ids = [];
-while($row = $res_my_cats->fetch_assoc()) {
+while ($row = $res_my_cats->fetch_assoc()) {
     $mis_categorias_ids[] = $row['id_categoria'];
 }
 $stmt_my_cats->close();
@@ -166,48 +166,71 @@ include '../includes/header.php';
                                         class="btn btn-secondary w-100">Guardar</button></div>
                             </div>
                         </form>
+                        <div class="card dashboard-card h-100 mt-4">
+                            <div class="card-header bg-white">
+                                <h5 class="mb-0 fw-bold" style="color: #8E44AD;"><i class="bi bi-qr-code-scan me-2"></i>Configuración de Yape/Plin</h5>
+                            </div>
+                            <div class="card-body">
+                                <form action="../procesos/actualizar_yape.php" method="POST" enctype="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label class="form-label">Número asociado</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                                            <input type="tel" class="form-control" name="yape_numero"
+                                                value="<?php echo htmlspecialchars($restaurante_data['yape_numero'] ?? ''); ?>"
+                                                placeholder="987654321">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Imagen del QR</label>
+                                        <input type="file" class="form-control" name="yape_qr" accept="image/*">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100" style="background: #8E44AD; border: none;">Guardar Datos</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
-    <div class="card dashboard-card h-100">
-        <div class="card-header bg-white">
-            <h5 class="mb-0 fw-bold"><i class="bi bi-tags-fill me-2 text-primary"></i>Categorías del Restaurante</h5>
-        </div>
-        <div class="card-body">
-            <p class="text-muted small mb-3">Selecciona las categorías que mejor describen tu comida. Esto ayuda a los clientes a encontrarte en los filtros.</p>
-            
-            <form action="../procesos/actualizar_categorias.php" method="POST">
-                <div class="d-flex flex-wrap gap-2 mb-3">
-                    <?php if ($res_all_cats->num_rows > 0): ?>
-                        <?php while($cat = $res_all_cats->fetch_assoc()): 
-                            // Verificamos si el restaurante ya tiene esta categoría
-                            $checked = in_array($cat['id'], $mis_categorias_ids) ? 'checked' : '';
-                            $clase_activa = in_array($cat['id'], $mis_categorias_ids) ? 'border-primary bg-primary text-white' : 'border-secondary text-muted';
-                        ?>
-                            <input type="checkbox" class="btn-check" 
-                                   id="cat_<?php echo $cat['id']; ?>" 
-                                   name="categorias[]" 
-                                   value="<?php echo $cat['id']; ?>" 
-                                   <?php echo $checked; ?>>
-                            
-                            <label class="btn btn-outline-primary btn-sm rounded-pill" for="cat_<?php echo $cat['id']; ?>">
-                                <?php echo htmlspecialchars($cat['nombre_categoria']); ?>
-                            </label>
-                        <?php endwhile; ?>
-                    <?php else: ?>
-                        <div class="alert alert-warning w-100">
-                            No hay categorías registradas en el sistema. Contacta al administrador.
-                        </div>
-                    <?php endif; ?>
+                <div class="card dashboard-card h-100">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-tags-fill me-2 text-primary"></i>Categorías del Restaurante</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted small mb-3">Selecciona las categorías que mejor describen tu comida. Esto ayuda a los clientes a encontrarte en los filtros.</p>
+
+                        <form action="../procesos/actualizar_categorias.php" method="POST">
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                <?php if ($res_all_cats->num_rows > 0): ?>
+                                    <?php while ($cat = $res_all_cats->fetch_assoc()):
+                                        // Verificamos si el restaurante ya tiene esta categoría
+                                        $checked = in_array($cat['id'], $mis_categorias_ids) ? 'checked' : '';
+                                        $clase_activa = in_array($cat['id'], $mis_categorias_ids) ? 'border-primary bg-primary text-white' : 'border-secondary text-muted';
+                                    ?>
+                                        <input type="checkbox" class="btn-check"
+                                            id="cat_<?php echo $cat['id']; ?>"
+                                            name="categorias[]"
+                                            value="<?php echo $cat['id']; ?>"
+                                            <?php echo $checked; ?>>
+
+                                        <label class="btn btn-outline-primary btn-sm rounded-pill" for="cat_<?php echo $cat['id']; ?>">
+                                            <?php echo htmlspecialchars($cat['nombre_categoria']); ?>
+                                        </label>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <div class="alert alert-warning w-100">
+                                        No hay categorías registradas en el sistema. Contacta al administrador.
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary">Guardar Categorías</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Guardar Categorías</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+            </div>
         </div>
 
         <div class="row g-4 mb-4">
