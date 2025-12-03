@@ -1,11 +1,30 @@
 <?php
 session_start();
 require_once '../includes/conexion.php';
-
+require_once '../includes/funciones.php'; // Importar la fórmula
 if (!isset($_SESSION['cliente_id'])) {
     die("Acceso no autorizado.");
 }
+// 1. Obtener coordenadas del restaurante de la BD
+$sql_r = "SELECT latitud, longitud FROM restaurantes WHERE id = ?";
+$stmt_r = $conn->prepare($sql_r);
+$stmt_r->bind_param("i", $id_restaurante);
+$stmt_r->execute();
+$res_r = $stmt_r->get_result()->fetch_assoc();
+$rest_lat = $res_r['latitud'];
+$rest_lon = $res_r['longitud'];
 
+// 2. Calcular distancia real
+$distancia = calcularDistancia($rest_lat, $rest_lon, $latitud_cliente, $longitud_cliente);
+
+// 3. Calcular costo de envío
+$costo_envio = calcularCostoEnvio($distancia);
+
+// 4. Sumar al total
+$monto_final = $monto_productos + $costo_envio;
+
+// 5. Insertar en BD (incluyendo el costo de envío)
+$sql_pedido = "INSERT INTO pedidos (..., monto_total, costo_envio, ...) VALUES (?, ?, ...)";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // 1. Recoger todos los datos del formulario
     $id_cliente = $_SESSION['cliente_id'];
