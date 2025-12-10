@@ -13,7 +13,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $latitud_cliente = !empty($_POST['latitud']) ? $_POST['latitud'] : null;
     $longitud_cliente = !empty($_POST['longitud']) ? $_POST['longitud'] : null;
     $metodo_pago = $_POST['metodo_pago'] ?? 'efectivo';
-    
+    if ($metodo_pago == 'yape') {
+        if (!isset($_FILES['comprobante_yape']) || $_FILES['comprobante_yape']['error'] != 0) {
+            // Si es Yape y no hay imagen, detenemos todo y devolvemos error
+            die("Error: Es obligatorio subir la captura de pago para pedidos con Yape.");
+        }
+    }
     // --- LÓGICA DE SUBIDA DE IMAGEN YAPE ---
     $nombre_comprobante = null;
     if ($metodo_pago == 'yape' && isset($_FILES['comprobante_yape']) && $_FILES['comprobante_yape']['error'] == 0) {

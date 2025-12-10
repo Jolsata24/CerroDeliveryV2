@@ -39,50 +39,23 @@ include '../includes/footer.php';
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('pedidos-container');
 
-    // --- FUNCIÓN NUEVA: Carga las solicitudes de un pedido específico ---
-    const cargarSolicitudes = () => {
-        // Busca todos los contenedores de solicitudes que se hayan cargado
-        const contenedoresSolicitudes = document.querySelectorAll('.solicitudes-container');
-        
-        contenedoresSolicitudes.forEach(contenedor => {
-            const idPedido = contenedor.dataset.idPedido;
-            if (idPedido) {
-                // Llama al PHP que carga la lista de repartidores para este pedido
-                fetch(`ajax_cargar_solicitudes.php?id_pedido=${idPedido}`)
-                    .then(response => response.text())
-                    .then(html => {
-                        contenedor.innerHTML = html;
-                    })
-                    .catch(error => console.error('Error al cargar solicitudes:', error));
-            }
-        });
-    };
+    // 1. SOLUCIÓN Z-INDEX: Mover modal al body al abrir y devolverlo al cerrar
+    // Esto evita que la pantalla se ponga gris encima de la foto
+    document.addEventListener('show.bs.modal', function (event) {
+        const modal = event.target;
+        document.body.appendChild(modal); // Lo mueve al final del body (capa superior)
+    });
 
-    // --- FUNCIÓN PRINCIPAL: Carga la lista de todos los pedidos ---
-    const cargarPedidos = () => {
-        fetch('ajax_cargar_pedidos.php')
-            .then(response => response.text())
-            .then(html => {
-                container.innerHTML = html;
-                // --- ¡CLAVE! Después de cargar los pedidos, llamamos a la función que carga las solicitudes ---
-                cargarSolicitudes();
-            })
-            .catch(error => {
-                console.error('Error al cargar la lista de pedidos:', error);
-                container.innerHTML = '<div class="alert alert-danger">Error: No se pudo actualizar la lista de pedidos.</div>';
-            });
-    };
+    document.addEventListener('hidden.bs.modal', function (event) {
+        const modal = event.target;
+        // Lo devolvemos al contenedor original para que el sistema de actualización
+        // pueda borrarlo correctamente cuando refresque la lista.
+        if(container) {
+            container.appendChild(modal); 
+        }
+    });
 
-    // Carga inicial y actualización periódica
-    cargarPedidos();
-    setInterval(cargarPedidos, 6000); // Se actualiza cada 6 segundos
-});
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const container = document.getElementById('pedidos-container');
-
-    // Función para cargar las solicitudes de repartidores
+    // 2. CARGA DE SOLICITUDES (Repartidores)
     const cargarSolicitudes = () => {
         const contenedoresSolicitudes = document.querySelectorAll('.solicitudes-container');
         contenedoresSolicitudes.forEach(contenedor => {
@@ -91,16 +64,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch(`ajax_cargar_solicitudes.php?id_pedido=${idPedido}`)
                     .then(response => response.text())
                     .then(html => { contenedor.innerHTML = html; })
-                    .catch(error => console.error('Error al cargar solicitudes:', error));
+                    .catch(error => console.error('Error solicitudes:', error));
             }
         });
     };
 
-    // --- FUNCIÓN PRINCIPAL MODIFICADA ---
+    // 3. CARGA DE PEDIDOS (Con pausa inteligente)
     const cargarPedidos = () => {
-        // 1. VERIFICACIÓN: Si hay un modal abierto (clase .show), NO actualizamos
+        // Si hay una foto abierta, NO actualizamos nada para no cerrarla en la cara
         if (document.querySelector('.modal.show')) {
-            console.log("Actualización pausada: Usuario viendo un comprobante.");
+            console.log("Actualización pausada: Usuario viendo foto.");
             return; 
         }
 
@@ -108,17 +81,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.text())
             .then(html => {
                 container.innerHTML = html;
-                cargarSolicitudes(); // Volver a cargar solicitudes tras actualizar
+                cargarSolicitudes(); 
             })
             .catch(error => {
-                console.error('Error al cargar pedidos:', error);
+                console.error('Error pedidos:', error);
             });
     };
 
-    // Carga inicial
+    // Iniciar
     cargarPedidos();
-    
-    // Intervalo de actualización (cada 6 segundos)
     setInterval(cargarPedidos, 6000);
 });
 </script>

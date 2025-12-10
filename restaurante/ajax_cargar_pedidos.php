@@ -19,12 +19,17 @@ $resultado_pedidos = $stmt_pedidos->get_result();
 
 if ($resultado_pedidos->num_rows > 0):
     while ($pedido = $resultado_pedidos->fetch_assoc()):
-        // Lógica para los colores y textos de estado
+        // Lógica de estados y colores
         $estado_clase_borde = 'border-info';
         $estado_clase_texto = 'text-info';
         $icono_estado = 'bi-stopwatch';
 
         switch ($pedido['estado_pedido']) {
+            case 'Pendiente':
+                $estado_clase_borde = 'border-danger';
+                $estado_clase_texto = 'text-danger';
+                $icono_estado = 'bi-exclamation-circle-fill';
+                break;
             case 'En preparación':
                 $estado_clase_borde = 'border-warning';
                 $estado_clase_texto = 'text-warning';
@@ -69,32 +74,36 @@ if ($resultado_pedidos->num_rows > 0):
                         <p class="fw-bold fs-4 mb-2">S/ <?php echo number_format($pedido['monto_total'], 2); ?></p>
 
                         <?php if ($pedido['metodo_pago'] == 'yape' && !empty($pedido['comprobante_pago'])): ?>
-                            <button type="button" class="btn btn-sm btn-outline-success fw-bold mb-2" data-bs-toggle="modal" data-bs-target="#modalYape<?php echo $pedido['id']; ?>">
-                                <i class="bi bi-qr-code"></i> Ver Pago Yape
-                            </button>
+                            
+                            <div class="d-flex justify-content-md-end align-items-center gap-2">
+                                <span class="small text-muted me-1">Ver pago:</span>
+                                <div class="position-relative" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#modalZoom<?php echo $pedido['id']; ?>">
+                                    <img src="../assets/img/comprobantes/<?php echo htmlspecialchars($pedido['comprobante_pago']); ?>" 
+                                         alt="Comprobante" 
+                                         class="rounded border border-2 border-success shadow-sm"
+                                         style="width: 60px; height: 60px; object-fit: cover; transition: transform 0.2s;"
+                                         onmouseover="this.style.transform='scale(1.1)'" 
+                                         onmouseout="this.style.transform='scale(1)'">
+                                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle">
+                                        <span class="visually-hidden">Ver</span>
+                                    </span>
+                                </div>
+                            </div>
 
-                            <div class="modal fade" id="modalYape<?php echo $pedido['id']; ?>" tabindex="-1" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Pago del Pedido #<?php echo $pedido['id']; ?></h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <div class="modal fade" id="modalZoom<?php echo $pedido['id']; ?>" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg"> <div class="modal-content border-0 bg-transparent"> <div class="text-end mb-2">
+                                            <button type="button" class="btn-close btn-close-white fs-5" data-bs-dismiss="modal" aria-label="Close" style="opacity: 1; background-color: white; border-radius: 50%; padding: 0.5rem;"></button>
                                         </div>
-                                        <div class="modal-body text-center">
-                                            <img src="../assets/img/comprobantes/<?php echo htmlspecialchars($pedido['comprobante_pago']); ?>"
-                                                class="img-fluid rounded border shadow-sm"
-                                                style="max-height: 70vh; width: auto; object-fit: contain;">
-                                            <div class="mt-3">
-                                                <p class="mb-1"><strong>Cliente:</strong> <?php echo $pedido['nombre_cliente']; ?></p>
-                                                <p class="mb-0"><strong>Monto:</strong> S/ <?php echo number_format($pedido['monto_total'], 2); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+
+                                        <div class="modal-body p-0 text-center">
+                                            <img src="../assets/img/comprobantes/<?php echo htmlspecialchars($pedido['comprobante_pago']); ?>" 
+                                                 class="img-fluid rounded shadow-lg" 
+                                                 style="max-height: 85vh; width: auto; object-fit: contain; background-color: #fff;">
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         <?php elseif ($pedido['metodo_pago'] == 'efectivo'): ?>
                             <span class="badge bg-secondary">Pago Efectivo</span>
                         <?php else: ?>
@@ -105,14 +114,23 @@ if ($resultado_pedidos->num_rows > 0):
             </div>
 
             <div class="card-footer bg-light">
-                <?php if ($pedido['estado_pedido'] == 'Listo para recoger'): ?>
-                    <h6 class="small fw-bold mb-2 text-center">REPARTIDORES POSTULANDO:</h6>
-                    <div class="solicitudes-container" data-id-pedido="<?php echo $pedido['id']; ?>">
+                <?php if ($pedido['estado_pedido'] == 'Pendiente'): ?>
+                    <div class="d-grid gap-2">
+                        <form action="../procesos/actualizar_estado_pedido.php" method="POST">
+                            <input type="hidden" name="id_pedido" value="<?php echo $pedido['id']; ?>">
+                            <input type="hidden" name="nuevo_estado" value="En preparación">
+                            <button type="submit" class="btn btn-success w-100 fw-bold">
+                                <i class="bi bi-check-circle-fill me-2"></i>CONFIRMAR PEDIDO
+                            </button>
+                        </form>
                     </div>
+                <?php elseif ($pedido['estado_pedido'] == 'Listo para recoger'): ?>
+                    <h6 class="small fw-bold mb-2 text-center">REPARTIDORES POSTULANDO:</h6>
+                    <div class="solicitudes-container" data-id-pedido="<?php echo $pedido['id']; ?>"></div>
                 <?php elseif ($pedido['estado_pedido'] != 'Entregado'): ?>
                     <form action="../procesos/actualizar_estado_pedido.php" method="POST" class="d-flex justify-content-end align-items-center">
                         <input type="hidden" name="id_pedido" value="<?php echo $pedido['id']; ?>">
-                        <label class="form-label me-2 mb-0 small">Cambiar a:</label>
+                        <label class="form-label me-2 mb-0 small">Estado:</label>
                         <select name="nuevo_estado" class="form-select form-select-sm w-auto me-2">
                             <option value="En preparación" <?php echo ($pedido['estado_pedido'] == 'En preparación') ? 'selected' : ''; ?>>En preparación</option>
                             <option value="Listo para recoger" <?php echo ($pedido['estado_pedido'] == 'Listo para recoger') ? 'selected' : ''; ?>>Listo para recoger</option>

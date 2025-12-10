@@ -525,7 +525,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modalBoleta.show();
         });
     }
-
+    
     // Envío final (Botón verde del modal)
     if(btnEnviarFinal){
         btnEnviarFinal.addEventListener('click', function() {
@@ -542,6 +542,56 @@ document.addEventListener('DOMContentLoaded', function() {
     if(typeof mapa !== 'undefined') {
         setTimeout(() => { mapa.invalidateSize(); }, 500);
     }
+    // ==========================================
+    // 7. VALIDACIÓN EN TIEMPO REAL (CORREGIDO)
+    // ==========================================
+    const inputYapeFile = document.getElementById('comprobante_yape');
+    // NOTA: btnConfirmarInicial ya fue declarado arriba, así que lo usamos directamente sin 'const'
+
+    // Función que revisa si debe bloquear el botón
+    function validarBotonConfirmacion() {
+        if (!selectPago || !btnConfirmarInicial) return; // Seguridad extra
+
+        if (selectPago.value === 'yape') {
+            // Si es Yape y NO hay archivo
+            if (inputYapeFile.files.length === 0) {
+                btnConfirmarInicial.disabled = true;
+                btnConfirmarInicial.innerHTML = '<i class="bi bi-camera-fill me-2"></i>Sube la captura para continuar';
+                btnConfirmarInicial.classList.remove('btn-primary');
+                btnConfirmarInicial.classList.add('btn-secondary');
+            } else {
+                // Si es Yape y SÍ hay archivo
+                btnConfirmarInicial.disabled = false;
+                btnConfirmarInicial.innerHTML = 'Confirmar Pedido';
+                btnConfirmarInicial.classList.remove('btn-secondary');
+                btnConfirmarInicial.classList.add('btn-primary');
+            }
+        } else {
+            // Si es Efectivo o Tarjeta (siempre habilitado)
+            btnConfirmarInicial.disabled = false;
+            btnConfirmarInicial.innerHTML = 'Confirmar Pedido';
+            btnConfirmarInicial.classList.remove('btn-secondary');
+            btnConfirmarInicial.classList.add('btn-primary');
+        }
+    }
+
+    // Escuchar cambios en el selector de pago
+    if(selectPago){
+        selectPago.addEventListener('change', function() {
+            // ... (tu lógica existente de mostrar/ocultar divs si la tienes, o déjala como estaba) ...
+            
+            // Agregamos la validación aquí
+            validarBotonConfirmacion();
+        });
+    }
+
+    // Escuchar cambios en el input del archivo (cuando suben la foto)
+    if(inputYapeFile){
+        inputYapeFile.addEventListener('change', validarBotonConfirmacion);
+    }
+
+    // Llamada inicial
+    validarBotonConfirmacion();
 });
 </script>
 <?php include 'includes/footer.php'; ?>

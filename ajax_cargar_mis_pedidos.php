@@ -28,9 +28,15 @@ if ($resultado_pedidos->num_rows > 0):
         $estado_clase = 'info';
         
         switch ($pedido['estado_pedido']) {
+            case 'Pendiente': // <--- Muestra esto mientras espera confirmación
+                $progreso = 10;
+                $estado_actual = 'Esperando confirmación del restaurante...';
+                $estado_clase = 'secondary';
+                break;
             case 'En preparación':
                 $progreso = 25;
-                $estado_actual = 'Tu pedido se está preparando en la cocina.';
+                // CAMBIO AQUÍ: Mensaje explícito de confirmación
+                $estado_actual = '¡Pedido Confirmado! Lo estamos preparando.'; 
                 $estado_clase = 'info';
                 break;
             case 'Listo para recoger':
