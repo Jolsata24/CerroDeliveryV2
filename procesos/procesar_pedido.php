@@ -1,9 +1,11 @@
 <?php
 session_start();
 require_once '../includes/conexion.php';
-require_once '../includes/funciones.php'; 
+require_once '../includes/funciones.php';
 
-if (!isset($_SESSION['cliente_id'])) { die("Acceso no autorizado."); }
+if (!isset($_SESSION['cliente_id'])) {
+    die("Acceso no autorizado.");
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_cliente = $_SESSION['cliente_id'];
@@ -21,13 +23,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     // --- LÓGICA DE SUBIDA DE IMAGEN YAPE ---
     $nombre_comprobante = null;
+    // Dentro de tu lógica de subida en procesar_pedido.php
+    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+    $mime = finfo_file($finfo, $_FILES['comprobante_yape']['tmp_name']);
+    finfo_close($finfo);
+
+    $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($mime, $allowed_types)) {
+        die("Error: El archivo debe ser una imagen válida.");
+    }
+    if ($_FILES['comprobante_yape']['size'] > 5 * 1024 * 1024) { // 5MB máx
+        die("Error: La imagen es muy pesada.");
+    }
     if ($metodo_pago == 'yape' && isset($_FILES['comprobante_yape']) && $_FILES['comprobante_yape']['error'] == 0) {
         $directorio = "../assets/img/comprobantes/";
         if (!is_dir($directorio)) mkdir($directorio, 0755, true);
-        
+
         $ext = pathinfo($_FILES['comprobante_yape']['name'], PATHINFO_EXTENSION);
         $nombre_unico = "pago_" . time() . "_" . $id_cliente . "." . $ext;
-        
+
         if (move_uploaded_file($_FILES['comprobante_yape']['tmp_name'], $directorio . $nombre_unico)) {
             $nombre_comprobante = $nombre_unico;
         } else {
@@ -37,7 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // ---------------------------------------
 
     $carrito = json_decode($carrito_json, true);
-    if (empty($carrito) || empty($id_restaurante)) { die("Error: Datos inválidos."); }
+    if (empty($carrito) || empty($id_restaurante)) {
+        die("Error: Datos inválidos.");
+    }
 
     // Cálculo de envío (Simplificado basado en tu código previo)
     $costo_envio = 5.00;
@@ -62,11 +78,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // INSERT ACTUALIZADO: Agregamos metodo_pago y comprobante_pago
         $sql_pedido = "INSERT INTO pedidos (id_restaurante, id_cliente, direccion_pedido, latitud, longitud, monto_total, costo_envio, metodo_pago, comprobante_pago, estado_pedido) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pendiente')";
         $stmt_pedido = $conn->prepare($sql_pedido);
-        
+
         // i=int, s=string, d=double
         // id_rest(i), id_cli(i), dir(s), lat(d), lon(d), total(d), envio(d), metodo(s), comprobante(s)
         $stmt_pedido->bind_param("iisssddss", $id_restaurante, $id_cliente, $direccion_pedido, $latitud_cliente, $longitud_cliente, $monto_total, $costo_envio, $metodo_pago, $nombre_comprobante);
-        
+
         $stmt_pedido->execute();
         $id_pedido = $conn->insert_id;
 
@@ -74,16 +90,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_detalle = $conn->prepare($sql_detalle);
 
         foreach ($carrito as $item) {
-            $stmt_detalle->bind_param("iisid", $id_pedido, $item['id'], $item['nombre'], $item['cantidad'], $item['precio']);
-            $stmt_detalle->execute();
+            // Consulta el precio REAL en la BD
+            $stmt_precio = $conn->prepare("SELECT precio FROM platos WHERE id = ?");
+            $stmt_precio->bind_param("i", $item['id']);
+            $stmt_precio->execute();
+            $res = $stmt_precio->get_result();
+
+            if ($row = $res->fetch_assoc()) {
+                $precio_real = $row['precio'];
+                $monto_productos += $precio_real * $item['cantidad'];
+
+                // Opcional: Re-asignar el precio real al item para guardarlo en detalle_pedidos correctamente
+                $item['precio'] = $precio_real;
+            }
+            $stmt_precio->close();
         }
 
         $conn->commit();
         header("Location: ../mis_pedidos.php?status=success");
-        
     } catch (Exception $e) {
         $conn->rollback();
         die("Error: " . $e->getMessage());
     }
 }
-?>

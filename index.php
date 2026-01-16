@@ -82,7 +82,7 @@ $imagenes_locales = [
                 </a>
             </div>
             <div class="col-lg-6 hero-image">
-                <img src="/cerrodeliveryv2/assets/img/fondov1.png" class="img-fluid" alt="Plato de chaufa">
+                <img src="assets/img/fondov1.png" class="img-fluid" alt="Plato de chaufa">
             </div>
         </div>
     </div>
